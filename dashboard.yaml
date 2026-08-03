@@ -394,7 +394,13 @@ views:
               showLegend: false
               legendToggle: false
               card_mod:
-                style: |
+                # config-template-card can't substitute ${...} inside a larger
+                # string (it evals everything between the string's first "${"
+                # and its final character), so the whole style must be ONE
+                # template: a JS template literal returning the CSS, in which
+                # COLS and WEEKEND_CSS interpolate normally.
+                style: |-
+                  ${`
                     /* === BASE SAFETY === */
                     :host {
                       overflow: hidden;
@@ -611,6 +617,7 @@ views:
                         overflow: hidden !important;
                       }
                     }
+                  `}
             grid_options:
               columns: 120
               rows: 1
