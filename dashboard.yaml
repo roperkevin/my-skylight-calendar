@@ -149,15 +149,25 @@ views:
             grid_options:
               columns: 120
               rows: auto
-          - type: horizontal-stack
+          - type: custom:mod-card
+            grid_options:
+              columns: 45
+              rows: auto
             card_mod:
-              # By default horizontal-stack gives every card an equal share of
-              # the row; let the pills hug their content instead, spaced like
-              # Chirpy's tag cloud, wrapping on narrow screens. The stack's
-              # #root flex container lives in its shadow root, which a plain
-              # style string can't reach — the `$` key pierces into it.
+              # card-mod can't attach to stack cards directly (they're on
+              # its unsupported list), so this mod-card wrapper styles the
+              # stack from outside. By default horizontal-stack gives every
+              # card an equal share of the row; these rules let the pills
+              # hug their content instead, spaced like Chirpy's tag cloud,
+              # wrapping on narrow screens.
               style:
-                $: |
+                .: |
+                  ha-card {
+                    background: none !important;
+                    border: none !important;
+                    box-shadow: none !important;
+                  }
+                hui-horizontal-stack-card $: |
                   #root {
                     justify-content: flex-start;
                     flex-wrap: wrap;
@@ -165,289 +175,349 @@ views:
                   }
                   #root > * {
                     flex: 0 0 auto !important;
+                    width: auto !important;
                     min-width: 0 !important;
                     margin: 0 !important;
                   }
-            cards:
-              # --- FILTER PILLS ---
-              # Active = solid person color; hidden = quiet "ghost" pill.
-              - type: custom:bubble-card
-                card_type: button
-                button_type: name
-                name: School
-                icon: mdi:school
-                show_icon: true
-                show_name: true
-                tap_action:
-                  action: perform-action
-                  perform_action: script.toggle_calendar_filter
-                  data:
-                    filter_entity: input_text.school_calendar_filter
-                hold_action:
-                  action: navigate
-                  navigation_path: "#agenda-school"
-                styles: |
-                  .bubble-button-card-container {
-                    background: none !important;
-                    border-radius: var(--skylight-radius-card, 10px) !important;
-                  }
-                  .bubble-icon-container {
-                    border-radius: var(--skylight-radius-chip, 6px) !important;
-                  }
-                  ha-card {
-                    border-radius: var(--skylight-radius-card, 10px) !important;
-                    border: 1px solid ${hass.states['input_text.school_calendar_filter'].state === '.*' ? 'var(--skylight-btn-off-border, #e9ecef)' : 'transparent'} !important;
-                    box-shadow: ${hass.states['input_text.school_calendar_filter'].state === '.*' ? 'none' : 'var(--skylight-btn-shadow, 0 2px 6px rgba(104, 104, 104, 0.14))'} !important;
-                    transition: box-shadow .25s ease, border-color .25s ease !important;
-                  }
-                  .bubble-button-background {
-                    opacity: 1 !important;
-                    border-radius: var(--skylight-radius-card, 10px) !important;
-                    background-color: ${hass.states['input_text.school_calendar_filter'].state === '.*' ? 'var(--skylight-btn-off-bg, #ffffff)' : 'var(--school-default-primary-color)'} !important;
-                  }
-                  .bubble-icon-container {
-                    background: ${hass.states['input_text.school_calendar_filter'].state === '.*' ? 'var(--skylight-btn-off-icon-bg, rgba(0, 0, 0, 0.04))' : 'rgba(255, 255, 255, 0.22)'} !important;
-                  }
-                  .bubble-icon {
-                    opacity: 1 !important;
-                    color: ${hass.states['input_text.school_calendar_filter'].state === '.*' ? 'var(--skylight-btn-off-text, #757575)' : '#ffffff'} !important;
-                  }
-                  .bubble-name {
-                    opacity: 1 !important;
-                    font-weight: 600 !important;
-                    letter-spacing: 0.01em !important;
-                    color: ${hass.states['input_text.school_calendar_filter'].state === '.*' ? 'var(--skylight-btn-off-text, #757575)' : '#ffffff'} !important;
-                  }
-              # To show a person avatar instead, use button_type: state with entity: person.daniel
-              - type: custom:bubble-card
-                card_type: button
-                button_type: name
-                name: Daniel
-                icon: mdi:account
-                show_icon: true
-                show_name: true
-                tap_action:
-                  action: perform-action
-                  perform_action: script.toggle_calendar_filter
-                  data:
-                    filter_entity: input_text.daniel_calendar_filter
-                hold_action:
-                  action: navigate
-                  navigation_path: "#agenda-daniel"
-                styles: |
-                  .bubble-button-card-container {
-                    background: none !important;
-                    border-radius: var(--skylight-radius-card, 10px) !important;
-                  }
-                  .bubble-icon-container {
-                    border-radius: var(--skylight-radius-chip, 6px) !important;
-                  }
-                  ha-card {
-                    border-radius: var(--skylight-radius-card, 10px) !important;
-                    border: 1px solid ${hass.states['input_text.daniel_calendar_filter'].state === '.*' ? 'var(--skylight-btn-off-border, #e9ecef)' : 'transparent'} !important;
-                    box-shadow: ${hass.states['input_text.daniel_calendar_filter'].state === '.*' ? 'none' : 'var(--skylight-btn-shadow, 0 2px 6px rgba(104, 104, 104, 0.14))'} !important;
-                    transition: box-shadow .25s ease, border-color .25s ease !important;
-                  }
-                  .bubble-button-background {
-                    opacity: 1 !important;
-                    border-radius: var(--skylight-radius-card, 10px) !important;
-                    background-color: ${hass.states['input_text.daniel_calendar_filter'].state === '.*' ? 'var(--skylight-btn-off-bg, #ffffff)' : 'var(--daniel-default-primary-color)'} !important;
-                  }
-                  .bubble-icon-container {
-                    background: ${hass.states['input_text.daniel_calendar_filter'].state === '.*' ? 'var(--skylight-btn-off-icon-bg, rgba(0, 0, 0, 0.04))' : 'rgba(255, 255, 255, 0.22)'} !important;
-                  }
-                  .bubble-icon {
-                    opacity: 1 !important;
-                    color: ${hass.states['input_text.daniel_calendar_filter'].state === '.*' ? 'var(--skylight-btn-off-text, #757575)' : '#ffffff'} !important;
-                  }
-                  .bubble-name {
-                    opacity: 1 !important;
-                    font-weight: 600 !important;
-                    letter-spacing: 0.01em !important;
-                    color: ${hass.states['input_text.daniel_calendar_filter'].state === '.*' ? 'var(--skylight-btn-off-text, #757575)' : '#ffffff'} !important;
-                  }
-              - type: custom:bubble-card
-                card_type: button
-                button_type: name
-                name: Weather
-                icon: mdi:weather-partly-cloudy
-                show_icon: true
-                show_name: true
-                tap_action:
-                  action: perform-action
-                  perform_action: script.toggle_calendar_filter
-                  data:
-                    filter_entity: input_text.weather_calendar_filter
-                hold_action:
-                  action: navigate
-                  navigation_path: "#agenda-weather"
-                styles: |
-                  .bubble-button-card-container {
-                    background: none !important;
-                    border-radius: var(--skylight-radius-card, 10px) !important;
-                  }
-                  .bubble-icon-container {
-                    border-radius: var(--skylight-radius-chip, 6px) !important;
-                  }
-                  ha-card {
-                    border-radius: var(--skylight-radius-card, 10px) !important;
-                    border: 1px solid ${hass.states['input_text.weather_calendar_filter'].state === '.*' ? 'var(--skylight-btn-off-border, #e9ecef)' : 'transparent'} !important;
-                    box-shadow: ${hass.states['input_text.weather_calendar_filter'].state === '.*' ? 'none' : 'var(--skylight-btn-shadow, 0 2px 6px rgba(104, 104, 104, 0.14))'} !important;
-                    transition: box-shadow .25s ease, border-color .25s ease !important;
-                  }
-                  .bubble-button-background {
-                    opacity: 1 !important;
-                    border-radius: var(--skylight-radius-card, 10px) !important;
-                    background-color: ${hass.states['input_text.weather_calendar_filter'].state === '.*' ? 'var(--skylight-btn-off-bg, #ffffff)' : 'var(--weather-default-primary-color)'} !important;
-                  }
-                  .bubble-icon-container {
-                    background: ${hass.states['input_text.weather_calendar_filter'].state === '.*' ? 'var(--skylight-btn-off-icon-bg, rgba(0, 0, 0, 0.04))' : 'rgba(255, 255, 255, 0.22)'} !important;
-                  }
-                  .bubble-icon {
-                    opacity: 1 !important;
-                    color: ${hass.states['input_text.weather_calendar_filter'].state === '.*' ? 'var(--skylight-btn-off-text, #757575)' : '#ffffff'} !important;
-                  }
-                  .bubble-name {
-                    opacity: 1 !important;
-                    font-weight: 600 !important;
-                    letter-spacing: 0.01em !important;
-                    color: ${hass.states['input_text.weather_calendar_filter'].state === '.*' ? 'var(--skylight-btn-off-text, #757575)' : '#ffffff'} !important;
-                  }
-              - type: custom:bubble-card
-                card_type: button
-                button_type: name
-                name: Family
-                icon: mdi:human-male-female-child
-                show_icon: true
-                show_name: true
-                tap_action:
-                  action: perform-action
-                  perform_action: script.toggle_calendar_filter
-                  data:
-                    filter_entity: input_text.family_calendar_filter
-                styles: |
-                  .bubble-button-card-container {
-                    background: none !important;
-                    border-radius: var(--skylight-radius-card, 10px) !important;
-                  }
-                  .bubble-icon-container {
-                    border-radius: var(--skylight-radius-chip, 6px) !important;
-                  }
-                  ha-card {
-                    border-radius: var(--skylight-radius-card, 10px) !important;
-                    border: 1px solid ${hass.states['input_text.family_calendar_filter'].state === '.*' ? 'var(--skylight-btn-off-border, #e9ecef)' : 'transparent'} !important;
-                    box-shadow: ${hass.states['input_text.family_calendar_filter'].state === '.*' ? 'none' : 'var(--skylight-btn-shadow, 0 2px 6px rgba(104, 104, 104, 0.14))'} !important;
-                    transition: box-shadow .25s ease, border-color .25s ease !important;
-                  }
-                  .bubble-button-background {
-                    opacity: 1 !important;
-                    border-radius: var(--skylight-radius-card, 10px) !important;
-                    background-color: ${hass.states['input_text.family_calendar_filter'].state === '.*' ? 'var(--skylight-btn-off-bg, #ffffff)' : 'var(--family-default-primary-color)'} !important;
-                  }
-                  .bubble-icon-container {
-                    background: ${hass.states['input_text.family_calendar_filter'].state === '.*' ? 'var(--skylight-btn-off-icon-bg, rgba(0, 0, 0, 0.04))' : 'rgba(255, 255, 255, 0.22)'} !important;
-                  }
-                  .bubble-icon {
-                    opacity: 1 !important;
-                    color: ${hass.states['input_text.family_calendar_filter'].state === '.*' ? 'var(--skylight-btn-off-text, #757575)' : '#ffffff'} !important;
-                  }
-                  .bubble-name {
-                    opacity: 1 !important;
-                    font-weight: 600 !important;
-                    letter-spacing: 0.01em !important;
-                    color: ${hass.states['input_text.family_calendar_filter'].state === '.*' ? 'var(--skylight-btn-off-text, #757575)' : '#ffffff'} !important;
-                  }
-              - type: custom:bubble-card
-                card_type: button
-                button_type: name
-                name: Birthdays
-                icon: mdi:cake-variant
-                show_icon: true
-                show_name: true
-                tap_action:
-                  action: perform-action
-                  perform_action: script.toggle_calendar_filter
-                  data:
-                    filter_entity: input_text.birthdays_calendar_filter
-                styles: |
-                  .bubble-button-card-container {
-                    background: none !important;
-                    border-radius: var(--skylight-radius-card, 10px) !important;
-                  }
-                  .bubble-icon-container {
-                    border-radius: var(--skylight-radius-chip, 6px) !important;
-                  }
-                  ha-card {
-                    border-radius: var(--skylight-radius-card, 10px) !important;
-                    border: 1px solid ${hass.states['input_text.birthdays_calendar_filter'].state === '.*' ? 'var(--skylight-btn-off-border, #e9ecef)' : 'transparent'} !important;
-                    box-shadow: ${hass.states['input_text.birthdays_calendar_filter'].state === '.*' ? 'none' : 'var(--skylight-btn-shadow, 0 2px 6px rgba(104, 104, 104, 0.14))'} !important;
-                    transition: box-shadow .25s ease, border-color .25s ease !important;
-                  }
-                  .bubble-button-background {
-                    opacity: 1 !important;
-                    border-radius: var(--skylight-radius-card, 10px) !important;
-                    background-color: ${hass.states['input_text.birthdays_calendar_filter'].state === '.*' ? 'var(--skylight-btn-off-bg, #ffffff)' : 'var(--birthdays-default-primary-color)'} !important;
-                  }
-                  .bubble-icon-container {
-                    background: ${hass.states['input_text.birthdays_calendar_filter'].state === '.*' ? 'var(--skylight-btn-off-icon-bg, rgba(0, 0, 0, 0.04))' : 'rgba(255, 255, 255, 0.22)'} !important;
-                  }
-                  .bubble-icon {
-                    opacity: 1 !important;
-                    color: ${hass.states['input_text.birthdays_calendar_filter'].state === '.*' ? 'var(--skylight-btn-off-text, #757575)' : '#ffffff'} !important;
-                  }
-                  .bubble-name {
-                    opacity: 1 !important;
-                    font-weight: 600 !important;
-                    letter-spacing: 0.01em !important;
-                    color: ${hass.states['input_text.birthdays_calendar_filter'].state === '.*' ? 'var(--skylight-btn-off-text, #757575)' : '#ffffff'} !important;
-                  }
-              - type: custom:bubble-card
-                card_type: button
-                button_type: name
-                name: Holidays
-                icon: mdi:bag-personal
-                show_icon: true
-                show_name: true
-                tap_action:
-                  action: perform-action
-                  perform_action: script.toggle_calendar_filter
-                  data:
-                    filter_entity: input_text.holidays_calendar_filter
-                styles: |
-                  .bubble-button-card-container {
-                    background: none !important;
-                    border-radius: var(--skylight-radius-card, 10px) !important;
-                  }
-                  .bubble-icon-container {
-                    border-radius: var(--skylight-radius-chip, 6px) !important;
-                  }
-                  ha-card {
-                    border-radius: var(--skylight-radius-card, 10px) !important;
-                    border: 1px solid ${hass.states['input_text.holidays_calendar_filter'].state === '.*' ? 'var(--skylight-btn-off-border, #e9ecef)' : 'transparent'} !important;
-                    box-shadow: ${hass.states['input_text.holidays_calendar_filter'].state === '.*' ? 'none' : 'var(--skylight-btn-shadow, 0 2px 6px rgba(104, 104, 104, 0.14))'} !important;
-                    transition: box-shadow .25s ease, border-color .25s ease !important;
-                  }
-                  .bubble-button-background {
-                    opacity: 1 !important;
-                    border-radius: var(--skylight-radius-card, 10px) !important;
-                    background-color: ${hass.states['input_text.holidays_calendar_filter'].state === '.*' ? 'var(--skylight-btn-off-bg, #ffffff)' : 'var(--holidays-default-primary-color)'} !important;
-                  }
-                  .bubble-icon-container {
-                    background: ${hass.states['input_text.holidays_calendar_filter'].state === '.*' ? 'var(--skylight-btn-off-icon-bg, rgba(0, 0, 0, 0.04))' : 'rgba(255, 255, 255, 0.22)'} !important;
-                  }
-                  .bubble-icon {
-                    opacity: 1 !important;
-                    color: ${hass.states['input_text.holidays_calendar_filter'].state === '.*' ? 'var(--skylight-btn-off-text, #757575)' : '#ffffff'} !important;
-                  }
-                  .bubble-name {
-                    opacity: 1 !important;
-                    font-weight: 600 !important;
-                    letter-spacing: 0.01em !important;
-                    color: ${hass.states['input_text.holidays_calendar_filter'].state === '.*' ? 'var(--skylight-btn-off-text, #757575)' : '#ffffff'} !important;
-                  }
-            grid_options:
-              columns: 45
-              rows: auto
+            card:
+              type: horizontal-stack
+              cards:
+                # --- FILTER PILLS ---
+                # Active = solid person color; hidden = quiet "ghost" pill.
+                - type: custom:bubble-card
+                  card_type: button
+                  button_type: name
+                  name: School
+                  icon: mdi:school
+                  show_icon: true
+                  show_name: true
+                  tap_action:
+                    action: perform-action
+                    perform_action: script.toggle_calendar_filter
+                    data:
+                      filter_entity: input_text.school_calendar_filter
+                  hold_action:
+                    action: navigate
+                    navigation_path: "#agenda-school"
+                  sub_button:
+                    main: []
+                    bottom: []
+                  button_action:
+                    tap_action:
+                      action: perform-action
+                      perform_action: script.toggle_calendar_filter
+                      target: {}
+                      data:
+                        filter_entity: input_text.school_calendar_filter
+                  styles: |
+                    .bubble-button-card-container {
+                      background: none !important;
+                      border-radius: var(--skylight-radius-card, 10px) !important;
+                    }
+                    .bubble-icon-container {
+                      border-radius: var(--skylight-radius-chip, 6px) !important;
+                    }
+                    ha-card {
+                      border-radius: var(--skylight-radius-card, 10px) !important;
+                      border: 1px solid ${hass.states['input_text.school_calendar_filter'].state === '.*' ? 'var(--skylight-btn-off-border, #e9ecef)' : 'transparent'} !important;
+                      box-shadow: ${hass.states['input_text.school_calendar_filter'].state === '.*' ? 'none' : 'var(--skylight-btn-shadow, 0 2px 6px rgba(104, 104, 104, 0.14))'} !important;
+                      transition: box-shadow .25s ease, border-color .25s ease !important;
+                    }
+                    .bubble-button-background {
+                      opacity: 1 !important;
+                      border-radius: var(--skylight-radius-card, 10px) !important;
+                      background-color: ${hass.states['input_text.school_calendar_filter'].state === '.*' ? 'var(--skylight-btn-off-bg, #ffffff)' : 'var(--school-default-primary-color)'} !important;
+                    }
+                    .bubble-icon-container {
+                      background: ${hass.states['input_text.school_calendar_filter'].state === '.*' ? 'var(--skylight-btn-off-icon-bg, rgba(0, 0, 0, 0.04))' : 'rgba(255, 255, 255, 0.22)'} !important;
+                    }
+                    .bubble-icon {
+                      opacity: 1 !important;
+                      color: ${hass.states['input_text.school_calendar_filter'].state === '.*' ? 'var(--skylight-btn-off-text, #757575)' : '#ffffff'} !important;
+                    }
+                    .bubble-name {
+                      opacity: 1 !important;
+                      font-weight: 600 !important;
+                      letter-spacing: 0.01em !important;
+                      color: ${hass.states['input_text.school_calendar_filter'].state === '.*' ? 'var(--skylight-btn-off-text, #757575)' : '#ffffff'} !important;
+                    }
+                # To show a person avatar instead, use button_type: state with entity: person.daniel
+                - type: custom:bubble-card
+                  card_type: button
+                  button_type: name
+                  name: Daniel
+                  icon: mdi:account
+                  show_icon: true
+                  show_name: true
+                  tap_action:
+                    action: perform-action
+                    perform_action: script.toggle_calendar_filter
+                    data:
+                      filter_entity: input_text.daniel_calendar_filter
+                  hold_action:
+                    action: navigate
+                    navigation_path: "#agenda-daniel"
+                  sub_button:
+                    main: []
+                    bottom: []
+                  button_action:
+                    tap_action:
+                      action: perform-action
+                      perform_action: script.toggle_calendar_filter
+                      target: {}
+                      data:
+                        filter_entity: input_text.daniel_calendar_filter
+                  styles: |
+                    .bubble-button-card-container {
+                      background: none !important;
+                      border-radius: var(--skylight-radius-card, 10px) !important;
+                    }
+                    .bubble-icon-container {
+                      border-radius: var(--skylight-radius-chip, 6px) !important;
+                    }
+                    ha-card {
+                      border-radius: var(--skylight-radius-card, 10px) !important;
+                      border: 1px solid ${hass.states['input_text.daniel_calendar_filter'].state === '.*' ? 'var(--skylight-btn-off-border, #e9ecef)' : 'transparent'} !important;
+                      box-shadow: ${hass.states['input_text.daniel_calendar_filter'].state === '.*' ? 'none' : 'var(--skylight-btn-shadow, 0 2px 6px rgba(104, 104, 104, 0.14))'} !important;
+                      transition: box-shadow .25s ease, border-color .25s ease !important;
+                    }
+                    .bubble-button-background {
+                      opacity: 1 !important;
+                      border-radius: var(--skylight-radius-card, 10px) !important;
+                      background-color: ${hass.states['input_text.daniel_calendar_filter'].state === '.*' ? 'var(--skylight-btn-off-bg, #ffffff)' : 'var(--daniel-default-primary-color)'} !important;
+                    }
+                    .bubble-icon-container {
+                      background: ${hass.states['input_text.daniel_calendar_filter'].state === '.*' ? 'var(--skylight-btn-off-icon-bg, rgba(0, 0, 0, 0.04))' : 'rgba(255, 255, 255, 0.22)'} !important;
+                    }
+                    .bubble-icon {
+                      opacity: 1 !important;
+                      color: ${hass.states['input_text.daniel_calendar_filter'].state === '.*' ? 'var(--skylight-btn-off-text, #757575)' : '#ffffff'} !important;
+                    }
+                    .bubble-name {
+                      opacity: 1 !important;
+                      font-weight: 600 !important;
+                      letter-spacing: 0.01em !important;
+                      color: ${hass.states['input_text.daniel_calendar_filter'].state === '.*' ? 'var(--skylight-btn-off-text, #757575)' : '#ffffff'} !important;
+                    }
+                - type: custom:bubble-card
+                  card_type: button
+                  button_type: name
+                  name: Weather
+                  icon: mdi:weather-partly-cloudy
+                  show_icon: true
+                  show_name: true
+                  tap_action:
+                    action: perform-action
+                    perform_action: script.toggle_calendar_filter
+                    data:
+                      filter_entity: input_text.weather_calendar_filter
+                  hold_action:
+                    action: navigate
+                    navigation_path: "#agenda-weather"
+                  sub_button:
+                    main: []
+                    bottom: []
+                  button_action:
+                    tap_action:
+                      action: perform-action
+                      perform_action: script.toggle_calendar_filter
+                      target: {}
+                      data:
+                        filter_entity: input_text.weather_calendar_filter
+                  styles: |
+                    .bubble-button-card-container {
+                      background: none !important;
+                      border-radius: var(--skylight-radius-card, 10px) !important;
+                    }
+                    .bubble-icon-container {
+                      border-radius: var(--skylight-radius-chip, 6px) !important;
+                    }
+                    ha-card {
+                      border-radius: var(--skylight-radius-card, 10px) !important;
+                      border: 1px solid ${hass.states['input_text.weather_calendar_filter'].state === '.*' ? 'var(--skylight-btn-off-border, #e9ecef)' : 'transparent'} !important;
+                      box-shadow: ${hass.states['input_text.weather_calendar_filter'].state === '.*' ? 'none' : 'var(--skylight-btn-shadow, 0 2px 6px rgba(104, 104, 104, 0.14))'} !important;
+                      transition: box-shadow .25s ease, border-color .25s ease !important;
+                    }
+                    .bubble-button-background {
+                      opacity: 1 !important;
+                      border-radius: var(--skylight-radius-card, 10px) !important;
+                      background-color: ${hass.states['input_text.weather_calendar_filter'].state === '.*' ? 'var(--skylight-btn-off-bg, #ffffff)' : 'var(--weather-default-primary-color)'} !important;
+                    }
+                    .bubble-icon-container {
+                      background: ${hass.states['input_text.weather_calendar_filter'].state === '.*' ? 'var(--skylight-btn-off-icon-bg, rgba(0, 0, 0, 0.04))' : 'rgba(255, 255, 255, 0.22)'} !important;
+                    }
+                    .bubble-icon {
+                      opacity: 1 !important;
+                      color: ${hass.states['input_text.weather_calendar_filter'].state === '.*' ? 'var(--skylight-btn-off-text, #757575)' : '#ffffff'} !important;
+                    }
+                    .bubble-name {
+                      opacity: 1 !important;
+                      font-weight: 600 !important;
+                      letter-spacing: 0.01em !important;
+                      color: ${hass.states['input_text.weather_calendar_filter'].state === '.*' ? 'var(--skylight-btn-off-text, #757575)' : '#ffffff'} !important;
+                    }
+                - type: custom:bubble-card
+                  card_type: button
+                  button_type: name
+                  name: Family
+                  icon: mdi:human-male-female-child
+                  show_icon: true
+                  show_name: true
+                  tap_action:
+                    action: perform-action
+                    perform_action: script.toggle_calendar_filter
+                    data:
+                      filter_entity: input_text.family_calendar_filter
+                  sub_button:
+                    main: []
+                    bottom: []
+                  button_action:
+                    tap_action:
+                      action: perform-action
+                      perform_action: script.toggle_calendar_filter
+                      target: {}
+                      data:
+                        filter_entity: input_text.family_calendar_filter
+                  styles: |
+                    .bubble-button-card-container {
+                      background: none !important;
+                      border-radius: var(--skylight-radius-card, 10px) !important;
+                    }
+                    .bubble-icon-container {
+                      border-radius: var(--skylight-radius-chip, 6px) !important;
+                    }
+                    ha-card {
+                      border-radius: var(--skylight-radius-card, 10px) !important;
+                      border: 1px solid ${hass.states['input_text.family_calendar_filter'].state === '.*' ? 'var(--skylight-btn-off-border, #e9ecef)' : 'transparent'} !important;
+                      box-shadow: ${hass.states['input_text.family_calendar_filter'].state === '.*' ? 'none' : 'var(--skylight-btn-shadow, 0 2px 6px rgba(104, 104, 104, 0.14))'} !important;
+                      transition: box-shadow .25s ease, border-color .25s ease !important;
+                    }
+                    .bubble-button-background {
+                      opacity: 1 !important;
+                      border-radius: var(--skylight-radius-card, 10px) !important;
+                      background-color: ${hass.states['input_text.family_calendar_filter'].state === '.*' ? 'var(--skylight-btn-off-bg, #ffffff)' : 'var(--family-default-primary-color)'} !important;
+                    }
+                    .bubble-icon-container {
+                      background: ${hass.states['input_text.family_calendar_filter'].state === '.*' ? 'var(--skylight-btn-off-icon-bg, rgba(0, 0, 0, 0.04))' : 'rgba(255, 255, 255, 0.22)'} !important;
+                    }
+                    .bubble-icon {
+                      opacity: 1 !important;
+                      color: ${hass.states['input_text.family_calendar_filter'].state === '.*' ? 'var(--skylight-btn-off-text, #757575)' : '#ffffff'} !important;
+                    }
+                    .bubble-name {
+                      opacity: 1 !important;
+                      font-weight: 600 !important;
+                      letter-spacing: 0.01em !important;
+                      color: ${hass.states['input_text.family_calendar_filter'].state === '.*' ? 'var(--skylight-btn-off-text, #757575)' : '#ffffff'} !important;
+                    }
+                - type: custom:bubble-card
+                  card_type: button
+                  button_type: name
+                  name: Birthdays
+                  icon: mdi:cake-variant
+                  show_icon: true
+                  show_name: true
+                  tap_action:
+                    action: perform-action
+                    perform_action: script.toggle_calendar_filter
+                    data:
+                      filter_entity: input_text.birthdays_calendar_filter
+                  sub_button:
+                    main: []
+                    bottom: []
+                  button_action:
+                    tap_action:
+                      action: perform-action
+                      perform_action: script.toggle_calendar_filter
+                      target: {}
+                      data:
+                        filter_entity: input_text.birthdays_calendar_filter
+                  styles: |
+                    .bubble-button-card-container {
+                      background: none !important;
+                      border-radius: var(--skylight-radius-card, 10px) !important;
+                    }
+                    .bubble-icon-container {
+                      border-radius: var(--skylight-radius-chip, 6px) !important;
+                    }
+                    ha-card {
+                      border-radius: var(--skylight-radius-card, 10px) !important;
+                      border: 1px solid ${hass.states['input_text.birthdays_calendar_filter'].state === '.*' ? 'var(--skylight-btn-off-border, #e9ecef)' : 'transparent'} !important;
+                      box-shadow: ${hass.states['input_text.birthdays_calendar_filter'].state === '.*' ? 'none' : 'var(--skylight-btn-shadow, 0 2px 6px rgba(104, 104, 104, 0.14))'} !important;
+                      transition: box-shadow .25s ease, border-color .25s ease !important;
+                    }
+                    .bubble-button-background {
+                      opacity: 1 !important;
+                      border-radius: var(--skylight-radius-card, 10px) !important;
+                      background-color: ${hass.states['input_text.birthdays_calendar_filter'].state === '.*' ? 'var(--skylight-btn-off-bg, #ffffff)' : 'var(--birthdays-default-primary-color)'} !important;
+                    }
+                    .bubble-icon-container {
+                      background: ${hass.states['input_text.birthdays_calendar_filter'].state === '.*' ? 'var(--skylight-btn-off-icon-bg, rgba(0, 0, 0, 0.04))' : 'rgba(255, 255, 255, 0.22)'} !important;
+                    }
+                    .bubble-icon {
+                      opacity: 1 !important;
+                      color: ${hass.states['input_text.birthdays_calendar_filter'].state === '.*' ? 'var(--skylight-btn-off-text, #757575)' : '#ffffff'} !important;
+                    }
+                    .bubble-name {
+                      opacity: 1 !important;
+                      font-weight: 600 !important;
+                      letter-spacing: 0.01em !important;
+                      color: ${hass.states['input_text.birthdays_calendar_filter'].state === '.*' ? 'var(--skylight-btn-off-text, #757575)' : '#ffffff'} !important;
+                    }
+                - type: custom:bubble-card
+                  card_type: button
+                  button_type: name
+                  name: Holidays
+                  icon: mdi:bag-personal
+                  show_icon: true
+                  show_name: true
+                  tap_action:
+                    action: perform-action
+                    perform_action: script.toggle_calendar_filter
+                    data:
+                      filter_entity: input_text.holidays_calendar_filter
+                  sub_button:
+                    main: []
+                    bottom: []
+                  button_action:
+                    tap_action:
+                      action: perform-action
+                      perform_action: script.toggle_calendar_filter
+                      target: {}
+                      data:
+                        filter_entity: input_text.holidays_calendar_filter
+                  styles: |
+                    .bubble-button-card-container {
+                      background: none !important;
+                      border-radius: var(--skylight-radius-card, 10px) !important;
+                    }
+                    .bubble-icon-container {
+                      border-radius: var(--skylight-radius-chip, 6px) !important;
+                    }
+                    ha-card {
+                      border-radius: var(--skylight-radius-card, 10px) !important;
+                      border: 1px solid ${hass.states['input_text.holidays_calendar_filter'].state === '.*' ? 'var(--skylight-btn-off-border, #e9ecef)' : 'transparent'} !important;
+                      box-shadow: ${hass.states['input_text.holidays_calendar_filter'].state === '.*' ? 'none' : 'var(--skylight-btn-shadow, 0 2px 6px rgba(104, 104, 104, 0.14))'} !important;
+                      transition: box-shadow .25s ease, border-color .25s ease !important;
+                    }
+                    .bubble-button-background {
+                      opacity: 1 !important;
+                      border-radius: var(--skylight-radius-card, 10px) !important;
+                      background-color: ${hass.states['input_text.holidays_calendar_filter'].state === '.*' ? 'var(--skylight-btn-off-bg, #ffffff)' : 'var(--holidays-default-primary-color)'} !important;
+                    }
+                    .bubble-icon-container {
+                      background: ${hass.states['input_text.holidays_calendar_filter'].state === '.*' ? 'var(--skylight-btn-off-icon-bg, rgba(0, 0, 0, 0.04))' : 'rgba(255, 255, 255, 0.22)'} !important;
+                    }
+                    .bubble-icon {
+                      opacity: 1 !important;
+                      color: ${hass.states['input_text.holidays_calendar_filter'].state === '.*' ? 'var(--skylight-btn-off-text, #757575)' : '#ffffff'} !important;
+                    }
+                    .bubble-name {
+                      opacity: 1 !important;
+                      font-weight: 600 !important;
+                      letter-spacing: 0.01em !important;
+                      color: ${hass.states['input_text.holidays_calendar_filter'].state === '.*' ? 'var(--skylight-btn-off-text, #757575)' : '#ffffff'} !important;
+                    }
           - type: markdown
             content: " "
             card_mod:
