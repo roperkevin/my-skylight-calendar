@@ -157,6 +157,17 @@ script:
               message: "⚠️ End time must be after start time."
           - stop: "Invalid time range"
 
+      - if:
+          - condition: template
+            value_template: >-
+              {{ all_day and
+                 states('input_datetime.calendar_day_event_end') < states('input_datetime.calendar_day_event_start') }}
+        then:
+          - action: browser_mod.notification
+            data:
+              message: "⚠️ End date can't be before the start date."
+          - stop: "Invalid date range"
+
       - choose:
           # Scenario A: All Day Event
           - conditions: "{{ all_day }}"
@@ -165,7 +176,8 @@ script:
                   start_date: "{{ states('input_datetime.calendar_day_event_start') }}"
                   # Home Assistant's end_date is EXCLUSIVE (the event ends at
                   # midnight leading into it), so a one-day event must end on the
-                  # following day. Bump the end date when it isn't after the start.
+                  # following day. Bump the end date when it equals the start
+                  # (end < start is rejected by the validation above).
                   end_date: >-
                     {%- set raw_end = states('input_datetime.calendar_day_event_end') -%}
                     {%- if raw_end > start_date -%}
