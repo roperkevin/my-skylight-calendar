@@ -3,7 +3,11 @@ views:
     max_columns: 10
     title: Family Calendar
     path: family-calendar
-    theme: Skylight
+    # No view-level `theme:` here on purpose: pinning one would override your
+    # profile (or backend-selected) theme and lock out `Skylight Dark` /
+    # `frontend.set_theme` switching. Set the theme in your profile instead
+    # (see the README's Theme section); add `theme: Skylight` back only if you
+    # want to force the light theme for every user of this dashboard.
     sections:
       # --- START HEADER SECTION (Date & Weather) ---
       - type: grid
