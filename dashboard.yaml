@@ -96,7 +96,9 @@ views:
                 show_name: true
                 tap_action:
                   action: perform-action
-                  perform_action: script.calendar1_calendar_visible_filter
+                  perform_action: script.toggle_calendar_filter
+                  data:
+                    filter_entity: input_text.calendar1_calendar_filter
                 styles: |
                   .bubble-button-background {
                     opacity: 1 !important;
@@ -110,7 +112,9 @@ views:
                 show_name: true
                 tap_action:
                   action: perform-action
-                  perform_action: script.calendar2_calendar_visible_filter
+                  perform_action: script.toggle_calendar_filter
+                  data:
+                    filter_entity: input_text.calendar2_calendar_filter
                 styles: |
                   .bubble-button-background {
                     opacity: 1 !important;
@@ -124,7 +128,9 @@ views:
                 show_name: true
                 tap_action:
                   action: perform-action
-                  perform_action: script.calendar3_calendar_visible_filter
+                  perform_action: script.toggle_calendar_filter
+                  data:
+                    filter_entity: input_text.calendar3_calendar_filter
                 styles: |
                   .bubble-button-background {
                     opacity: 1 !important;
@@ -138,7 +144,9 @@ views:
                 show_name: true
                 tap_action:
                   action: perform-action
-                  perform_action: script.calendar4_calendar_visible_filter
+                  perform_action: script.toggle_calendar_filter
+                  data:
+                    filter_entity: input_text.calendar4_calendar_filter
                 styles: |
                   .bubble-button-background {
                     opacity: 1 !important;
@@ -153,11 +161,13 @@ views:
                 show_name: true
                 tap_action:
                   action: perform-action
-                  perform_action: script.family_calendar_visible_filter
+                  perform_action: script.toggle_calendar_filter
+                  data:
+                    filter_entity: input_text.family_calendar_filter
                 styles: |
                   .bubble-button-background {
                     opacity: 1 !important;
-                    background-color: ${hass.states['input_text.family_calendar_filter'].state === '.*' ? 'lightgrey' : '#4A90E2'} !important;
+                    background-color: ${hass.states['input_text.family_calendar_filter'].state === '.*' ? 'lightgrey' : 'var(--family-default-primary-color)'} !important;
                   }
               - type: custom:bubble-card
                 card_type: button
@@ -168,11 +178,13 @@ views:
                 show_name: true
                 tap_action:
                   action: perform-action
-                  perform_action: script.birthdays_calendar_visible_filter
+                  perform_action: script.toggle_calendar_filter
+                  data:
+                    filter_entity: input_text.birthdays_calendar_filter
                 styles: |
                   .bubble-button-background {
                     opacity: 1 !important;
-                    background-color: ${hass.states['input_text.birthdays_calendar_filter'].state === '.*' ? 'lightgrey' : '#33a02c'} !important;
+                    background-color: ${hass.states['input_text.birthdays_calendar_filter'].state === '.*' ? 'lightgrey' : 'var(--birthdays-default-primary-color)'} !important;
                   }
               - type: custom:bubble-card
                 card_type: button
@@ -183,11 +195,13 @@ views:
                 show_name: true
                 tap_action:
                   action: perform-action
-                  perform_action: script.holidays_calendar_visible_filter
+                  perform_action: script.toggle_calendar_filter
+                  data:
+                    filter_entity: input_text.holidays_calendar_filter
                 styles: |
                   .bubble-button-background {
                     opacity: 1 !important;
-                    background-color: ${hass.states['input_text.holidays_calendar_filter'].state === '.*' ? 'lightgrey' : '#ff7f00'} !important;
+                    background-color: ${hass.states['input_text.holidays_calendar_filter'].state === '.*' ? 'lightgrey' : 'var(--holidays-default-primary-color)'} !important;
                   }
             grid_options:
               columns: 45
@@ -602,22 +616,26 @@ views:
                           name: Event Start Date
                         - entity: input_datetime.calendar_day_event_end
                           name: Event End Date
-                  - type: custom:button-card
+                  - type: custom:bubble-card
+                    card_type: button
+                    button_type: name
                     name: Add Event to Calendar
+                    icon: mdi:calendar-check
+                    show_icon: true
+                    show_name: true
                     tap_action:
-                      action: call-service
-                      service: script.add_google_calendar_event
-                    styles:
-                      card:
-                        - background-color: |
-                            [[[
-                              if (states['input_select.calendar_select'].state == 'calendar1') return "var(--calendar1-default-primary-color)";
-                              if (states['input_select.calendar_select'].state == 'calendar2') return "var(--calendar2-default-primary-color)";
-                              if (states['input_select.calendar_select'].state == 'calendar3') return "var(--calendar3-default-primary-color)";
-                              if (states['input_select.calendar_select'].state == 'calendar4') return "var(--calendar4-default-primary-color)";
-                              if (states['input_select.calendar_select'].state == 'Family') return "var(--family-default-primary-color)";
-                              return "gray";
-                            ]]]                
+                      action: perform-action
+                      perform_action: script.add_calendar_event
+                    styles: |
+                      .bubble-button-background {
+                        opacity: 1 !important;
+                        background-color: ${hass.states['input_select.calendar_select'].state == 'calendar1' ? 'var(--calendar1-default-primary-color)'
+                        : hass.states['input_select.calendar_select'].state == 'calendar2' ? 'var(--calendar2-default-primary-color)'
+                        : hass.states['input_select.calendar_select'].state == 'calendar3' ? 'var(--calendar3-default-primary-color)'
+                        : hass.states['input_select.calendar_select'].state == 'calendar4' ? 'var(--calendar4-default-primary-color)'
+                        : hass.states['input_select.calendar_select'].state == 'Family' ? 'var(--family-default-primary-color)'
+                        : 'gray'} !important;
+                      }
     cards: []
     icon: mdi:calendar-blank-multiple
     background:
@@ -626,5 +644,5 @@ views:
       size: cover
       repeat: repeat
       attachment: fixed
-      # Use File Editor and upload calbackgrd.png to /www/ folder, this translates to /local on this dashboard, so leave /local here.
-      image: /local/calbackgrd.png # <--- UPDATE THIS ENTITY
+      # Use File Editor and upload assets/calbackgrd.webp to /www/ folder, this translates to /local on this dashboard, so leave /local here.
+      image: /local/calbackgrd.webp # <--- UPDATE THIS if you use your own background image

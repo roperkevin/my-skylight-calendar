@@ -211,12 +211,15 @@ listing each HACS card with the minimum tested version.
    (including the All-Day toggle), and success/failure notifications to the
    add-event script.
 
-### Phase 2 — Simplification & structure
-5. M1: collapse the seven toggle scripts into one parameterized script; update the
-   seven buttons to pass their filter entity.
-6. M3: replace hardcoded button hexes with theme variables; M4: drop `button-card`.
-7. B9: rename the script to `add_calendar_event` (note the rename in the README).
-8. M5: move/optimize images, add `LICENSE`, expand `.gitignore`.
+### Phase 2 — Simplification & structure ✅ DONE
+5. ✅ M1: collapsed the seven toggle scripts into one parameterized
+   `script.toggle_calendar_filter`; all seven buttons pass their `filter_entity`.
+6. ✅ M3: buttons now use theme variables instead of hardcoded hexes;
+   M4: `button-card` dependency dropped (popup button rebuilt with bubble-card).
+7. ✅ B9: script renamed to `add_calendar_event` (rename noted in the README's
+   upgrade section).
+8. ✅ M5: background image moved to `assets/` and converted to WebP
+   (932 KB → 16 KB); added MIT `LICENSE`; expanded `.gitignore`.
 
 ### Phase 3 — Docs & guardrails
 9. README overhaul: fix typos/markup/numbering, add Requirements table (M7),

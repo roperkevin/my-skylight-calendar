@@ -91,7 +91,6 @@ You must have [HACS](https://hacs.xyz/) installed. Please install the following 
 * `weather-card`
 * `browser_mod` (Required for the popups to work)
 * `layout-card` (Required for the Sections view)
-* `button-card` (Required for the popup to add event)
 
 *Note: In Settings → Devices & Services, make sure Browser Mod appears as an Integration (tile) and not only under HACS. 
 If it isn’t there, click Add Integration → Browser Mod and finish the flow, then restart HA.
@@ -165,7 +164,7 @@ To get the specific font look (Ovo):
 
 2. Create a folder named `themes` in your config directory.
 3. Download [themes/skylight.yaml](themes/skylight.yaml) and place it in that folder.
-4. Use File Editor and upload calbackgrd.png to /www/ folder, that translates internally to /local on the dashboard.
+4. Use File Editor and upload [assets/calbackgrd.webp](assets/calbackgrd.webp) to /www/ folder, that translates internally to /local on the dashboard.
 5. Restart Home Assistant.
 6. Go to your Profile (User Icon bottom left) and change **Theme** to `Skylight`.
 NOTE: The theme is not comprehensive, so keep that in mind
@@ -200,6 +199,15 @@ choose:
 ```
 
 ## NOTES
+
+### Upgrading from an earlier version
+
+If you installed a previous version of this project, note these renames (update any automations or dashboards of your own that referenced them):
+
+* The seven `*_calendar_visible_filter` scripts were consolidated into a single `script.toggle_calendar_filter` that takes a `filter_entity` parameter (the dashboard buttons already pass it).
+* `script.add_google_calendar_event` was renamed to `script.add_calendar_event` (it always worked with any calendar type, not just Google).
+* The `button-card` HACS dependency is no longer needed.
+* The background image is now `calbackgrd.webp` (much smaller download); re-upload it to `/www/` or keep your existing `.png` and point the dashboard `background.image` at it.
 
 My original post was just to give a high level overview of how to do it and allow people to adjust code to make it work in their specific scenarios.
 

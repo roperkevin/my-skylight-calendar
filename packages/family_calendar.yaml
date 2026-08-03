@@ -91,72 +91,32 @@ input_boolean:
 
 # 2. SCRIPTS (The Logic)
 script:
-  # --- Filter Toggles ---
-  calendar1_calendar_visible_filter:
-    alias: Toggle calendar1 Calendar
+  # --- Filter Toggle (shared by every calendar button) ---
+  # The dashboard buttons call this with the filter helper they control, e.g.:
+  #   perform_action: script.toggle_calendar_filter
+  #   data:
+  #     filter_entity: input_text.calendar1_calendar_filter
+  # Adding a family member = add an input_text above + a button in the dashboard.
+  toggle_calendar_filter:
+    alias: Toggle Calendar Visibility Filter
+    fields:
+      filter_entity:
+        name: Filter Entity
+        description: The input_text filter helper to toggle between "^$" (show) and ".*" (hide).
+        required: true
+        selector:
+          entity:
+            filter:
+              domain: input_text
     sequence:
       - action: input_text.set_value
         target:
-          entity_id: input_text.calendar1_calendar_filter
+          entity_id: "{{ filter_entity }}"
         data:
-          value: "{% if is_state('input_text.calendar1_calendar_filter', '.*') %}^${% else %}.*{% endif %}"
-
-  calendar2_calendar_visible_filter:
-    alias: Toggle calendar2 Calendar
-    sequence:
-      - action: input_text.set_value
-        target:
-          entity_id: input_text.calendar2_calendar_filter
-        data:
-          value: "{% if is_state('input_text.calendar2_calendar_filter', '.*') %}^${% else %}.*{% endif %}"
-
-  calendar3_calendar_visible_filter:
-    alias: Toggle calendar3 Calendar
-    sequence:
-      - action: input_text.set_value
-        target:
-          entity_id: input_text.calendar3_calendar_filter
-        data:
-          value: "{% if is_state('input_text.calendar3_calendar_filter', '.*') %}^${% else %}.*{% endif %}"
-
-  calendar4_calendar_visible_filter:
-    alias: Toggle calendar4 Calendar
-    sequence:
-      - action: input_text.set_value
-        target:
-          entity_id: input_text.calendar4_calendar_filter
-        data:
-          value: "{% if is_state('input_text.calendar4_calendar_filter', '.*') %}^${% else %}.*{% endif %}"
-
-  family_calendar_visible_filter:
-    alias: Toggle Family Calendar
-    sequence:
-      - action: input_text.set_value
-        target:
-          entity_id: input_text.family_calendar_filter
-        data:
-          value: "{% if is_state('input_text.family_calendar_filter', '.*') %}^${% else %}.*{% endif %}"
-
-  birthdays_calendar_visible_filter:
-    alias: Toggle Birthdays Calendar
-    sequence:
-      - action: input_text.set_value
-        target:
-          entity_id: input_text.birthdays_calendar_filter
-        data:
-          value: "{% if is_state('input_text.birthdays_calendar_filter', '.*') %}^${% else %}.*{% endif %}"
-
-  holidays_calendar_visible_filter:
-    alias: Toggle Holidays Calendar
-    sequence:
-      - action: input_text.set_value
-        target:
-          entity_id: input_text.holidays_calendar_filter
-        data:
-          value: "{% if is_state('input_text.holidays_calendar_filter', '.*') %}^${% else %}.*{% endif %}"
+          value: "{% if is_state(filter_entity, '.*') %}^${% else %}.*{% endif %}"
 
   # --- Add Event Logic ---
-  add_google_calendar_event:
+  add_calendar_event:
     alias: Process Add Calendar Event
     sequence:
       - variables:
