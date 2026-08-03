@@ -169,6 +169,13 @@ views:
                   action: navigate
                   navigation_path: "#agenda-school"
                 styles: |
+                  .bubble-button-card-container {
+                    background: none !important;
+                    border-radius: 999px !important;
+                  }
+                  .bubble-icon-container {
+                    border-radius: 999px !important;
+                  }
                   ha-card {
                     border-radius: 999px !important;
                     border: 1px solid ${hass.states['input_text.school_calendar_filter'].state === '.*' ? 'var(--skylight-btn-off-border, #e9ecef)' : 'transparent'} !important;
@@ -210,6 +217,13 @@ views:
                   action: navigate
                   navigation_path: "#agenda-daniel"
                 styles: |
+                  .bubble-button-card-container {
+                    background: none !important;
+                    border-radius: 999px !important;
+                  }
+                  .bubble-icon-container {
+                    border-radius: 999px !important;
+                  }
                   ha-card {
                     border-radius: 999px !important;
                     border: 1px solid ${hass.states['input_text.daniel_calendar_filter'].state === '.*' ? 'var(--skylight-btn-off-border, #e9ecef)' : 'transparent'} !important;
@@ -250,6 +264,13 @@ views:
                   action: navigate
                   navigation_path: "#agenda-weather"
                 styles: |
+                  .bubble-button-card-container {
+                    background: none !important;
+                    border-radius: 999px !important;
+                  }
+                  .bubble-icon-container {
+                    border-radius: 999px !important;
+                  }
                   ha-card {
                     border-radius: 999px !important;
                     border: 1px solid ${hass.states['input_text.weather_calendar_filter'].state === '.*' ? 'var(--skylight-btn-off-border, #e9ecef)' : 'transparent'} !important;
@@ -287,6 +308,13 @@ views:
                   data:
                     filter_entity: input_text.family_calendar_filter
                 styles: |
+                  .bubble-button-card-container {
+                    background: none !important;
+                    border-radius: 999px !important;
+                  }
+                  .bubble-icon-container {
+                    border-radius: 999px !important;
+                  }
                   ha-card {
                     border-radius: 999px !important;
                     border: 1px solid ${hass.states['input_text.family_calendar_filter'].state === '.*' ? 'var(--skylight-btn-off-border, #e9ecef)' : 'transparent'} !important;
@@ -324,6 +352,13 @@ views:
                   data:
                     filter_entity: input_text.birthdays_calendar_filter
                 styles: |
+                  .bubble-button-card-container {
+                    background: none !important;
+                    border-radius: 999px !important;
+                  }
+                  .bubble-icon-container {
+                    border-radius: 999px !important;
+                  }
                   ha-card {
                     border-radius: 999px !important;
                     border: 1px solid ${hass.states['input_text.birthdays_calendar_filter'].state === '.*' ? 'var(--skylight-btn-off-border, #e9ecef)' : 'transparent'} !important;
@@ -361,6 +396,13 @@ views:
                   data:
                     filter_entity: input_text.holidays_calendar_filter
                 styles: |
+                  .bubble-button-card-container {
+                    background: none !important;
+                    border-radius: 999px !important;
+                  }
+                  .bubble-icon-container {
+                    border-radius: 999px !important;
+                  }
                   ha-card {
                     border-radius: 999px !important;
                     border: 1px solid ${hass.states['input_text.holidays_calendar_filter'].state === '.*' ? 'var(--skylight-btn-off-border, #e9ecef)' : 'transparent'} !important;
@@ -407,6 +449,13 @@ views:
               navigation_path: "#addcalendarevent"
             styles: |
               * { font-size: 1.05em !important; }
+              .bubble-button-card-container {
+                background: none !important;
+                border-radius: 999px !important;
+              }
+              .bubble-icon-container {
+                border-radius: 999px !important;
+              }
               ha-card {
                 width: 300px;
                 border-radius: 999px !important;
@@ -434,6 +483,13 @@ views:
               navigation_path: "#chores"
             styles: |
               * { font-size: 1.05em !important; }
+              .bubble-button-card-container {
+                background: none !important;
+                border-radius: 999px !important;
+              }
+              .bubble-icon-container {
+                border-radius: 999px !important;
+              }
               ha-card {
                 width: 200px;
                 border-radius: 999px !important;
@@ -1011,6 +1067,13 @@ views:
                       action: perform-action
                       perform_action: script.add_calendar_event
                     styles: |
+                      .bubble-button-card-container {
+                        background: none !important;
+                        border-radius: 999px !important;
+                      }
+                      .bubble-icon-container {
+                        border-radius: 999px !important;
+                      }
                       ha-card {
                         border-radius: 999px !important;
                         box-shadow: var(--skylight-btn-shadow, 0 2px 6px rgba(104, 104, 104, 0.14)) !important;
