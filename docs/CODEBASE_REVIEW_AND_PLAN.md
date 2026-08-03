@@ -234,23 +234,25 @@ listing each HACS card with the minimum tested version.
     end-of-file newlines fixed. (Markdown link checker left as a possible
     follow-up.)
 
-### Phase 4 — "Super duper awesome" features
-Ranked by Skylight feature parity vs. effort:
-
-11. **Chores / To-do panel** — HA's built-in Local To-do lists per family member,
-    shown in a collapsible section or a second view with a bubble-card tab bar.
-    (README already name-drops Grocy; native todo lists need zero extra installs.)
-12. **View-aware layout (B6/B7 done right)** — inject column count and weekend
-    highlighting from the same `config-template-card` variables that drive `DAYS`,
-    so every view renders correctly at any `startingDay`.
-13. **Meal-planner row** — a dedicated local calendar ("Dinner") rendered as a
-    compact strip under the header, Skylight-style.
-14. **Photo-frame screensaver** — browser_mod popup or a second view cycling
-    `/local/photos`, triggered by an idle timer, tap to wake.
-15. **Dark / evening theme variant** — a `Skylight Dark` entry in the theme file,
-    optionally auto-switched by sun elevation.
-16. **Per-person "today" agenda popup** — tap a person's button-and-hold (or a small
-    avatar) to pop their day list.
+### Phase 4 — "Super duper awesome" features ✅ DONE
+11. ✅ **Chores / To-do panel** — a Chores button opens a `#chores` popup with one
+    `todo-list` card per person (HA's built-in Local To-do; zero extra installs).
+12. ✅ **View-aware layout (B6/B7 done right)** — new `COLS` and `WEEKEND_CSS`
+    `config-template-card` variables drive the grid column count (1 for
+    Today/Tomorrow, 7 otherwise) and compute the weekend header cells from the
+    starting day, so every view renders correctly at any `startingDay`.
+13. ✅ **Meal-planner row** — an opt-in (commented-out) compact `Dinner` calendar
+    strip under the header; documented in the README.
+14. ✅ **Photo-frame screensaver** — `script.screensaver_start` opens a fullscreen
+    browser_mod photo popup with `autoclose` (tap/move to wake), plus an example
+    nightly automation. True idle detection is documented as a kiosk-software
+    concern (Fully Kiosk).
+15. ✅ **Dark / evening theme variant** — `Skylight Dark` added to the theme file;
+    the dashboard's card-mod colors now read `--skylight-*` theme variables (with
+    the original values as fallbacks), and an example sun-based
+    `frontend.set_theme` automation is included in the package.
+16. ✅ **Per-person "today" agenda popup** — holding a person's button opens their
+    `#agendaN` popup with a compact one-day week-planner-card.
 
 Each phase is independently shippable; Phases 1–2 change no user-facing setup steps
 (except the script rename, which is called out), so existing installs upgrade by

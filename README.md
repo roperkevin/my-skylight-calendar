@@ -72,6 +72,11 @@ The hardware I originally used I chose based on what I mentioned above plus with
 * **"Add Event" Popup:** A custom UI to add events to specific calendars directly from the screen.
 * **Weather & Date:** Beautiful, glanceable header.
 * **Responsive:** Automatically adjusts day-count based on screen width (Mobile vs Desktop).
+* **Chores:** A popup with a per-person to-do list, powered by HA's built-in Local To-do.
+* **Per-person Agenda:** Hold a person's button to pop up their day at a glance.
+* **Dark Mode:** A `Skylight Dark` theme variant, optionally auto-switched with the sun.
+* **Photo Screensaver:** A tap-to-dismiss fullscreen photo, triggerable on a schedule.
+* **Meal Planner (opt-in):** A Skylight-style dinner strip under the header.
 
 ## 📁 What's in this repo
 
@@ -206,6 +211,31 @@ The script validates the form before creating anything: it refuses an empty titl
 * **12-hour clock** — in the `better-moment-card` at the top of `dashboard.yaml`, change `{{moment format=HH:mm}}` to `{{moment format=h:mm a}}`.
 * **Language** — change `locale: en` in the `week-planner-card` section of `dashboard.yaml`.
 * **Fewer/more family members** — remove or copy a button in `dashboard.yaml` (each passes its own `filter_entity`) and the matching `input_text` helper + calendar entry. The shared `script.toggle_calendar_filter` needs no changes.
+
+## 🧩 Optional Features
+
+### Chores (per-person to-do lists)
+
+1. Go to **Settings > Devices & Services > Add Integration > Local To-do** and create one list per person named `calendar1`…`calendar4` (or your own names).
+2. If you used your own names, update the `todo.*` entities in the Chores popup in `dashboard.yaml` (marked `UPDATE THIS ENTITY`).
+3. Tap the **Chores** button on the dashboard. Kids can check items off right on the screen.
+4. Not interested? Delete the Chores button and the `#chores` popup from `dashboard.yaml`.
+
+### Per-person "Today" agenda
+
+**Hold** (long-press) a person's button to pop up their agenda for today. The popups use the same calendar entities as the main view — update the `UPDATE THIS ENTITY` markers in the `#agenda1`–`#agenda4` popups.
+
+### Meal planner strip
+
+A commented-out section in `dashboard.yaml` (search for `MEAL PLANNER STRIP`) renders a compact week of dinner plans under the header. Create a Local Calendar named `Dinner`, uncomment the section, and add meals as all-day events.
+
+### Photo screensaver
+
+`script.screensaver_start` (from the package) opens a fullscreen photo on every registered browser; any tap or mouse movement dismisses it. Upload a photo to `/config/www/photos/` and update the path in the script. An example automation at the bottom of the package file triggers it nightly — for true idle-detection screensavers, kiosk software like Fully Kiosk Browser is the better tool.
+
+### Dark mode
+
+The theme file now also defines **`Skylight Dark`** — same layout and per-person colors on dark surfaces. Select it in your profile, or uncomment the "Skylight Auto Dark Mode" example automation in the package file to switch with the sun (requires the profile theme to be "Backend-selected").
 
 ## 🛠 Troubleshooting / FAQ
 

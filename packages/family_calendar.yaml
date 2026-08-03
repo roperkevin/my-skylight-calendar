@@ -225,3 +225,49 @@ script:
       - action: browser_mod.notification
         data:
           message: "✓ Event added to {{ states('input_select.calendar_select') }}"
+
+  # --- Photo Screensaver (optional) ---
+  # Opens a fullscreen photo on every Browser Mod-registered browser; any tap or
+  # mouse movement closes it (autoclose). Upload a photo to /config/www/photos/
+  # first. For true idle-detection screensavers, kiosk software such as Fully
+  # Kiosk Browser does it better - this is a simple built-in alternative you can
+  # trigger from an automation (see the examples at the bottom of this file).
+  screensaver_start:
+    alias: Start Photo Screensaver
+    sequence:
+      - action: browser_mod.popup
+        data:
+          size: fullscreen
+          autoclose: true
+          hide_header: true
+          content:
+            type: picture
+            image: /local/photos/family.jpg # <--- UPDATE THIS (upload to /config/www/photos/)
+            tap_action:
+              action: none
+
+# ==============================================================================
+# 3. OPTIONAL AUTOMATIONS (uncomment to use)
+# ==============================================================================
+# automation:
+#   # Show the photo screensaver every evening.
+#   - alias: Calendar Photo Screensaver At Night
+#     triggers:
+#       - trigger: time
+#         at: "21:00:00"
+#     actions:
+#       - action: script.screensaver_start
+#
+#   # Switch between the light and dark Skylight themes with the sun.
+#   # NOTE: frontend.set_theme changes the *backend-selected* theme. It only
+#   # affects users whose profile theme is set to "Backend-selected".
+#   - alias: Skylight Auto Dark Mode
+#     triggers:
+#       - trigger: sun
+#         event: sunset
+#       - trigger: sun
+#         event: sunrise
+#     actions:
+#       - action: frontend.set_theme
+#         data:
+#           name: "{{ 'Skylight Dark' if trigger.event == 'sunset' else 'Skylight' }}"

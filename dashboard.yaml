@@ -58,7 +58,34 @@ views:
                   border: none !important;
                 }
         column_span: 10
-      # --- End HEADER SECTION (Date & Weather) ---  
+      # --- End HEADER SECTION (Date & Weather) ---
+      # --- OPTIONAL: MEAL PLANNER STRIP (Skylight-style dinner row) ---
+      # To enable: add a Local Calendar named "Dinner" (entity: calendar.dinner),
+      # then uncomment this section. Add dinner plans as all-day events.
+      # - type: grid
+      #   cards:
+      #     - type: custom:week-planner-card
+      #       calendars:
+      #         - entity: calendar.dinner # <--- UPDATE THIS ENTITY if yours differs
+      #           name: Dinner
+      #           color: "var(--family-default-primary-color)"
+      #       days: 7
+      #       startingDay: monday # keep in sync with the main calendar's STARTDAY
+      #       showNavigation: false
+      #       showWeekDayText: true
+      #       compact: true
+      #       hidePastEvents: false
+      #       hideDaysWithoutEvents: false
+      #       locale: en
+      #       card_mod:
+      #         style: |
+      #           ha-card {
+      #             background: var(--skylight-cal-card-background, rgba(255, 255, 255, 0.6)) !important;
+      #             border-radius: 24px !important;
+      #             box-shadow: none !important;
+      #           }
+      #   column_span: 10
+      # --- End MEAL PLANNER STRIP ---
       # --- START CONTROLS SECTION (Buttons) ---
       - type: grid
         cards:
@@ -78,7 +105,10 @@ views:
           - type: vertical-stack
             cards:
               - type: markdown
-                content: <font color="Black" size="6">Family Calendar</font>
+                content: "## Family Calendar"
+                card_mod:
+                  style: |
+                    ha-card { background: none; box-shadow: none; border: none; }
                 grid_options:
                   columns: 18
                   rows: auto
@@ -99,6 +129,9 @@ views:
                   perform_action: script.toggle_calendar_filter
                   data:
                     filter_entity: input_text.calendar1_calendar_filter
+                hold_action:
+                  action: navigate
+                  navigation_path: "#agenda1"
                 styles: |
                   .bubble-button-background {
                     opacity: 1 !important;
@@ -115,6 +148,9 @@ views:
                   perform_action: script.toggle_calendar_filter
                   data:
                     filter_entity: input_text.calendar2_calendar_filter
+                hold_action:
+                  action: navigate
+                  navigation_path: "#agenda2"
                 styles: |
                   .bubble-button-background {
                     opacity: 1 !important;
@@ -131,6 +167,9 @@ views:
                   perform_action: script.toggle_calendar_filter
                   data:
                     filter_entity: input_text.calendar3_calendar_filter
+                hold_action:
+                  action: navigate
+                  navigation_path: "#agenda3"
                 styles: |
                   .bubble-button-background {
                     opacity: 1 !important;
@@ -147,6 +186,9 @@ views:
                   perform_action: script.toggle_calendar_filter
                   data:
                     filter_entity: input_text.calendar4_calendar_filter
+                hold_action:
+                  action: navigate
+                  navigation_path: "#agenda4"
                 styles: |
                   .bubble-button-background {
                     opacity: 1 !important;
@@ -230,6 +272,24 @@ views:
               columns: 10
               rows: 1
           - type: custom:bubble-card
+            card_type: button
+            button_type: name
+            card_layout: large
+            name: Chores
+            icon: mdi:clipboard-check-outline
+            tap_action:
+              action: navigate
+              navigation_path: "#chores"
+            styles: |
+              * { font-size: 1.05em !important; }
+              ha-card { --bubble-main-background-color: #393745 !important; width: 200px; }
+              .bubble-icon { --mdc-icon-size: 30px !important; color: snow !important; opacity: 1; }
+              .bubble-icon-container { background: #393745 !important; display: flex; }
+              .bubble-name { color: snow !important; opacity: 1; display: flex; line-height: 18px; flex-direction: row; justify-content: center; flex-grow: 1; margin: 0 40px 0 0; pointer-events: none; position: relative; overflow: hidden; }
+            grid_options:
+              columns: 7
+              rows: 1
+          - type: custom:bubble-card
             card_type: select
             entity: input_select.calendar_view
             show_name: true
@@ -278,6 +338,27 @@ views:
                   if (calendarView === 'Biweek') return 14;
                   // else return "month"
                   return "month";
+                })()
+              COLS: |
+                (() => {
+                  const calendarView = states['input_select.calendar_view']?.state;
+                  if (calendarView === 'Today' || calendarView === 'Tomorrow') return 1;
+                  return 7;
+                })()
+              WEEKEND_CSS: |
+                (() => {
+                  const calendarView = states['input_select.calendar_view']?.state;
+                  if (calendarView === 'Today' || calendarView === 'Tomorrow') return '';
+                  // Keep this in sync with the STARTDAY fallback above.
+                  const startingDay = 'monday';
+                  const week = ['monday','tuesday','wednesday','thursday','friday','saturday','sunday'];
+                  const idx = week.indexOf(startingDay);
+                  // Header cells are :nth-of-type(offset + 2), offset counted from the starting day.
+                  const sat = ((5 - idx + 7) % 7) + 2;
+                  const sun = ((6 - idx + 7) % 7) + 2;
+                  return '.container > .day.header:nth-of-type(' + sat + ') .text, ' +
+                         '.container > .day.header:nth-of-type(' + sun + ') .text ' +
+                         '{ color: var(--skylight-weekend-text-color, #d32f2f) !important; }';
                 })()
             card:
               type: custom:week-planner-card
@@ -342,7 +423,7 @@ views:
 
                     /* === CARD BASE === */
                     ha-card {
-                      background: rgba(255, 255, 255, 0.6) !important;
+                      background: var(--skylight-cal-card-background, rgba(255, 255, 255, 0.6)) !important;
                       border-radius: 24px !important;
                       box-shadow: none !important;
                       height: clamp(480px, 70vh, 900px) !important;
@@ -350,12 +431,12 @@ views:
                     }
 
                     /* === GRID LAYOUT === */
-                    /* NOTE: the fixed 7 columns fit the Week/Biweek/Month views.
-                       The Today/Tomorrow views still work but only fill the first
-                       column of the grid. */
+                    /* The column count follows the selected view (7 for
+                       Week/Biweek/Month, 1 for Today/Tomorrow) via the COLS
+                       template variable above. */
                     .container {
                       display: grid !important;
-                      grid-template-columns: repeat(7, minmax(0, 1fr)) !important;
+                      grid-template-columns: repeat(${COLS}, minmax(0, 1fr)) !important;
                       grid-auto-flow: row dense !important;
                       gap: 0 !important;
                     }
@@ -381,7 +462,7 @@ views:
 
                     /* === DAY TILES === */
                     .day {
-                      border: solid 1px whitesmoke !important;
+                      border: solid 1px var(--skylight-day-border-color, whitesmoke) !important;
                       padding: 0.2% !important;
                       width: auto !important;
                       min-width: 0 !important;
@@ -394,16 +475,16 @@ views:
                     /* === YOUR ORIGINAL VISUAL RULES === */
                     .event.past {
                       opacity: .2 !important;
-                      background-color: gray !important;
+                      background-color: var(--skylight-past-event-color, gray) !important;
                     }
 
                     .time {
-                      color: #333333 !important;
+                      color: var(--skylight-event-text-color, #333333) !important;
                       font-size: 0.8em !important;
                     }
 
                     .event {
-                      color: #333333 !important;
+                      color: var(--skylight-event-text-color, #333333) !important;
                       line-height: 16px !important;
                       background-color: var(--border-color) !important;
                       border-radius: 10px !important;
@@ -418,7 +499,7 @@ views:
 
                     .today .number {
                       border-radius: 5px !important;
-                      background-color: orange !important;
+                      background-color: var(--skylight-today-highlight-color, orange) !important;
                       padding-left: 4px !important;
                       padding-right: 4px !important;
                     }
@@ -434,9 +515,6 @@ views:
                     }
 
                     /* Weekday colors */
-                    /* NOTE: the header rules below assume the week starts on
-                       Monday (Saturday/Sunday are the 7th/8th header cells).
-                       Adjust them if you change STARTDAY above. */
 
                     /* When showWeekDayText is true */
                     .day[data-weekday="1"] .date .text,
@@ -444,25 +522,21 @@ views:
                     .day[data-weekday="3"] .date .text,
                     .day[data-weekday="4"] .date .text,
                     .day[data-weekday="5"] .date .text {
-                      color: #2e7d32 !important;
+                      color: var(--skylight-weekday-text-color, #2e7d32) !important;
                     }
 
                     .day[data-weekday="6"] .date .text,
                     .day[data-weekday="7"] .date .text {
-                      color: #d32f2f !important;
+                      color: var(--skylight-weekend-text-color, #d32f2f) !important;
                     }
                     /* When showWeekDayText is false */
                     .container > .day.header .text {
-                      color: #2e7d32 !important;
+                      color: var(--skylight-weekday-text-color, #2e7d32) !important;
                     }
-                    /* Saturday = column 7 */
-                    .container > .day.header:nth-of-type(7) .text {
-                      color: #d32f2f !important;
-                    }
-                    /* Sunday = column 8 */
-                    .container > .day.header:nth-of-type(8) .text {
-                      color: #d32f2f !important;
-                    }
+                    /* Weekend header cells: computed from the starting day by the
+                       WEEKEND_CSS template variable, so they stay correct if you
+                       change STARTDAY. */
+                    ${WEEKEND_CSS}
 
 
                     /* === RESPONSIVE BREAKPOINTS === */
@@ -642,6 +716,120 @@ views:
                         : hass.states['input_select.calendar_select'].state == 'Family' ? 'var(--family-default-primary-color)'
                         : 'gray'} !important;
                       }
+          # --- CHORES POPUP ---
+          # Requires the Local To-do integration: create one list per person
+          # (Settings > Devices & Services > Add Integration > Local To-do).
+          - type: vertical-stack
+            cards:
+              - type: custom:bubble-card
+                card_type: pop-up
+                hash: "#chores"
+                button_type: name
+                name: Family Chores
+                icon: mdi:clipboard-check-outline
+                show_icon: true
+                show_name: true
+              - type: todo-list
+                entity: todo.calendar1 # <--- UPDATE THIS ENTITY (Local To-do list)
+                title: calendar1
+              - type: todo-list
+                entity: todo.calendar2 # <--- UPDATE THIS ENTITY (Local To-do list)
+                title: calendar2
+              - type: todo-list
+                entity: todo.calendar3 # <--- UPDATE THIS ENTITY (Local To-do list)
+                title: calendar3
+              - type: todo-list
+                entity: todo.calendar4 # <--- UPDATE THIS ENTITY (Local To-do list)
+                title: calendar4
+          # --- PER-PERSON TODAY AGENDA POPUPS (opened by holding a person's button) ---
+          - type: vertical-stack
+            cards:
+              - type: custom:bubble-card
+                card_type: pop-up
+                hash: "#agenda1"
+                button_type: name
+                name: calendar1 — Today
+                icon: mdi:calendar-today
+                show_icon: true
+                show_name: true
+              - type: custom:week-planner-card
+                calendars:
+                  - entity: calendar.calendar1 # <--- UPDATE THIS ENTITY
+                    name: calendar1
+                    color: "var(--calendar1-default-primary-color)"
+                days: 1
+                startingDay: today
+                showNavigation: false
+                showWeekDayText: false
+                compact: true
+                hideDaysWithoutEvents: false
+                locale: en
+          - type: vertical-stack
+            cards:
+              - type: custom:bubble-card
+                card_type: pop-up
+                hash: "#agenda2"
+                button_type: name
+                name: calendar2 — Today
+                icon: mdi:calendar-today
+                show_icon: true
+                show_name: true
+              - type: custom:week-planner-card
+                calendars:
+                  - entity: calendar.calendar2 # <--- UPDATE THIS ENTITY
+                    name: calendar2
+                    color: "var(--calendar2-default-primary-color)"
+                days: 1
+                startingDay: today
+                showNavigation: false
+                showWeekDayText: false
+                compact: true
+                hideDaysWithoutEvents: false
+                locale: en
+          - type: vertical-stack
+            cards:
+              - type: custom:bubble-card
+                card_type: pop-up
+                hash: "#agenda3"
+                button_type: name
+                name: calendar3 — Today
+                icon: mdi:calendar-today
+                show_icon: true
+                show_name: true
+              - type: custom:week-planner-card
+                calendars:
+                  - entity: calendar.calendar3 # <--- UPDATE THIS ENTITY
+                    name: calendar3
+                    color: "var(--calendar3-default-primary-color)"
+                days: 1
+                startingDay: today
+                showNavigation: false
+                showWeekDayText: false
+                compact: true
+                hideDaysWithoutEvents: false
+                locale: en
+          - type: vertical-stack
+            cards:
+              - type: custom:bubble-card
+                card_type: pop-up
+                hash: "#agenda4"
+                button_type: name
+                name: calendar4 — Today
+                icon: mdi:calendar-today
+                show_icon: true
+                show_name: true
+              - type: custom:week-planner-card
+                calendars:
+                  - entity: calendar.calendar4 # <--- UPDATE THIS ENTITY
+                    name: calendar4
+                    color: "var(--calendar4-default-primary-color)"
+                days: 1
+                startingDay: today
+                showNavigation: false
+                showWeekDayText: false
+                compact: true
+                hideDaysWithoutEvents: false
+                locale: en
     cards: []
     icon: mdi:calendar-blank-multiple
     background:
