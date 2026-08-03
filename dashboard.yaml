@@ -518,6 +518,24 @@ views:
                   if (calendarView === 'Today' || calendarView === 'Tomorrow') return 1;
                   return 7;
                 })()
+              HEIGHT_CSS: |
+                (() => {
+                  const calendarView = states['input_select.calendar_view']?.state;
+                  // Month view renders 5-6 rows of tiles, which can never fit a
+                  // fixed 70vh card, so let it grow. The shorter views keep the
+                  // clamped height so the card fills the screen nicely. Keep the
+                  // view list in sync with the DAYS template above: anything
+                  // unrecognized falls through to a month layout there, so it
+                  // must get the auto height here too.
+                  const clampedViews = ['Today', 'Tomorrow', 'Week', 'Biweek'];
+                  if (clampedViews.includes(calendarView)) {
+                    // overflow-y is a safety net: an unusually event-heavy day
+                    // scrolls inside the card instead of spilling past its
+                    // rounded bottom edge.
+                    return 'height: clamp(480px, 70vh, 900px) !important; max-height: clamp(480px, 70vh, 900px) !important; overflow-y: auto !important;';
+                  }
+                  return 'height: auto !important; max-height: none !important;';
+                })()
               WEEKEND_CSS: |
                 (() => {
                   const calendarView = states['input_select.calendar_view']?.state;
@@ -603,8 +621,7 @@ views:
                       border: none !important;
                       box-shadow: var(--skylight-shadow-card, 0 12px 40px rgba(35, 38, 46, 0.08)) !important;
                       padding: 18px 20px 20px !important;
-                      height: clamp(480px, 70vh, 900px) !important;
-                      max-height: clamp(480px, 70vh, 900px) !important;
+                      ${HEIGHT_CSS}
                     }
 
                     /* === NAVIGATION ROW (arrows + month title) === */
