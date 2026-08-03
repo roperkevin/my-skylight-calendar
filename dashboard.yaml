@@ -526,99 +526,138 @@ views:
             grid_options:
               columns: 3
               rows: auto
-          - type: custom:bubble-card
-            card_type: button
-            button_type: name
-            card_layout: large
-            name: Add Event
-            icon: mdi:calendar-plus
-            tap_action:
-              action: navigate
-              navigation_path: "#addcalendarevent"
-            styles: |
-              * { font-size: 1.05em !important; }
-              .bubble-button-card-container {
-                background: none !important;
-                border-radius: var(--skylight-radius-card, 10px) !important;
-              }
-              .bubble-icon-container {
-                border-radius: var(--skylight-radius-chip, 6px) !important;
-              }
-              ha-card {
-                background: none !important;
-                border-radius: var(--skylight-radius-card, 10px) !important;
-                box-shadow: var(--skylight-btn-shadow, 0 2px 6px rgba(104, 104, 104, 0.14)) !important;
-              }
-              .bubble-button-background {
-                opacity: 1 !important;
-                border-radius: var(--skylight-radius-card, 10px) !important;
-                background-color: var(--skylight-cta-bg, #0056b2) !important;
-              }
-              .bubble-icon { --mdc-icon-size: 26px !important; color: var(--skylight-cta-text, #ffffff) !important; opacity: 1; }
-              .bubble-icon-container { background: rgba(255, 255, 255, 0.12) !important; display: flex; }
-              .bubble-name { color: var(--skylight-cta-text, #ffffff) !important; font-weight: 600 !important; letter-spacing: 0.01em !important; opacity: 1; display: flex; line-height: 18px; flex-direction: row; justify-content: center; flex-grow: 1; margin: 0 40px 0 0; pointer-events: none; position: relative; overflow: hidden; }
+          - type: custom:mod-card
             grid_options:
-              columns: 10
-              rows: 1
-          - type: custom:bubble-card
-            card_type: button
-            button_type: name
-            card_layout: large
-            name: Chores
-            icon: mdi:clipboard-check-outline
-            tap_action:
-              action: navigate
-              navigation_path: "#chores"
-            styles: |
-              * { font-size: 1.05em !important; }
-              .bubble-button-card-container {
-                background: none !important;
-                border-radius: var(--skylight-radius-card, 10px) !important;
-              }
-              .bubble-icon-container {
-                border-radius: var(--skylight-radius-chip, 6px) !important;
-              }
-              ha-card {
-                background: none !important;
-                border-radius: var(--skylight-radius-card, 10px) !important;
-                border: 1px solid var(--skylight-btn-off-border, #e9ecef) !important;
-                box-shadow: none !important;
-              }
-              .bubble-button-background {
-                opacity: 1 !important;
-                border-radius: var(--skylight-radius-card, 10px) !important;
-                background-color: var(--skylight-btn-off-bg, #ffffff) !important;
-              }
-              .bubble-icon { --mdc-icon-size: 26px !important; color: var(--primary-text-color, #34343c) !important; opacity: 1; }
-              .bubble-icon-container { background: var(--skylight-btn-off-icon-bg, rgba(0, 0, 0, 0.04)) !important; display: flex; }
-              .bubble-name { color: var(--primary-text-color, #34343c) !important; font-weight: 600 !important; letter-spacing: 0.01em !important; opacity: 1; display: flex; line-height: 18px; flex-direction: row; justify-content: center; flex-grow: 1; margin: 0 40px 0 0; pointer-events: none; position: relative; overflow: hidden; }
-            grid_options:
-              columns: 7
-              rows: 1
-          - type: custom:bubble-card
-            card_type: select
-            entity: input_select.calendar_view
-            show_name: true
-            show_state: true
-            name: Select View
-            show_last_changed: false
-            show_attribute: false
-            styles: |
-              ha-card {
-                background: none !important;
-                border-radius: var(--skylight-radius-card, 10px) !important;
-                border: 1px solid var(--skylight-btn-off-border, #e9ecef) !important;
-                box-shadow: none !important;
-              }
-              .bubble-button-background, .bubble-select-background {
-                opacity: 1 !important;
-                border-radius: var(--skylight-radius-card, 10px) !important;
-                background-color: var(--skylight-btn-off-bg, #ffffff) !important;
-              }
-              .bubble-icon { color: var(--primary-text-color, #34343c) !important; opacity: 1 !important; }
-              .bubble-icon-container { background: var(--skylight-btn-off-icon-bg, rgba(0, 0, 0, 0.04)) !important; }
-              .bubble-name { color: var(--primary-text-color, #34343c) !important; font-weight: 600 !important; opacity: 1 !important; }
-              .bubble-state { color: var(--secondary-text-color, #757575) !important; opacity: 1 !important; }
+              columns: 45
+              rows: auto
+            card_mod:
+              # Same treatment as the filter-pill row above: card-mod can't
+              # attach to stack cards, so this mod-card wrapper styles the
+              # stack, sizing each button to its content.
+              style:
+                .: |
+                  ha-card {
+                    background: none !important;
+                    border: none !important;
+                    box-shadow: none !important;
+                  }
+                hui-horizontal-stack-card $: |
+                  #root {
+                    justify-content: flex-start;
+                    flex-wrap: wrap;
+                    gap: 10px;
+                  }
+                  #root > * {
+                    flex: 0 0 auto !important;
+                    width: auto !important;
+                    min-width: 0 !important;
+                    margin: 0 !important;
+                  }
+            card:
+              type: horizontal-stack
+              cards:
+                - type: custom:bubble-card
+                  card_type: button
+                  button_type: name
+                  name: Add Event
+                  icon: mdi:calendar-plus
+                  tap_action:
+                    action: navigate
+                    navigation_path: "#addcalendarevent"
+                  styles: |
+                    .bubble-button-card-container {
+                      background: none !important;
+                      border-radius: var(--skylight-radius-card, 10px) !important;
+                    }
+                    ha-card {
+                      background: none !important;
+                      border-radius: var(--skylight-radius-card, 10px) !important;
+                      box-shadow: var(--skylight-btn-shadow, 0 2px 6px rgba(104, 104, 104, 0.14)) !important;
+                    }
+                    .bubble-button-background {
+                      opacity: 1 !important;
+                      border-radius: var(--skylight-radius-card, 10px) !important;
+                      background-color: var(--skylight-cta-bg, #0056b2) !important;
+                    }
+                    .bubble-icon-container {
+                      border-radius: var(--skylight-radius-chip, 6px) !important;
+                      background: rgba(255, 255, 255, 0.22) !important;
+                    }
+                    .bubble-icon {
+                      opacity: 1 !important;
+                      color: var(--skylight-cta-text, #ffffff) !important;
+                    }
+                    .bubble-name {
+                      opacity: 1 !important;
+                      font-weight: 600 !important;
+                      letter-spacing: 0.01em !important;
+                      color: var(--skylight-cta-text, #ffffff) !important;
+                    }
+                - type: custom:bubble-card
+                  card_type: button
+                  button_type: name
+                  name: Chores
+                  icon: mdi:clipboard-check-outline
+                  tap_action:
+                    action: navigate
+                    navigation_path: "#chores"
+                  styles: |
+                    .bubble-button-card-container {
+                      background: none !important;
+                      border-radius: var(--skylight-radius-card, 10px) !important;
+                    }
+                    ha-card {
+                      background: none !important;
+                      border-radius: var(--skylight-radius-card, 10px) !important;
+                      border: 1px solid var(--skylight-btn-off-border, #e9ecef) !important;
+                      box-shadow: none !important;
+                    }
+                    .bubble-button-background {
+                      opacity: 1 !important;
+                      border-radius: var(--skylight-radius-card, 10px) !important;
+                      background-color: var(--skylight-btn-off-bg, #ffffff) !important;
+                    }
+                    .bubble-icon-container {
+                      border-radius: var(--skylight-radius-chip, 6px) !important;
+                      background: var(--skylight-btn-off-icon-bg, rgba(0, 0, 0, 0.04)) !important;
+                    }
+                    .bubble-icon {
+                      opacity: 1 !important;
+                      color: var(--primary-text-color, #34343c) !important;
+                    }
+                    .bubble-name {
+                      opacity: 1 !important;
+                      font-weight: 600 !important;
+                      letter-spacing: 0.01em !important;
+                      color: var(--primary-text-color, #34343c) !important;
+                    }
+                - type: custom:bubble-card
+                  card_type: select
+                  entity: input_select.calendar_view
+                  show_name: true
+                  show_state: true
+                  name: Select View
+                  show_last_changed: false
+                  show_attribute: false
+                  styles: |
+                    ha-card {
+                      background: none !important;
+                      border-radius: var(--skylight-radius-card, 10px) !important;
+                      border: 1px solid var(--skylight-btn-off-border, #e9ecef) !important;
+                      box-shadow: none !important;
+                    }
+                    .bubble-button-background, .bubble-select-background {
+                      opacity: 1 !important;
+                      border-radius: var(--skylight-radius-card, 10px) !important;
+                      background-color: var(--skylight-btn-off-bg, #ffffff) !important;
+                    }
+                    .bubble-icon-container {
+                      border-radius: var(--skylight-radius-chip, 6px) !important;
+                      background: var(--skylight-btn-off-icon-bg, rgba(0, 0, 0, 0.04)) !important;
+                    }
+                    .bubble-icon { color: var(--primary-text-color, #34343c) !important; opacity: 1 !important; }
+                    .bubble-name { color: var(--primary-text-color, #34343c) !important; font-weight: 600 !important; opacity: 1 !important; }
+                    .bubble-state { color: var(--secondary-text-color, #757575) !important; opacity: 1 !important; }
         column_span: 10
       # --- End CONTROLS SECTION (Buttons) ---
       # --- START CALENDAR SECTION (Week Planner Card) ---
