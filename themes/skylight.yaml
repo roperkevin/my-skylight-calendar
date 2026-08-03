@@ -2,11 +2,16 @@ Skylight:
   card-mod-theme: Skylight
 
   # ============================================================================
-  # SKYLIGHT DESIGN SYSTEM
+  # SKYLIGHT DESIGN SYSTEM — Chirpy edition
   # ============================================================================
   # This file is the single source of truth for the calendar's look. Every
   # theme key below becomes a CSS variable (`--key-name`) that the dashboard's
   # card-mod styles read via `var(--key-name, fallback)`.
+  #
+  # The palette, typography and shape language mirror the Chirpy Jekyll theme
+  # (https://github.com/cotes2020/jekyll-theme-chirpy): Source Sans body text
+  # with Lato headings, 10px/6px corner radii, flat surfaces separated by a
+  # hairline ring shadow, and Chirpy's light/dark color variables.
   #
   # Example YAML using a variable `my-custom-value`:
   #
@@ -30,99 +35,109 @@ Skylight:
   ###################################
   #### Typography
   ###################################
-  # Load the font (via card-mod) from Google with this special notation so it
-  # is injected into the document head (or it won't work).
+  # Load the fonts (via card-mod) from Google with this special notation so
+  # they are injected into the document head (or it won't work).
+  # Chirpy pairs Source Sans (body) with Lato (headings). "Source Sans 3" is
+  # Google Fonts' current name for Source Sans Pro.
   card-mod-root-yaml: |
     .: |
-      @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap');
+      @import url('https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&family=Source+Sans+3:wght@400;600;700&display=swap');
 
-  # "Outfit" is a friendly geometric sans-serif; falls back to system sans.
-  primary-font-family: "'Outfit', 'Trebuchet MS', sans-serif"
+  primary-font-family: "'Source Sans 3', 'Source Sans Pro', 'Microsoft Yahei', sans-serif"
+  skylight-heading-font-family: "'Lato', 'Microsoft Yahei', sans-serif"
 
   # Apply the font across Home Assistant's UI layers.
-  ha-card-header-font-family: "var(--primary-font-family)"
+  ha-card-header-font-family: "var(--skylight-heading-font-family)"
   mdc-typography-font-family: "var(--primary-font-family)"
   paper-font-common-base_-_font-family: "var(--primary-font-family)"
   paper-font-common-code_-_font-family: "var(--primary-font-family)"
   paper-font-body1_-_font-family: "var(--primary-font-family)"
   paper-font-subhead_-_font-family: "var(--primary-font-family)"
-  paper-font-headline_-_font-family: "var(--primary-font-family)"
+  paper-font-headline_-_font-family: "var(--skylight-heading-font-family)"
   paper-font-caption_-_font-family: "var(--primary-font-family)"
-  paper-font-title_-_font-family: "var(--primary-font-family)"
+  paper-font-title_-_font-family: "var(--skylight-heading-font-family)"
 
   ###################################
   #### Core Home Assistant surfaces
   ###################################
-  primary-background-color: "#F5F3EE"
-  secondary-background-color: "#ECEAE3"
+  # Chirpy light: white main background, white cards separated by a hairline
+  # ring shadow rather than borders or heavy elevation.
+  primary-background-color: "#FFFFFF"
+  secondary-background-color: "#F6F8FA"
   card-background-color: "#FFFFFF"
   ha-card-background: "#FFFFFF"
-  primary-text-color: "#23262E"
-  secondary-text-color: "#6C7280"
-  divider-color: "#E7E4DC"
-  primary-color: "#4C7FE4"
-  accent-color: "#4C7FE4"
-  ha-card-border-radius: "20px"
+  primary-text-color: "#34343C"
+  secondary-text-color: "#757575"
+  divider-color: "#F3F3F3"
+  primary-color: "#0056B2"
+  accent-color: "#0056B2"
+  ha-card-border-radius: "10px"
   ha-card-border-width: "0"
-  ha-card-box-shadow: "0 6px 24px rgba(35, 38, 46, 0.06)"
+  ha-card-box-shadow: "rgba(104, 104, 104, 0.05) 0 2px 6px 0, rgba(211, 209, 209, 0.15) 0 0 0 1px"
 
   ###################################
   #### Per-person calendar colors
   ###################################
-  # One harmonized palette (matched saturation/lightness) — the buttons, the
-  # event chips and the popups all read these, so one edit changes everything.
+  # One harmonized palette (drawn from Chirpy's prompt/link accents) — the
+  # buttons, the event chips and the popups all read these, so one edit
+  # changes everything.
   # Format: [family-member.name]-default-primary-color: "[color value]"
-  school-default-primary-color: "#E45C4E"
-  daniel-default-primary-color: "#ECA33F"
-  weather-default-primary-color: "#4BA3CF"
-  family-default-primary-color: "#4C7FE4"
-  birthdays-default-primary-color: "#43A45E"
-  holidays-default-primary-color: "#ED7D33"
+  school-default-primary-color: "#DF3C30"    # Chirpy danger
+  daniel-default-primary-color: "#EF9C03"    # Chirpy warning
+  weather-default-primary-color: "#07A8F7"   # Chirpy checkbox-checked sky blue
+  family-default-primary-color: "#0056B2"    # Chirpy link blue
+  birthdays-default-primary-color: "#03B303" # Chirpy tip green
+  holidays-default-primary-color: "#E56717"  # deep orange, distinct from warning
 
   ###################################
   #### Skylight design tokens
   ###################################
-  # Shape & elevation
-  skylight-radius-card: "28px"
-  skylight-radius-tile: "14px"
-  skylight-radius-chip: "10px"
-  skylight-shadow-card: "0 12px 40px rgba(35, 38, 46, 0.08)"
-  skylight-btn-shadow: "0 6px 18px rgba(35, 38, 46, 0.16)"
+  # Shape & elevation — Chirpy's $radius-lg (10px) and $radius-sm (6px);
+  # flat buttons, cards with the signature ring shadow.
+  skylight-radius-card: "10px"
+  skylight-radius-tile: "6px"
+  skylight-radius-chip: "6px"
+  skylight-shadow-card: "rgba(104, 104, 104, 0.05) 0 2px 6px 0, rgba(211, 209, 209, 0.15) 0 0 0 1px"
+  skylight-btn-shadow: "0 2px 6px rgba(104, 104, 104, 0.14)"
 
   # Calendar surfaces
-  skylight-cal-card-background: "rgba(255, 255, 255, 0.88)"
-  skylight-day-bg: "#F8F7F3"
-  skylight-day-border-color: "#EFEDE6"
-  skylight-today-bg: "#FDF4E3"
-  skylight-today-highlight-color: "#F5A524"
+  skylight-cal-card-background: "#FFFFFF"
+  skylight-day-bg: "#F6F8FA"
+  skylight-day-border-color: "#EAEAEA"
+  skylight-today-bg: "#E1F5FE"
+  skylight-today-highlight-color: "#0070CB"
 
   # Calendar text
-  skylight-weekday-text-color: "#8A8F9C"
-  skylight-weekend-text-color: "#C96B5E"
-  skylight-event-text-color: "#2A2D34"
-  skylight-event-time-color: "#787E8C"
+  skylight-weekday-text-color: "#757575"
+  skylight-weekend-text-color: "#DF3C30"
+  skylight-event-text-color: "#34343C"
+  skylight-event-time-color: "#757575"
   skylight-past-event-color: "gray"
 
-  # Event chips: tint = person color mixed into this base
-  skylight-chip-mix-base: "#FFFFFF"
+  # Event chips: neutral surface with the calendar color as a left accent bar
+  skylight-event-bg: "#FFFFFF"
+  skylight-event-border: "#EAEAEA"
 
-  # Buttons & popup surfaces
+  # Buttons & popup surfaces — Chirpy buttons are flat: white bg, 1px
+  # #e9ecef border, muted text. The CTA uses the link blue.
   skylight-surface: "#FFFFFF"
   skylight-btn-off-bg: "#FFFFFF"
-  skylight-btn-off-text: "#8A8F9C"
-  skylight-btn-off-border: "#E3E0D8"
-  skylight-btn-off-icon-bg: "rgba(35, 38, 46, 0.05)"
-  skylight-cta-bg: "#262A34"
+  skylight-btn-off-text: "#757575"
+  skylight-btn-off-border: "#E9ECEF"
+  skylight-btn-off-icon-bg: "rgba(0, 0, 0, 0.04)"
+  skylight-cta-bg: "#0056B2"
   skylight-cta-text: "#FFFFFF"
 
   # Bubble Card global defaults (picked up automatically by bubble-card)
   bubble-main-background-color: "var(--skylight-surface)"
-  bubble-border-radius: "24px"
+  bubble-border-radius: "10px"
 
 ###################################
 #### Dark variant
 ###################################
-# Same layout and per-person hues, slightly brightened for dark surfaces.
+# Chirpy's dark scheme: near-black #1b1b1e canvas, #1e1e1e cards with a faint
+# ring, muted gray text and the light-blue #8ab4f8 link accent. Same layout
+# and per-person hues, brightened for dark surfaces.
 # Select it per profile, or switch automatically with the sun using the
 # example automation in packages/family_calendar.yaml.
 Skylight Dark:
@@ -130,73 +145,78 @@ Skylight Dark:
 
   card-mod-root-yaml: |
     .: |
-      @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap');
-  primary-font-family: "'Outfit', 'Trebuchet MS', sans-serif"
-  ha-card-header-font-family: "var(--primary-font-family)"
+      @import url('https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&family=Source+Sans+3:wght@400;600;700&display=swap');
+  primary-font-family: "'Source Sans 3', 'Source Sans Pro', 'Microsoft Yahei', sans-serif"
+  skylight-heading-font-family: "'Lato', 'Microsoft Yahei', sans-serif"
+  ha-card-header-font-family: "var(--skylight-heading-font-family)"
   mdc-typography-font-family: "var(--primary-font-family)"
   paper-font-common-base_-_font-family: "var(--primary-font-family)"
   paper-font-common-code_-_font-family: "var(--primary-font-family)"
   paper-font-body1_-_font-family: "var(--primary-font-family)"
   paper-font-subhead_-_font-family: "var(--primary-font-family)"
-  paper-font-headline_-_font-family: "var(--primary-font-family)"
+  paper-font-headline_-_font-family: "var(--skylight-heading-font-family)"
   paper-font-caption_-_font-family: "var(--primary-font-family)"
-  paper-font-title_-_font-family: "var(--primary-font-family)"
+  paper-font-title_-_font-family: "var(--skylight-heading-font-family)"
 
-  # Core Home Assistant surfaces
-  primary-background-color: "#131419"
-  secondary-background-color: "#1B1D24"
-  card-background-color: "#20232B"
-  ha-card-background: "#20232B"
-  primary-text-color: "#ECEDF1"
-  secondary-text-color: "#9BA1AE"
-  divider-color: "#2C2F38"
-  primary-color: "#7396EC"
-  accent-color: "#7396EC"
-  ha-card-border-radius: "20px"
+  # Core Home Assistant surfaces — Chirpy dark framework colors
+  primary-background-color: "#1B1B1E"
+  secondary-background-color: "#1E1E1E"
+  card-background-color: "#1E1E1E"
+  ha-card-background: "#1E1E1E"
+  primary-text-color: "#CCCCCC"
+  secondary-text-color: "#868686"
+  divider-color: "#2C2D2D"
+  primary-color: "#8AB4F8"
+  accent-color: "#8AB4F8"
+  ha-card-border-radius: "10px"
   ha-card-border-width: "0"
-  ha-card-box-shadow: "0 6px 24px rgba(0, 0, 0, 0.35)"
+  ha-card-box-shadow: "rgba(21, 21, 21, 0.72) 0 6px 18px 0, rgba(137, 135, 135, 0.24) 0 0 0 1px"
 
   # Per-person palette, brightened for dark surfaces
-  school-default-primary-color: "#F0796D"
-  daniel-default-primary-color: "#F2B45F"
-  weather-default-primary-color: "#6FB7DD"
-  family-default-primary-color: "#7396EC"
-  birthdays-default-primary-color: "#63B87A"
-  holidays-default-primary-color: "#F29659"
+  school-default-primary-color: "#EE6F64"
+  daniel-default-primary-color: "#F2AA3C"
+  weather-default-primary-color: "#4DB2F8"
+  family-default-primary-color: "#8AB4F8"
+  birthdays-default-primary-color: "#45C455"
+  holidays-default-primary-color: "#F2914D"
 
-  # Shape & elevation
-  skylight-radius-card: "28px"
-  skylight-radius-tile: "14px"
-  skylight-radius-chip: "10px"
-  skylight-shadow-card: "0 12px 40px rgba(0, 0, 0, 0.45)"
-  skylight-btn-shadow: "0 6px 18px rgba(0, 0, 0, 0.45)"
+  # Shape & elevation — same Chirpy radii; dark card ring shadow
+  skylight-radius-card: "10px"
+  skylight-radius-tile: "6px"
+  skylight-radius-chip: "6px"
+  skylight-shadow-card: "rgba(21, 21, 21, 0.72) 0 6px 18px 0, rgba(137, 135, 135, 0.24) 0 0 0 1px"
+  skylight-btn-shadow: "0 2px 6px rgba(0, 0, 0, 0.45)"
 
   # Calendar surfaces
-  skylight-cal-card-background: "rgba(26, 28, 35, 0.88)"
-  skylight-day-bg: "rgba(255, 255, 255, 0.04)"
-  skylight-day-border-color: "rgba(255, 255, 255, 0.06)"
-  skylight-today-bg: "#2B2519"
-  skylight-today-highlight-color: "#F5A524"
+  skylight-cal-card-background: "#1E1E1E"
+  skylight-day-bg: "#252526"
+  skylight-day-border-color: "#2C2D2D"
+  skylight-today-bg: "rgba(7, 59, 104, 0.55)"
+  skylight-today-highlight-color: "#0075D1"
 
   # Calendar text
-  skylight-weekday-text-color: "#8E94A3"
-  skylight-weekend-text-color: "#E08B80"
-  skylight-event-text-color: "#ECEDF1"
-  skylight-event-time-color: "#A3A9B6"
+  skylight-weekday-text-color: "#A7A7A7"
+  skylight-weekend-text-color: "#E88E84"
+  skylight-event-text-color: "#E0E1E3"
+  skylight-event-time-color: "#868686"
   skylight-past-event-color: "#555555"
 
-  # Event chips: tint = person color mixed into this base
-  skylight-chip-mix-base: "#262932"
+  # Event chips: neutral raised surface with the calendar color as a left
+  # accent bar; bold near-white title over muted details
+  skylight-event-bg: "#2A2C33"
+  skylight-event-border: "rgba(255, 255, 255, 0.08)"
 
-  # Buttons & popup surfaces
-  skylight-surface: "#20232B"
-  skylight-btn-off-bg: "#20232B"
-  skylight-btn-off-text: "#8E94A3"
-  skylight-btn-off-border: "#2E313B"
-  skylight-btn-off-icon-bg: "rgba(255, 255, 255, 0.06)"
-  skylight-cta-bg: "#343846"
+  # Buttons & popup surfaces — Chirpy dark buttons: the sidebar-btn
+  # #232328 bg (readable against the #1b1b1e canvas, unlike the card
+  # color) with a #2e2f31 border and muted text.
+  skylight-surface: "#1E1E1E"
+  skylight-btn-off-bg: "#232328"
+  skylight-btn-off-text: "#868686"
+  skylight-btn-off-border: "#2E2F31"
+  skylight-btn-off-icon-bg: "rgba(255, 255, 255, 0.05)"
+  skylight-cta-bg: "#2F6FCE"
   skylight-cta-text: "#FFFFFF"
 
   # Bubble Card global defaults (picked up automatically by bubble-card)
   bubble-main-background-color: "var(--skylight-surface)"
-  bubble-border-radius: "24px"
+  bubble-border-radius: "10px"
