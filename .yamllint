@@ -1,0 +1,14 @@
+# Relaxed linting: these files are hand-edited Home Assistant configs full of
+# embedded Jinja/JS/CSS, so we only enforce what catches real breakage.
+extends: relaxed
+
+rules:
+  line-length: disable
+  # The original files use CRLF line endings; normalizing them would produce
+  # noisy whole-file diffs, so don't enforce an ending style.
+  new-lines: disable
+  comments: disable
+  trailing-spaces: disable
+  brackets: disable
+  empty-lines:
+    max: 3

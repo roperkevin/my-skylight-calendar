@@ -221,12 +221,18 @@ listing each HACS card with the minimum tested version.
 8. ✅ M5: background image moved to `assets/` and converted to WebP
    (932 KB → 16 KB); added MIT `LICENSE`; expanded `.gitignore`.
 
-### Phase 3 — Docs & guardrails
-9. README overhaul: fix typos/markup/numbering, add Requirements table (M7),
-   Troubleshooting/FAQ, popup screenshot, file map, and a "Customizing" section
-   (colors via theme, week start, 12/24h clock, locale) — with the B6/B7 caveats
-   documented where the options live.
-10. M6: add a `yamllint` GitHub Action; optionally a markdown link checker.
+### Phase 3 — Docs & guardrails ✅ DONE (except screenshot)
+9. ✅ README overhaul: typos/markup/numbering fixed, Requirements table with links
+   and minimum versions (M7), Troubleshooting/FAQ, file map ("What's in this
+   repo"), and a Customizing section (colors via theme, week start, 12/24h clock,
+   locale, adding/removing family members) — with the B6/B7 caveats documented as
+   comments next to the options in `dashboard.yaml`.
+   ⏸ Popup screenshot still pending — requires a live Home Assistant install to
+   capture.
+10. ✅ M6: added a `yamllint` GitHub Action (`.github/workflows/validate.yaml`)
+    with a relaxed `.yamllint` config plus a YAML parse check; missing
+    end-of-file newlines fixed. (Markdown link checker left as a possible
+    follow-up.)
 
 ### Phase 4 — "Super duper awesome" features
 Ranked by Skylight feature parity vs. effort:

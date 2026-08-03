@@ -350,6 +350,9 @@ views:
                     }
 
                     /* === GRID LAYOUT === */
+                    /* NOTE: the fixed 7 columns fit the Week/Biweek/Month views.
+                       The Today/Tomorrow views still work but only fill the first
+                       column of the grid. */
                     .container {
                       display: grid !important;
                       grid-template-columns: repeat(7, minmax(0, 1fr)) !important;
@@ -431,7 +434,10 @@ views:
                     }
 
                     /* Weekday colors */
-                    
+                    /* NOTE: the header rules below assume the week starts on
+                       Monday (Saturday/Sunday are the 7th/8th header cells).
+                       Adjust them if you change STARTDAY above. */
+
                     /* When showWeekDayText is true */
                     .day[data-weekday="1"] .date .text,
                     .day[data-weekday="2"] .date .text,

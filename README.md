@@ -24,7 +24,7 @@
         | <a href="https://openaitx.github.io/view.html?user=mohesles&project=my-skylight-calendar&lang=tr">Türkçe</a>
         | <a href="https://openaitx.github.io/view.html?user=mohesles&project=my-skylight-calendar&lang=vi">Tiếng Việt</a>
         | <a href="https://openaitx.github.io/view.html?user=mohesles&project=my-skylight-calendar&lang=id">Bahasa Indonesia</a>
-        | <a href="https://openaitx.github.io/view.html?user=mohesles&project=my-skylight-calendar&lang=as">অসমীয়া</
+        | <a href="https://openaitx.github.io/view.html?user=mohesles&project=my-skylight-calendar&lang=as">অসমীয়া</a>
       </div>
     </div>
   </details>
@@ -32,7 +32,7 @@
 
 # DIY Smart Home Family Calendar (Skylight Clone)
 
-![Sklylight calendar](assets/main_view.jpeg)
+![Skylight calendar](assets/main_view.jpeg)
 ![DIY Skylight](assets/sky2.png)
 
 ## 📖 Introduction
@@ -57,12 +57,12 @@ Choosing the DIY route with Home Assistant provided several benefits over buying
 This is currently built to show the dashboard on any HD (1920x1080) display.
 
 In my case, the requirement was for it to "look like" skylight, be touchscreen, be countertop, possibility to move it to different locations. Therefore I went with the hardware described below.
-Nevertheless, you case might be different and will need you to adjust it as needed, for example if you want to display it on a tablet or something else.
+Nevertheless, your case might be different and may need you to adjust it, for example if you want to display it on a tablet or something else.
 
 The hardware I originally used I chose based on what I mentioned above plus with the hope to be able to extend functionality using the webcam, speaker and microphone. Currently I would probably build it differently now in hindsight, since I havent had time to address these additional hardware ideas.
 
 * **Monitor:** [HP Engage 15-inch Touchscreen](https://computers.woot.com/offers/hp-engage-16t-fhd-monitor). I chose this over generic portable monitors because it includes a built-in **Speaker, Webcam, and Microphone**, allowing for future voice control or video calls.
-* **Computer:** An old Mini PC (NUC/Tiny PC) running Windows/Linux in Kiosk mode, or a Raspberry Pi 4.~~
+* **Computer:** An old Mini PC (NUC/Tiny PC) running Windows/Linux in Kiosk mode, or a Raspberry Pi 4.
 
 
 ## ✨ Features
@@ -73,6 +73,16 @@ The hardware I originally used I chose based on what I mentioned above plus with
 * **Weather & Date:** Beautiful, glanceable header.
 * **Responsive:** Automatically adjusts day-count based on screen width (Mobile vs Desktop).
 
+## 📁 What's in this repo
+
+| File | What it is | Where it goes on your HA box |
+|---|---|---|
+| [`dashboard.yaml`](dashboard.yaml) | The dashboard layout (header, buttons, calendar, popup) | Pasted into a new dashboard's raw configuration editor |
+| [`packages/family_calendar.yaml`](packages/family_calendar.yaml) | All helpers and scripts the dashboard needs | `/config/packages/` |
+| [`themes/skylight.yaml`](themes/skylight.yaml) | The Skylight theme (font + per-person colors) | `/config/themes/` |
+| [`assets/calbackgrd.webp`](assets/calbackgrd.webp) | The dashboard background image | `/config/www/` (served as `/local/calbackgrd.webp`) |
+| `assets/` (other files) | README screenshots | Nowhere — documentation only |
+
 ---
 
 ## ⚙️ Installation Guide
@@ -81,20 +91,22 @@ The hardware I originally used I chose based on what I mentioned above plus with
 
 ### 1. Prerequisites (HACS)
 
-You must have [HACS](https://hacs.xyz/) installed. Please install the following **Frontend** integrations:
+You must have [HACS](https://hacs.xyz/) installed. Please install the following integrations:
 
-* `week-planner-card`
-* `bubble-card`
-* `config-template-card`
-* `card-mod`
-* `better-moment-card`
-* `weather-card`
-* `browser_mod` (Required for the popups to work)
-* `layout-card` (Required for the Sections view)
+| HACS integration | Type | Minimum version | Used for |
+|---|---|---|---|
+| [`week-planner-card`](https://github.com/FamousWolf/week-planner-card) | Frontend | 1.13.0 (`showWeekDayText`) | The main calendar grid |
+| [`bubble-card`](https://github.com/Clooos/Bubble-Card) | Frontend | latest | Toggle buttons, view selector, Add Event popup |
+| [`config-template-card`](https://github.com/iantrich/config-template-card) | Frontend | latest | Injects the per-person filters and view settings into the calendar |
+| [`card-mod`](https://github.com/thomasloven/lovelace-card-mod) | Frontend | latest | All the custom styling |
+| [`better-moment-card`](https://github.com/power-widgets/better-moment-card) | Frontend | latest | The date/time header |
+| [`weather-card`](https://github.com/bramkragten/weather-card) | Frontend | latest | The current-weather header |
+| [`layout-card`](https://github.com/thomasloven/lovelace-layout-card) | Frontend | latest | The Sections view layout |
+| [`browser_mod`](https://github.com/thomasloven/hass-browser_mod) | Integration | 2.x | Popups and on-screen notifications |
 
-*Note: In Settings → Devices & Services, make sure Browser Mod appears as an Integration (tile) and not only under HACS. 
-If it isn’t there, click Add Integration → Browser Mod and finish the flow, then restart HA.
-Installing via HACS only downloads files; you must add the integration so HA registers its actions/entities.
+*Note: In Settings → Devices & Services, make sure Browser Mod appears as an Integration (tile) and not only under HACS.
+If it isn't there, click Add Integration → Browser Mod and finish the flow, then restart HA.
+Installing via HACS only downloads files; you must add the integration so HA registers its actions/entities.*
 
 ### 2. The Backend (The Brains)
 
@@ -148,10 +160,10 @@ Since Home Assistant updates, Holidays are now added via UI:
 1. Go to **Settings > Dashboard**
 2. Click on **Add Dashboard** (Select option "New Dashboard from Scratch" make sure to select "Add to sidebar").
 3. On the left menu, select the new created dashboard and click on the pencil icon to edit it.
-5. Select the 3 dots icon and select "Raw configurator editor".
-6. Copy and paste the code from [dashboard.yaml](dashboard.yaml).
+4. Select the 3 dots icon and select "Raw configuration editor".
+5. Copy and paste the code from [dashboard.yaml](dashboard.yaml).
 
-### Step 5: The Theme (Optional)
+### 5. The Theme (Optional)
 
 To get the specific font look (Ovo):
 
@@ -185,7 +197,24 @@ The `week-planner-card` does not natively support hiding specific calendars on t
 
 The "Add Event" popup uses a single script that handles logic for multiple people and event types (All Day vs Timed).
 
-The script validates the form before creating anything: it refuses an empty title and a timed event whose end is not after its start (showing a Browser Mod notification instead), automatically extends a same-day all-day event to the next day (Home Assistant treats the end date as exclusive), and resets the form after a successful add.
+The script validates the form before creating anything: it refuses an empty title, a timed event whose end is not after its start, and an all-day event whose end date is before its start date (showing a Browser Mod notification instead), automatically extends a same-day all-day event to the next day (Home Assistant treats the end date as exclusive), and resets the form after a successful add.
+
+## 🎨 Customizing
+
+* **Per-person colors** — edit the `*-default-primary-color` variables in [`themes/skylight.yaml`](themes/skylight.yaml). Both the buttons and the calendar events read them, so one edit changes everything. Reload themes afterwards (Developer tools → Actions → `frontend.reload_themes`).
+* **Week start day** — in `dashboard.yaml`, change the fallback in the `STARTDAY` template (marked with `UPDATE THIS IF NEEDED`). *Caveat:* the red weekend-header coloring in the `card_mod` styles assumes a Monday start (it targets the 7th/8th header cells); adjust those rules if you move the week start.
+* **12-hour clock** — in the `better-moment-card` at the top of `dashboard.yaml`, change `{{moment format=HH:mm}}` to `{{moment format=h:mm a}}`.
+* **Language** — change `locale: en` in the `week-planner-card` section of `dashboard.yaml`.
+* **Fewer/more family members** — remove or copy a button in `dashboard.yaml` (each passes its own `filter_entity`) and the matching `input_text` helper + calendar entry. The shared `script.toggle_calendar_filter` needs no changes.
+
+## 🛠 Troubleshooting / FAQ
+
+* **The Add Event popup doesn't open** — Browser Mod is installed via HACS but not added as an integration. See the note in the Prerequisites section, then restart HA.
+* **The calendar shows no events at all** — check the filter helpers (Developer tools → States, search `_calendar_filter`). A value of `.*` means that calendar is *hidden*; `^$` means visible. Tapping a person's button toggles between the two.
+* **The buttons show "Unknown" or don't color** — the `person.*` entities in `dashboard.yaml` don't exist in your install. Search `dashboard.yaml` for `UPDATE THIS ENTITY` and set every entity to match yours.
+* **Events I add on screen don't appear in Google Calendar** — the `calendar_map` inside `script.add_calendar_event` (in the package file) still points at the default `calendar.calendar1`-style entities. Update the mapping to your real calendar entities.
+* **The background is missing** — `calbackgrd.webp` wasn't uploaded to `/config/www/`, or the dashboard's `background.image` path doesn't match the uploaded filename.
+* **Everything is the wrong font** — the theme isn't applied. Set your profile's theme to `Skylight` (per browser/user), and make sure `themes: !include_dir_merge_named themes` is in `configuration.yaml`.
 
 ```yaml
 # Simplified Logic Example
