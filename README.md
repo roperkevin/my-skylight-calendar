@@ -108,10 +108,9 @@ Installing via HACS only downloads files; you must add the integration so HA reg
    ```
 
 3. Create a folder named `packages` in your HA config directory (if you don't have one).
-4. Download [packages/family_calendar.yaml](packages/family_calendar.yaml) from this repo.
-5. Search for string [ #<--- UPDATE THIS ENTITY]  and update the calendar entity ID to match your environment. Check section 3 for more details.
-6. Place the file inside your `packages/` folder.
-7. **Restart Home Assistant**.
+4. Download [packages/family_calendar.yaml](packages/family_calendar.yaml) from this repo. It is pre-configured for the calendars `Family`, `School`, `Daniel`, and `Weather` (see section 3). If your calendar entity IDs differ, update the `calendar_map` at the bottom of the file.
+5. Place the file inside your `packages/` folder.
+6. **Restart Home Assistant**.
 
 ### 3. The Calendars
 
@@ -122,8 +121,9 @@ You can use **Google Calendars** or **Local Calendars**.
 
 1. Go to **Settings > Devices & Services**.
 2. Add the **Local Calendar** integration.
-3. Create calendars named exactly: `calendar1`, `calendar2`, `calendar3`, `calendar4`, `Family`.
-    * *If you use these names, the code works out of the box!*
+3. Create calendars named exactly: `Family`, `School`, `Daniel`, `Weather`, `Birthdays`.
+    * *These create the entities `calendar.family`, `calendar.school`, `calendar.daniel`, `calendar.weather`, `calendar.birthdays`, which is what the code expects — it works out of the box!*
+    * *`Holidays` comes from the Holiday integration (see "Setting up Holidays" below).*
 
 #### Option B: Custom Calendar
 
@@ -131,9 +131,9 @@ You can use **Google Calendars** or **Local Calendars**.
 2. Add the **Local Calendar** integration. or **Google Calendar**.
 3. Navigate to **Configuration > Integrations > Local Calendar** or **Google Calendar** and select "Add Entry"
 4. For each created entry, get the entity ID for updating the dashboard.yaml file.
-5. Open `dashboard.yaml`.
-6. Search for `# <--- UPDATE THIS ENTITY`.
-7. Update the entity ID matching your environment
+5. Open `dashboard.yaml` and update the entity IDs in the `calendars:` section of the week-planner card (currently `calendar.school`, `calendar.daniel`, `calendar.weather`, `calendar.family`, `calendar.birthdays`, `calendar.holidays`).
+6. Do the same for the `calendar_map` in `packages/family_calendar.yaml`.
+7. The weather cards use `weather.home` — search `dashboard.yaml` for `# <--- UPDATE THIS ENTITY` to find it and the remaining entities to match your environment.
 
 
 #### Setting up Holidays

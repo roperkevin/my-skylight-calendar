@@ -87,62 +87,52 @@ views:
               rows: auto
           - type: horizontal-stack
             cards:
-              # --- BUTTONS (Update entities below) ---
+              # --- BUTTONS ---
               - type: custom:bubble-card
                 card_type: button
-                button_type: state
-                entity: person.calendar1  # <--- UPDATE THIS ENTITY
+                button_type: name
+                name: School
+                icon: mdi:school
                 show_icon: true
                 show_name: true
                 tap_action:
                   action: perform-action
-                  perform_action: script.calendar1_calendar_visible_filter
+                  perform_action: script.school_calendar_visible_filter
                 styles: |
                   .bubble-button-background {
                     opacity: 1 !important;
-                    background-color: ${hass.states['input_text.calendar1_calendar_filter'].state === '.*' ? 'light-grey' : 'var(--calendar1-default-primary-color)'} !important;
+                    background-color: ${hass.states['input_text.school_calendar_filter'].state === '.*' ? 'light-grey' : 'var(--school-default-primary-color)'} !important;
+                  }
+              # To show a person avatar instead, use button_type: state with entity: person.daniel
+              - type: custom:bubble-card
+                card_type: button
+                button_type: name
+                name: Daniel
+                icon: mdi:account
+                show_icon: true
+                show_name: true
+                tap_action:
+                  action: perform-action
+                  perform_action: script.daniel_calendar_visible_filter
+                styles: |
+                  .bubble-button-background {
+                    opacity: 1 !important;
+                    background-color: ${hass.states['input_text.daniel_calendar_filter'].state === '.*' ? 'light-grey' : 'var(--daniel-default-primary-color)'} !important;
                   }
               - type: custom:bubble-card
                 card_type: button
-                button_type: state
-                entity: person.calendar2    # <--- UPDATE THIS ENTITY
+                button_type: name
+                name: Weather
+                icon: mdi:weather-partly-cloudy
                 show_icon: true
                 show_name: true
                 tap_action:
                   action: perform-action
-                  perform_action: script.calendar2_calendar_visible_filter
+                  perform_action: script.weather_calendar_visible_filter
                 styles: |
                   .bubble-button-background {
                     opacity: 1 !important;
-                    background-color: ${hass.states['input_text.calendar2_calendar_filter'].state === '.*' ? 'light-grey' : 'var(--calendar2-default-primary-color)'} !important;
-                  }
-              - type: custom:bubble-card
-                card_type: button
-                button_type: state
-                entity: person.calendar3  # <--- UPDATE THIS ENTITY
-                show_icon: true
-                show_name: true
-                tap_action:
-                  action: perform-action
-                  perform_action: script.calendar3_calendar_visible_filter
-                styles: |
-                  .bubble-button-background {
-                    opacity: 1 !important;
-                    background-color: ${hass.states['input_text.calendar3_calendar_filter'].state === '.*' ? 'light-grey' : 'var(--calendar3-default-primary-color)'} !important;
-                  }
-              - type: custom:bubble-card
-                card_type: button
-                button_type: state
-                entity: person.calendar4    # <--- UPDATE THIS ENTITY
-                show_icon: true
-                show_name: true
-                tap_action:
-                  action: perform-action
-                  perform_action: script.calendar4_calendar_visible_filter
-                styles: |
-                  .bubble-button-background {
-                    opacity: 1 !important;
-                    background-color: ${hass.states['input_text.calendar4_calendar_filter'].state === '.*' ? 'light-grey' : 'var(--calendar4-default-primary-color)'} !important;
+                    background-color: ${hass.states['input_text.weather_calendar_filter'].state === '.*' ? 'light-grey' : 'var(--weather-default-primary-color)'} !important;
                   }
               - type: custom:bubble-card
                 card_type: button
@@ -231,19 +221,17 @@ views:
         cards:
           - type: custom:config-template-card
             entities:
-              - input_text.calendar1_calendar_filter
-              - input_text.calendar2_calendar_filter
-              - input_text.calendar3_calendar_filter
-              - input_text.calendar4_calendar_filter
+              - input_text.school_calendar_filter
+              - input_text.daniel_calendar_filter
+              - input_text.weather_calendar_filter
               - input_text.family_calendar_filter
               - input_text.holidays_calendar_filter
               - input_text.birthdays_calendar_filter
               - input_select.calendar_view
             variables:
-              CAL1CAL: states['input_text.calendar1_calendar_filter']?.state
-              CAL2CAL: states['input_text.calendar2_calendar_filter']?.state
-              CAL3CAL: states['input_text.calendar3_calendar_filter']?.state
-              CAL4CAL: states['input_text.calendar4_calendar_filter']?.state
+              SCHOOLCAL: states['input_text.school_calendar_filter']?.state
+              DANIELCAL: states['input_text.daniel_calendar_filter']?.state
+              WEATHERCAL: states['input_text.weather_calendar_filter']?.state
               FAMCAL: states['input_text.family_calendar_filter']?.state
               HOLCAL: states['input_text.holidays_calendar_filter']?.state
               BIRCAL: states['input_text.birthdays_calendar_filter']?.state
@@ -270,31 +258,27 @@ views:
               type: custom:week-planner-card
               calendars:
                 # --- MAP CALENDARS HERE ---
-                - entity: calendar.calendar1 # <--- UPDATE THIS ENTITY
-                  name: calendar1
-                  color: "var(--calendar1-default-primary-color)"
-                  filter: ${ CAL1CAL }
-                - entity: calendar.calendar2 # <--- UPDATE THIS ENTITY
-                  name: calendar2
-                  color: "var(--calendar2-default-primary-color)"
-                  filter: ${ CAL2CAL }
-                - entity: calendar.calendar3 # <--- UPDATE THIS ENTITY
-                  name: calendar3
-                  color: "var(--calendar3-default-primary-color)"
-                  filter: ${ CAL3CAL }
-                - entity: calendar.calendar4 # <--- UPDATE THIS ENTITY
-                  name: calendar4
-                  color: "var(--calendar4-default-primary-color)"
-                  filter: ${ CAL4CAL }
-                - entity: calendar.family # <--- UPDATE THIS ENTITY
+                - entity: calendar.school
+                  name: School
+                  color: "var(--school-default-primary-color)"
+                  filter: ${ SCHOOLCAL }
+                - entity: calendar.daniel
+                  name: Daniel
+                  color: "var(--daniel-default-primary-color)"
+                  filter: ${ DANIELCAL }
+                - entity: calendar.weather
+                  name: Weather
+                  color: "var(--weather-default-primary-color)"
+                  filter: ${ WEATHERCAL }
+                - entity: calendar.family
                   name: Family
                   color: "var(--family-default-primary-color)"
                   filter: ${ FAMCAL }
-                - entity: calendar.birthdays # <--- UPDATE THIS ENTITY
+                - entity: calendar.birthdays
                   name: Birthdays
                   color: "var(--birthdays-default-primary-color)"
                   filter: ${ BIRCAL }
-                - entity: calendar.holidays # <--- UPDATE THIS ENTITY , Check this entity ID after adding integration
+                - entity: calendar.holidays # <--- Check this entity ID after adding the Holiday integration
                   name: Holidays
                   color: "var(--holidays-default-primary-color)"
                   filter: ${ HOLCAL }
@@ -560,12 +544,11 @@ views:
                 show_name: true
                 styles: |
                   .bubble-button-card-container {
-                    background: 
-                    ${hass.states['input_select.calendar_select'].state == 'calendar1' ? 'var(--calendar1-default-primary-color)' 
-                    : hass.states['input_select.calendar_select'].state == 'calendar2' ? 'var(--calendar2-default-primary-color)' 
-                    : hass.states['input_select.calendar_select'].state == 'calendar3' ? 'var(--calendar3-default-primary-color)' 
-                    : hass.states['input_select.calendar_select'].state == 'calendar4' ? 'var(--calendar4-default-primary-color)' 
-                    : hass.states['input_select.calendar_select'].state == 'Family' ? 'var(--family-default-primary-color)' 
+                    background:
+                    ${hass.states['input_select.calendar_select'].state == 'School' ? 'var(--school-default-primary-color)'
+                    : hass.states['input_select.calendar_select'].state == 'Daniel' ? 'var(--daniel-default-primary-color)'
+                    : hass.states['input_select.calendar_select'].state == 'Weather' ? 'var(--weather-default-primary-color)'
+                    : hass.states['input_select.calendar_select'].state == 'Family' ? 'var(--family-default-primary-color)'
                     : 'gray'} !important;
                   }
               - type: vertical-stack
@@ -612,13 +595,12 @@ views:
                       card:
                         - background-color: |
                             [[[
-                              if (states['input_select.calendar_select'].state == 'calendar1') return "var(--calendar1-default-primary-color)";
-                              if (states['input_select.calendar_select'].state == 'calendar2') return "var(--calendar2-default-primary-color)";
-                              if (states['input_select.calendar_select'].state == 'calendar3') return "var(--calendar3-default-primary-color)";
-                              if (states['input_select.calendar_select'].state == 'calendar4') return "var(--calendar4-default-primary-color)";
+                              if (states['input_select.calendar_select'].state == 'School') return "var(--school-default-primary-color)";
+                              if (states['input_select.calendar_select'].state == 'Daniel') return "var(--daniel-default-primary-color)";
+                              if (states['input_select.calendar_select'].state == 'Weather') return "var(--weather-default-primary-color)";
                               if (states['input_select.calendar_select'].state == 'Family') return "var(--family-default-primary-color)";
                               return "gray";
-                            ]]]                
+                            ]]]
     cards: []
     icon: mdi:calendar-blank-multiple
     background:
