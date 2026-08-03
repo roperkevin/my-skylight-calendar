@@ -105,8 +105,8 @@ views:
       #           }
       #           .event {
       #             color: var(--skylight-event-text-color, #34343c) !important;
-      #             background-color: var(--border-color) !important;
-      #             background-color: color-mix(in srgb, var(--border-color) 16%, var(--skylight-chip-mix-base, #ffffff)) !important;
+      #             background-color: var(--skylight-event-bg, #ffffff) !important;
+      #             border: 1px solid var(--skylight-event-border, #eaeaea) !important;
       #             border-left: 3px solid var(--border-color) !important;
       #             border-radius: var(--skylight-radius-chip, 6px) !important;
       #           }
@@ -914,8 +914,8 @@ views:
                        keep the solid-color fallback above it. */
                     .event {
                       color: var(--skylight-event-text-color, #34343c) !important;
-                      background-color: var(--border-color) !important;
-                      background-color: color-mix(in srgb, var(--border-color) 16%, var(--skylight-chip-mix-base, #ffffff)) !important;
+                      background-color: var(--skylight-event-bg, #ffffff) !important;
+                      border: 1px solid var(--skylight-event-border, #eaeaea) !important;
                       border-left: 3px solid var(--border-color) !important;
                       border-radius: var(--skylight-radius-chip, 6px) !important;
                       padding: 0.35em 0.5em 0.4em 0.55em !important;
@@ -924,6 +924,13 @@ views:
                       font-weight: 500 !important;
                       max-height: 84px !important;
                       overflow: hidden !important;
+                    }
+
+                    /* Bold title over a muted detail line */
+                    .event .title,
+                    .event .name,
+                    .event .summary {
+                      font-weight: 600 !important;
                     }
 
                     .event.past {
@@ -1338,10 +1345,15 @@ views:
                     }
                     .event {
                       color: var(--skylight-event-text-color, #34343c) !important;
-                      background-color: var(--border-color) !important;
-                      background-color: color-mix(in srgb, var(--border-color) 16%, var(--skylight-chip-mix-base, #ffffff)) !important;
+                      background-color: var(--skylight-event-bg, #ffffff) !important;
+                      border: 1px solid var(--skylight-event-border, #eaeaea) !important;
                       border-left: 3px solid var(--border-color) !important;
                       border-radius: var(--skylight-radius-chip, 6px) !important;
+                    }
+                    .event .title,
+                    .event .name,
+                    .event .summary {
+                      font-weight: 600 !important;
                     }
                     .time {
                       color: var(--skylight-event-time-color, #757575) !important;
@@ -1401,10 +1413,15 @@ views:
                     }
                     .event {
                       color: var(--skylight-event-text-color, #34343c) !important;
-                      background-color: var(--border-color) !important;
-                      background-color: color-mix(in srgb, var(--border-color) 16%, var(--skylight-chip-mix-base, #ffffff)) !important;
+                      background-color: var(--skylight-event-bg, #ffffff) !important;
+                      border: 1px solid var(--skylight-event-border, #eaeaea) !important;
                       border-left: 3px solid var(--border-color) !important;
                       border-radius: var(--skylight-radius-chip, 6px) !important;
+                    }
+                    .event .title,
+                    .event .name,
+                    .event .summary {
+                      font-weight: 600 !important;
                     }
                     .time {
                       color: var(--skylight-event-time-color, #757575) !important;
@@ -1464,10 +1481,15 @@ views:
                     }
                     .event {
                       color: var(--skylight-event-text-color, #34343c) !important;
-                      background-color: var(--border-color) !important;
-                      background-color: color-mix(in srgb, var(--border-color) 16%, var(--skylight-chip-mix-base, #ffffff)) !important;
+                      background-color: var(--skylight-event-bg, #ffffff) !important;
+                      border: 1px solid var(--skylight-event-border, #eaeaea) !important;
                       border-left: 3px solid var(--border-color) !important;
                       border-radius: var(--skylight-radius-chip, 6px) !important;
+                    }
+                    .event .title,
+                    .event .name,
+                    .event .summary {
+                      font-weight: 600 !important;
                     }
                     .time {
                       color: var(--skylight-event-time-color, #757575) !important;

@@ -114,8 +114,9 @@ Skylight:
   skylight-event-time-color: "#757575"
   skylight-past-event-color: "gray"
 
-  # Event chips: tint = person color mixed into this base
-  skylight-chip-mix-base: "#FFFFFF"
+  # Event chips: neutral surface with the calendar color as a left accent bar
+  skylight-event-bg: "#FFFFFF"
+  skylight-event-border: "#EAEAEA"
 
   # Buttons & popup surfaces — Chirpy buttons are flat: white bg, 1px
   # #e9ecef border, muted text. The CTA uses the link blue.
@@ -196,12 +197,14 @@ Skylight Dark:
   # Calendar text
   skylight-weekday-text-color: "#A7A7A7"
   skylight-weekend-text-color: "#E88E84"
-  skylight-event-text-color: "#AFB0B1"
+  skylight-event-text-color: "#E0E1E3"
   skylight-event-time-color: "#868686"
   skylight-past-event-color: "#555555"
 
-  # Event chips: tint = person color mixed into this base
-  skylight-chip-mix-base: "#252526"
+  # Event chips: neutral raised surface with the calendar color as a left
+  # accent bar; bold near-white title over muted details
+  skylight-event-bg: "#2A2C33"
+  skylight-event-border: "rgba(255, 255, 255, 0.08)"
 
   # Buttons & popup surfaces — Chirpy dark buttons: the sidebar-btn
   # #232328 bg (readable against the #1b1b1e canvas, unlike the card
