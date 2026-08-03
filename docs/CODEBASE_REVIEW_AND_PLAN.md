@@ -28,7 +28,7 @@ text is *not* a YAML comment — it becomes part of the JavaScript string that
 evaluated code contains an invalid token. Fix: use a JS comment (`// <--- UPDATE ...`)
 on its own line, or move the note to a YAML comment outside the block.
 
-#### B2. Invalid CSS color `light-grey` (4 occurrences)
+#### B2. Invalid CSS color `light-grey` (7 occurrences)
 The bubble-card button styles use:
 
 ```js
@@ -199,13 +199,17 @@ listing each HACS card with the minimum tested version.
 
 ## Part 2 — The Plan (phased)
 
-### Phase 1 — Correctness (small PRs, immediate value)
-1. Fix B1 (JS `#` comment → `//`), B2 (`light-grey` → `lightgrey`).
-2. Resolve B3: verify `week-planner-card` filter semantics, then fix every comment
-   and the README to match reality.
-3. Fix B4 (drop or properly wire `family_calendar_show`), B5 (Tomorrow = 1 day).
-4. B8: add title/date validation, all-day end-date auto-bump, full form reset, and a
-   success/failure notification to the add-event script.
+### Phase 1 — Correctness (small PRs, immediate value) ✅ DONE
+1. ✅ Fix B1 (JS `#` comment → `//`), B2 (`light-grey` → `lightgrey`).
+2. ✅ Resolve B3: verified against the `week-planner-card` docs — `filter` is
+   documented as "Remove events that match the regular expression", i.e. it hides
+   matches. Comments and README corrected, and the `input_text` `initial` values
+   changed from `.*` to `^$` so calendars are visible on a fresh install.
+3. ✅ Fix B4 (removed `family_calendar_show`; Family button is now a `name`-type
+   button), B5 (Tomorrow = 1 day).
+4. ✅ B8: added title/date validation, all-day end-date auto-bump, full form reset
+   (including the All-Day toggle), and success/failure notifications to the
+   add-event script.
 
 ### Phase 2 — Simplification & structure
 5. M1: collapse the seven toggle scripts into one parameterized script; update the

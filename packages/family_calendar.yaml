@@ -11,28 +11,31 @@
 
 # 1. HELPERS (The Variables)
 input_text:
-  # Filter Toggles (RegEx: .* = Show, ^$ = Hide)
+  # Filter Toggles.
+  # week-planner-card's `filter` option HIDES events whose title matches the regex:
+  #   "^$" = matches nothing  -> all events VISIBLE
+  #   ".*" = matches anything -> all events HIDDEN
   calendar1_calendar_filter:
     name: calendar1 Filter
-    initial: ".*"
+    initial: "^$"
   calendar2_calendar_filter:
     name: calendar2 Filter
-    initial: ".*"
+    initial: "^$"
   calendar3_calendar_filter:
     name: calendar3 Filter
-    initial: ".*"
+    initial: "^$"
   calendar4_calendar_filter:
     name: calendar4 Filter
-    initial: ".*"
+    initial: "^$"
   family_calendar_filter:
     name: Family Filter
-    initial: ".*"
+    initial: "^$"
   birthdays_calendar_filter:
     name: Birthdays Filter
-    initial: ".*"
+    initial: "^$"
   holidays_calendar_filter:
     name: Holidays Filter
-    initial: ".*"
+    initial: "^$"
 
   # Event Form Data
   calendar_event_title:
@@ -85,8 +88,6 @@ input_boolean:
   calendar_all_day_event:
     name: All Day Event
     icon: mdi:calendar-clock
-  family_calendar_show:
-    name: Show Family Calendar
 
 # 2. SCRIPTS (The Logic)
 script:
@@ -172,34 +173,63 @@ script:
           
           # Selects the entity based on the map above
           target_calendar: "{{ calendar_map.get(states('input_select.calendar_select'), 'calendar.family') }}" #<--- UPDATE THIS ENTITY
+          event_title: "{{ states('input_text.calendar_event_title') | trim }}"
+          all_day: "{{ is_state('input_boolean.calendar_all_day_event', 'on') }}"
+
+      # --- VALIDATION ---
+      - if:
+          - condition: template
+            value_template: "{{ event_title == '' }}"
+        then:
+          - action: browser_mod.notification
+            data:
+              message: "⚠️ Please enter an event title."
+          - stop: "Missing event title"
+
+      - if:
+          - condition: template
+            value_template: >-
+              {{ not all_day and
+                 states('input_datetime.calendar_event_end') <= states('input_datetime.calendar_event_start') }}
+        then:
+          - action: browser_mod.notification
+            data:
+              message: "⚠️ End time must be after start time."
+          - stop: "Invalid time range"
 
       - choose:
           # Scenario A: All Day Event
-          - conditions:
-              - condition: state
-                entity_id: input_boolean.calendar_all_day_event
-                state: "on"
+          - conditions: "{{ all_day }}"
             sequence:
-              - action: calendar.create_event
-                target:
-                  entity_id: "{{ target_calendar }}"
-                data:
-                  summary: "{{ states('input_text.calendar_event_title') }}"
-                  description: "{{ states('input_text.calendar_event_description') }}"
+              - variables:
                   start_date: "{{ states('input_datetime.calendar_day_event_start') }}"
-                  end_date: "{{ states('input_datetime.calendar_day_event_end') }}"
-          
+                  # Home Assistant's end_date is EXCLUSIVE (the event ends at
+                  # midnight leading into it), so a one-day event must end on the
+                  # following day. Bump the end date when it isn't after the start.
+                  end_date: >-
+                    {%- set raw_end = states('input_datetime.calendar_day_event_end') -%}
+                    {%- if raw_end > start_date -%}
+                      {{ raw_end }}
+                    {%- else -%}
+                      {{ (strptime(start_date, '%Y-%m-%d') + timedelta(days=1)).strftime('%Y-%m-%d') }}
+                    {%- endif -%}
+              - action: calendar.create_event
+                target:
+                  entity_id: "{{ target_calendar }}"
+                data:
+                  summary: "{{ event_title }}"
+                  description: "{{ states('input_text.calendar_event_description') }}"
+                  start_date: "{{ start_date }}"
+                  end_date: "{{ end_date }}"
+
           # Scenario B: Timed Event
-          - conditions:
-              - condition: state
-                entity_id: input_boolean.calendar_all_day_event
-                state: "off"
+          - conditions: "{{ not all_day }}"
             sequence:
               - action: calendar.create_event
                 target:
                   entity_id: "{{ target_calendar }}"
                 data:
-                  summary: "{{ states('input_text.calendar_event_title') }}"
+                  summary: "{{ event_title }}"
                   description: "{{ states('input_text.calendar_event_description') }}"
                   start_date_time: "{{ states('input_datetime.calendar_event_start') }}"
                   end_date_time: "{{ states('input_datetime.calendar_event_end') }}"
@@ -215,5 +245,11 @@ script:
           entity_id: input_text.calendar_event_description
         data:
           value: ""
+      - action: input_boolean.turn_off
+        target:
+          entity_id: input_boolean.calendar_all_day_event
       - action: browser_mod.close_popup
         data: {}
+      - action: browser_mod.notification
+        data:
+          message: "✓ Event added to {{ states('input_select.calendar_select') }}"

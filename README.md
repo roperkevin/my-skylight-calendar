@@ -178,12 +178,15 @@ NOTE: The theme is not comprehensive, so keep that in mind
 
 The `week-planner-card` does not natively support hiding specific calendars on the fly. To solve this, I used **Input Texts** acting as Regex filters.
 
-* When you click a person's button, it toggles their filter between `.*` (Show everything) and `^$` (Show nothing).
+* The card's `filter` option **hides** events whose title matches the regex.
+* When you click a person's button, it toggles their filter between `^$` (matches nothing, so all events are **shown**) and `.*` (matches everything, so all events are **hidden**).
 * `config-template-card` injects these variables into the calendar card dynamically.
 
 ### Event Creation Script
 
 The "Add Event" popup uses a single script that handles logic for multiple people and event types (All Day vs Timed).
+
+The script validates the form before creating anything: it refuses an empty title and a timed event whose end is not after its start (showing a Browser Mod notification instead), automatically extends a same-day all-day event to the next day (Home Assistant treats the end date as exclusive), and resets the form after a successful add.
 
 ```yaml
 # Simplified Logic Example

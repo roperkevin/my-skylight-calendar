@@ -100,7 +100,7 @@ views:
                 styles: |
                   .bubble-button-background {
                     opacity: 1 !important;
-                    background-color: ${hass.states['input_text.calendar1_calendar_filter'].state === '.*' ? 'light-grey' : 'var(--calendar1-default-primary-color)'} !important;
+                    background-color: ${hass.states['input_text.calendar1_calendar_filter'].state === '.*' ? 'lightgrey' : 'var(--calendar1-default-primary-color)'} !important;
                   }
               - type: custom:bubble-card
                 card_type: button
@@ -114,7 +114,7 @@ views:
                 styles: |
                   .bubble-button-background {
                     opacity: 1 !important;
-                    background-color: ${hass.states['input_text.calendar2_calendar_filter'].state === '.*' ? 'light-grey' : 'var(--calendar2-default-primary-color)'} !important;
+                    background-color: ${hass.states['input_text.calendar2_calendar_filter'].state === '.*' ? 'lightgrey' : 'var(--calendar2-default-primary-color)'} !important;
                   }
               - type: custom:bubble-card
                 card_type: button
@@ -128,7 +128,7 @@ views:
                 styles: |
                   .bubble-button-background {
                     opacity: 1 !important;
-                    background-color: ${hass.states['input_text.calendar3_calendar_filter'].state === '.*' ? 'light-grey' : 'var(--calendar3-default-primary-color)'} !important;
+                    background-color: ${hass.states['input_text.calendar3_calendar_filter'].state === '.*' ? 'lightgrey' : 'var(--calendar3-default-primary-color)'} !important;
                   }
               - type: custom:bubble-card
                 card_type: button
@@ -142,11 +142,11 @@ views:
                 styles: |
                   .bubble-button-background {
                     opacity: 1 !important;
-                    background-color: ${hass.states['input_text.calendar4_calendar_filter'].state === '.*' ? 'light-grey' : 'var(--calendar4-default-primary-color)'} !important;
+                    background-color: ${hass.states['input_text.calendar4_calendar_filter'].state === '.*' ? 'lightgrey' : 'var(--calendar4-default-primary-color)'} !important;
                   }
               - type: custom:bubble-card
                 card_type: button
-                button_type: switch
+                button_type: name
                 name: Family
                 icon: mdi:human-male-female-child
                 show_icon: true
@@ -157,9 +157,8 @@ views:
                 styles: |
                   .bubble-button-background {
                     opacity: 1 !important;
-                    background-color: ${hass.states['input_text.family_calendar_filter'].state === '.*' ? 'light-grey' : '#4A90E2'} !important;
+                    background-color: ${hass.states['input_text.family_calendar_filter'].state === '.*' ? 'lightgrey' : '#4A90E2'} !important;
                   }
-                entity: input_boolean.family_calendar_show
               - type: custom:bubble-card
                 card_type: button
                 button_type: name
@@ -173,7 +172,7 @@ views:
                 styles: |
                   .bubble-button-background {
                     opacity: 1 !important;
-                    background-color: ${hass.states['input_text.birthdays_calendar_filter'].state === '.*' ? 'light-grey' : '#33a02c'} !important;
+                    background-color: ${hass.states['input_text.birthdays_calendar_filter'].state === '.*' ? 'lightgrey' : '#33a02c'} !important;
                   }
               - type: custom:bubble-card
                 card_type: button
@@ -188,7 +187,7 @@ views:
                 styles: |
                   .bubble-button-background {
                     opacity: 1 !important;
-                    background-color: ${hass.states['input_text.holidays_calendar_filter'].state === '.*' ? 'light-grey' : '#ff7f00'} !important;
+                    background-color: ${hass.states['input_text.holidays_calendar_filter'].state === '.*' ? 'lightgrey' : '#ff7f00'} !important;
                   }
             grid_options:
               columns: 45
@@ -253,14 +252,14 @@ views:
                   const calendarView = states['input_select.calendar_view']?.state;
                   if (calendarView === 'Today') return 'today';
                   if (calendarView === 'Tomorrow') return 'tomorrow';
-                  // Fallback
-                  return 'monday'; # <--- UPDATE THIS IF NEEDED, valid values are: monday, tuesday, wednesday, thursday, friday, saturday, sunday
+                  // Fallback <--- UPDATE THIS IF NEEDED, valid values are: monday, tuesday, wednesday, thursday, friday, saturday, sunday
+                  return 'monday';
                 })()
               DAYS: |
                 (() => {
                   const calendarView = states['input_select.calendar_view']?.state;
                   if (calendarView === 'Today') return 1;
-                  if (calendarView === 'Tomorrow') return 2;
+                  if (calendarView === 'Tomorrow') return 1;
                   if (calendarView === 'Week') return 7;
                   if (calendarView === 'Biweek') return 14;
                   // else return "month"
