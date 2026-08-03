@@ -72,3 +72,60 @@ Skylight:
   family-default-primary-color: "#4A90E2"
   birthdays-default-primary-color: "#33a02c"
   holidays-default-primary-color: "#ff7f00"
+
+  #### Calendar surface & text colors (referenced by the dashboard's card-mod styles)
+  skylight-cal-card-background: "rgba(255, 255, 255, 0.6)"
+  skylight-event-text-color: "#333333"
+  skylight-weekday-text-color: "#2e7d32"
+  skylight-weekend-text-color: "#d32f2f"
+  skylight-today-highlight-color: "orange"
+  skylight-past-event-color: "gray"
+  skylight-day-border-color: "whitesmoke"
+
+###################################
+#### Dark variant
+###################################
+# Same layout and per-person colors, dark surfaces. Select it per profile, or
+# switch automatically with the sun using the example automation in
+# packages/family_calendar.yaml.
+Skylight Dark:
+  card-mod-theme: Skylight Dark
+
+  card-mod-root-yaml: |
+    .: |
+      @import url('https://fonts.googleapis.com/css2?family=Ovo&display=swap');
+  primary-font-family: "'Ovo', serif"
+  ha-card-header-font-family: "var(--primary-font-family)"
+  paper-font-common-base_-_font-family: "var(--primary-font-family)"
+  paper-font-common-code_-_font-family: "var(--primary-font-family)"
+  paper-font-body1_-_font-family: "var(--primary-font-family)"
+  paper-font-subhead_-_font-family: "var(--primary-font-family)"
+  paper-font-headline_-_font-family: "var(--primary-font-family)"
+  paper-font-caption_-_font-family: "var(--primary-font-family)"
+  paper-font-title_-_font-family: "var(--primary-font-family)"
+
+  # Standard HA dark surfaces
+  primary-background-color: "#1c1b22"
+  secondary-background-color: "#26252e"
+  card-background-color: "#2a2933"
+  ha-card-background: "#2a2933"
+  primary-text-color: "#e8e6e3"
+  secondary-text-color: "#b8b5af"
+  divider-color: "#3a3944"
+
+  # Same per-person palette as the light theme
+  school-default-primary-color: "#fb8072"
+  daniel-default-primary-color: "#fdbf6f"
+  weather-default-primary-color: "#a6cee3"
+  family-default-primary-color: "#4A90E2"
+  birthdays-default-primary-color: "#33a02c"
+  holidays-default-primary-color: "#ff7f00"
+
+  # Calendar surface & text colors on dark
+  skylight-cal-card-background: "rgba(30, 30, 38, 0.75)"
+  skylight-event-text-color: "#e8e6e3"
+  skylight-weekday-text-color: "#81c784"
+  skylight-weekend-text-color: "#ef9a9a"
+  skylight-today-highlight-color: "#b26500"
+  skylight-past-event-color: "#555555"
+  skylight-day-border-color: "#3a3944"
