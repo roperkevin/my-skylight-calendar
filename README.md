@@ -170,7 +170,7 @@ Since Home Assistant updates, Holidays are now added via UI:
 
 ### 5. The Theme (Optional)
 
-To get the full Skylight look (the Outfit font plus every color, radius and shadow the dashboard uses):
+To get the full Skylight look — styled after the [Chirpy Jekyll theme](https://github.com/cotes2020/jekyll-theme-chirpy): Source Sans body text with Lato headings, plus every color, radius and shadow the dashboard uses:
 
 1. Ensure your `configuration.yaml` has this line under `frontend:`
 
