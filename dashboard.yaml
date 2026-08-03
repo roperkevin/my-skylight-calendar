@@ -153,18 +153,21 @@ views:
             card_mod:
               # By default horizontal-stack gives every card an equal share of
               # the row; let the pills hug their content instead, spaced like
-              # Chirpy's tag cloud, wrapping on narrow screens.
-              style: |
-                #root {
-                  justify-content: flex-start;
-                  flex-wrap: wrap;
-                  gap: 10px;
-                }
-                #root > * {
-                  flex: 0 0 auto !important;
-                  min-width: 0 !important;
-                  margin: 0 !important;
-                }
+              # Chirpy's tag cloud, wrapping on narrow screens. The stack's
+              # #root flex container lives in its shadow root, which a plain
+              # style string can't reach — the `$` key pierces into it.
+              style:
+                $: |
+                  #root {
+                    justify-content: flex-start;
+                    flex-wrap: wrap;
+                    gap: 10px;
+                  }
+                  #root > * {
+                    flex: 0 0 auto !important;
+                    min-width: 0 !important;
+                    margin: 0 !important;
+                  }
             cards:
               # --- FILTER PILLS ---
               # Active = solid person color; hidden = quiet "ghost" pill.
