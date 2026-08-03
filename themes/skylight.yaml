@@ -203,10 +203,11 @@ Skylight Dark:
   # Event chips: tint = person color mixed into this base
   skylight-chip-mix-base: "#252526"
 
-  # Buttons & popup surfaces — Chirpy dark buttons: #1e1e1e bg with a
-  # #2e2f31 border and muted text.
+  # Buttons & popup surfaces — Chirpy dark buttons: the sidebar-btn
+  # #232328 bg (readable against the #1b1b1e canvas, unlike the card
+  # color) with a #2e2f31 border and muted text.
   skylight-surface: "#1E1E1E"
-  skylight-btn-off-bg: "#1E1E1E"
+  skylight-btn-off-bg: "#232328"
   skylight-btn-off-text: "#868686"
   skylight-btn-off-border: "#2E2F31"
   skylight-btn-off-icon-bg: "rgba(255, 255, 255, 0.05)"

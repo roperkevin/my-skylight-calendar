@@ -545,7 +545,7 @@ views:
                 border-radius: var(--skylight-radius-chip, 6px) !important;
               }
               ha-card {
-                width: 300px;
+                background: none !important;
                 border-radius: var(--skylight-radius-card, 10px) !important;
                 box-shadow: var(--skylight-btn-shadow, 0 2px 6px rgba(104, 104, 104, 0.14)) !important;
               }
@@ -579,7 +579,7 @@ views:
                 border-radius: var(--skylight-radius-chip, 6px) !important;
               }
               ha-card {
-                width: 200px;
+                background: none !important;
                 border-radius: var(--skylight-radius-card, 10px) !important;
                 border: 1px solid var(--skylight-btn-off-border, #e9ecef) !important;
                 box-shadow: none !important;
@@ -587,7 +587,7 @@ views:
               .bubble-button-background {
                 opacity: 1 !important;
                 border-radius: var(--skylight-radius-card, 10px) !important;
-                background-color: var(--skylight-surface, #ffffff) !important;
+                background-color: var(--skylight-btn-off-bg, #ffffff) !important;
               }
               .bubble-icon { --mdc-icon-size: 26px !important; color: var(--primary-text-color, #34343c) !important; opacity: 1; }
               .bubble-icon-container { background: var(--skylight-btn-off-icon-bg, rgba(0, 0, 0, 0.04)) !important; display: flex; }
@@ -605,13 +605,15 @@ views:
             show_attribute: false
             styles: |
               ha-card {
+                background: none !important;
                 border-radius: var(--skylight-radius-card, 10px) !important;
                 border: 1px solid var(--skylight-btn-off-border, #e9ecef) !important;
                 box-shadow: none !important;
               }
               .bubble-button-background, .bubble-select-background {
                 opacity: 1 !important;
-                background-color: var(--skylight-surface, #ffffff) !important;
+                border-radius: var(--skylight-radius-card, 10px) !important;
+                background-color: var(--skylight-btn-off-bg, #ffffff) !important;
               }
               .bubble-icon { color: var(--primary-text-color, #34343c) !important; opacity: 1 !important; }
               .bubble-icon-container { background: var(--skylight-btn-off-icon-bg, rgba(0, 0, 0, 0.04)) !important; }
