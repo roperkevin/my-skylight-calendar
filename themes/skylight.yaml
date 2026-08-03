@@ -99,17 +99,6 @@ Skylight:
   skylight-radius-chip: "6px"
   skylight-shadow-card: "rgba(104, 104, 104, 0.05) 0 2px 6px 0, rgba(211, 209, 209, 0.15) 0 0 0 1px"
   skylight-btn-shadow: "0 2px 6px rgba(104, 104, 104, 0.14)"
-  skylight-btn-shadow-hover: "0 8px 20px rgba(104, 104, 104, 0.28)"
-
-  # Frosted-glass button surfaces. Active pills tint their person color to
-  # skylight-glass-tint opacity over a backdrop blur; inactive pills use the
-  # neutral glass-bg. Light theme keeps the tint high so white button text
-  # stays readable over pale backdrops.
-  skylight-glass-bg: "rgba(255, 255, 255, 0.55)"
-  skylight-glass-border: "rgba(0, 0, 0, 0.08)"
-  skylight-glass-highlight: "inset 0 1px 0 rgba(255, 255, 255, 0.7)"
-  skylight-glass-blur: "14px"
-  skylight-glass-tint: "80%"
 
   # Calendar surfaces
   skylight-cal-card-background: "#FFFFFF"
@@ -196,15 +185,6 @@ Skylight Dark:
   skylight-radius-chip: "6px"
   skylight-shadow-card: "rgba(21, 21, 21, 0.72) 0 6px 18px 0, rgba(137, 135, 135, 0.24) 0 0 0 1px"
   skylight-btn-shadow: "0 2px 6px rgba(0, 0, 0, 0.45)"
-  skylight-btn-shadow-hover: "0 8px 20px rgba(0, 0, 0, 0.55)"
-
-  # Frosted-glass button surfaces (see the light theme's notes). Lower tint
-  # here: colors glow against the dark canvas without needing full opacity.
-  skylight-glass-bg: "rgba(255, 255, 255, 0.07)"
-  skylight-glass-border: "rgba(255, 255, 255, 0.12)"
-  skylight-glass-highlight: "inset 0 1px 0 rgba(255, 255, 255, 0.09)"
-  skylight-glass-blur: "14px"
-  skylight-glass-tint: "58%"
 
   # Calendar surfaces
   skylight-cal-card-background: "#1E1E1E"
