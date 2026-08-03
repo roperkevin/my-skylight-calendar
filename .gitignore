@@ -1,1 +1,12 @@
 custom_dashboard.yaml
+
+# OS noise
+.DS_Store
+Thumbs.db
+
+# Editor noise
+*.swp
+*.swo
+*~
+.idea/
+.vscode/

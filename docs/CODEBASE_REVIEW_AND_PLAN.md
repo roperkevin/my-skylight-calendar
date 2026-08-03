@@ -28,7 +28,7 @@ text is *not* a YAML comment — it becomes part of the JavaScript string that
 evaluated code contains an invalid token. Fix: use a JS comment (`// <--- UPDATE ...`)
 on its own line, or move the note to a YAML comment outside the block.
 
-#### B2. Invalid CSS color `light-grey` (4 occurrences)
+#### B2. Invalid CSS color `light-grey` (7 occurrences)
 The bubble-card button styles use:
 
 ```js
@@ -199,45 +199,60 @@ listing each HACS card with the minimum tested version.
 
 ## Part 2 — The Plan (phased)
 
-### Phase 1 — Correctness (small PRs, immediate value)
-1. Fix B1 (JS `#` comment → `//`), B2 (`light-grey` → `lightgrey`).
-2. Resolve B3: verify `week-planner-card` filter semantics, then fix every comment
-   and the README to match reality.
-3. Fix B4 (drop or properly wire `family_calendar_show`), B5 (Tomorrow = 1 day).
-4. B8: add title/date validation, all-day end-date auto-bump, full form reset, and a
-   success/failure notification to the add-event script.
+### Phase 1 — Correctness (small PRs, immediate value) ✅ DONE
+1. ✅ Fix B1 (JS `#` comment → `//`), B2 (`light-grey` → `lightgrey`).
+2. ✅ Resolve B3: verified against the `week-planner-card` docs — `filter` is
+   documented as "Remove events that match the regular expression", i.e. it hides
+   matches. Comments and README corrected, and the `input_text` `initial` values
+   changed from `.*` to `^$` so calendars are visible on a fresh install.
+3. ✅ Fix B4 (removed `family_calendar_show`; Family button is now a `name`-type
+   button), B5 (Tomorrow = 1 day).
+4. ✅ B8: added title/date validation, all-day end-date auto-bump, full form reset
+   (including the All-Day toggle), and success/failure notifications to the
+   add-event script.
 
-### Phase 2 — Simplification & structure
-5. M1: collapse the seven toggle scripts into one parameterized script; update the
-   seven buttons to pass their filter entity.
-6. M3: replace hardcoded button hexes with theme variables; M4: drop `button-card`.
-7. B9: rename the script to `add_calendar_event` (note the rename in the README).
-8. M5: move/optimize images, add `LICENSE`, expand `.gitignore`.
+### Phase 2 — Simplification & structure ✅ DONE
+5. ✅ M1: collapsed the seven toggle scripts into one parameterized
+   `script.toggle_calendar_filter`; all seven buttons pass their `filter_entity`.
+6. ✅ M3: buttons now use theme variables instead of hardcoded hexes;
+   M4: `button-card` dependency dropped (popup button rebuilt with bubble-card).
+7. ✅ B9: script renamed to `add_calendar_event` (rename noted in the README's
+   upgrade section).
+8. ✅ M5: background image moved to `assets/` and converted to WebP
+   (932 KB → 16 KB); added MIT `LICENSE`; expanded `.gitignore`.
 
-### Phase 3 — Docs & guardrails
-9. README overhaul: fix typos/markup/numbering, add Requirements table (M7),
-   Troubleshooting/FAQ, popup screenshot, file map, and a "Customizing" section
-   (colors via theme, week start, 12/24h clock, locale) — with the B6/B7 caveats
-   documented where the options live.
-10. M6: add a `yamllint` GitHub Action; optionally a markdown link checker.
+### Phase 3 — Docs & guardrails ✅ DONE (except screenshot)
+9. ✅ README overhaul: typos/markup/numbering fixed, Requirements table with links
+   and minimum versions (M7), Troubleshooting/FAQ, file map ("What's in this
+   repo"), and a Customizing section (colors via theme, week start, 12/24h clock,
+   locale, adding/removing family members) — with the B6/B7 caveats documented as
+   comments next to the options in `dashboard.yaml`.
+   ⏸ Popup screenshot still pending — requires a live Home Assistant install to
+   capture.
+10. ✅ M6: added a `yamllint` GitHub Action (`.github/workflows/validate.yaml`)
+    with a relaxed `.yamllint` config plus a YAML parse check; missing
+    end-of-file newlines fixed. (Markdown link checker left as a possible
+    follow-up.)
 
-### Phase 4 — "Super duper awesome" features
-Ranked by Skylight feature parity vs. effort:
-
-11. **Chores / To-do panel** — HA's built-in Local To-do lists per family member,
-    shown in a collapsible section or a second view with a bubble-card tab bar.
-    (README already name-drops Grocy; native todo lists need zero extra installs.)
-12. **View-aware layout (B6/B7 done right)** — inject column count and weekend
-    highlighting from the same `config-template-card` variables that drive `DAYS`,
-    so every view renders correctly at any `startingDay`.
-13. **Meal-planner row** — a dedicated local calendar ("Dinner") rendered as a
-    compact strip under the header, Skylight-style.
-14. **Photo-frame screensaver** — browser_mod popup or a second view cycling
-    `/local/photos`, triggered by an idle timer, tap to wake.
-15. **Dark / evening theme variant** — a `Skylight Dark` entry in the theme file,
-    optionally auto-switched by sun elevation.
-16. **Per-person "today" agenda popup** — tap a person's button-and-hold (or a small
-    avatar) to pop their day list.
+### Phase 4 — "Super duper awesome" features ✅ DONE
+11. ✅ **Chores / To-do panel** — a Chores button opens a `#chores` popup with one
+    `todo-list` card per person (HA's built-in Local To-do; zero extra installs).
+12. ✅ **View-aware layout (B6/B7 done right)** — new `COLS` and `WEEKEND_CSS`
+    `config-template-card` variables drive the grid column count (1 for
+    Today/Tomorrow, 7 otherwise) and compute the weekend header cells from the
+    starting day, so every view renders correctly at any `startingDay`.
+13. ✅ **Meal-planner row** — an opt-in (commented-out) compact `Dinner` calendar
+    strip under the header; documented in the README.
+14. ✅ **Photo-frame screensaver** — `script.screensaver_start` opens a fullscreen
+    browser_mod photo popup with `autoclose` (tap/move to wake), plus an example
+    nightly automation. True idle detection is documented as a kiosk-software
+    concern (Fully Kiosk).
+15. ✅ **Dark / evening theme variant** — `Skylight Dark` added to the theme file;
+    the dashboard's card-mod colors now read `--skylight-*` theme variables (with
+    the original values as fallbacks), and an example sun-based
+    `frontend.set_theme` automation is included in the package.
+16. ✅ **Per-person "today" agenda popup** — holding a person's button opens their
+    `#agendaN` popup with a compact one-day week-planner-card.
 
 Each phase is independently shippable; Phases 1–2 change no user-facing setup steps
 (except the script rename, which is called out), so existing installs upgrade by

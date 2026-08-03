@@ -11,28 +11,31 @@
 
 # 1. HELPERS (The Variables)
 input_text:
-  # Filter Toggles (RegEx: .* = Show, ^$ = Hide)
+  # Filter Toggles.
+  # week-planner-card's `filter` option HIDES events whose title matches the regex:
+  #   "^$" = matches nothing  -> all events VISIBLE
+  #   ".*" = matches anything -> all events HIDDEN
   calendar1_calendar_filter:
     name: calendar1 Filter
-    initial: ".*"
+    initial: "^$"
   calendar2_calendar_filter:
     name: calendar2 Filter
-    initial: ".*"
+    initial: "^$"
   calendar3_calendar_filter:
     name: calendar3 Filter
-    initial: ".*"
+    initial: "^$"
   calendar4_calendar_filter:
     name: calendar4 Filter
-    initial: ".*"
+    initial: "^$"
   family_calendar_filter:
     name: Family Filter
-    initial: ".*"
+    initial: "^$"
   birthdays_calendar_filter:
     name: Birthdays Filter
-    initial: ".*"
+    initial: "^$"
   holidays_calendar_filter:
     name: Holidays Filter
-    initial: ".*"
+    initial: "^$"
 
   # Event Form Data
   calendar_event_title:
@@ -85,77 +88,35 @@ input_boolean:
   calendar_all_day_event:
     name: All Day Event
     icon: mdi:calendar-clock
-  family_calendar_show:
-    name: Show Family Calendar
 
 # 2. SCRIPTS (The Logic)
 script:
-  # --- Filter Toggles ---
-  calendar1_calendar_visible_filter:
-    alias: Toggle calendar1 Calendar
+  # --- Filter Toggle (shared by every calendar button) ---
+  # The dashboard buttons call this with the filter helper they control, e.g.:
+  #   perform_action: script.toggle_calendar_filter
+  #   data:
+  #     filter_entity: input_text.calendar1_calendar_filter
+  # Adding a family member = add an input_text above + a button in the dashboard.
+  toggle_calendar_filter:
+    alias: Toggle Calendar Visibility Filter
+    fields:
+      filter_entity:
+        name: Filter Entity
+        description: The input_text filter helper to toggle between "^$" (show) and ".*" (hide).
+        required: true
+        selector:
+          entity:
+            filter:
+              domain: input_text
     sequence:
       - action: input_text.set_value
         target:
-          entity_id: input_text.calendar1_calendar_filter
+          entity_id: "{{ filter_entity }}"
         data:
-          value: "{% if is_state('input_text.calendar1_calendar_filter', '.*') %}^${% else %}.*{% endif %}"
-
-  calendar2_calendar_visible_filter:
-    alias: Toggle calendar2 Calendar
-    sequence:
-      - action: input_text.set_value
-        target:
-          entity_id: input_text.calendar2_calendar_filter
-        data:
-          value: "{% if is_state('input_text.calendar2_calendar_filter', '.*') %}^${% else %}.*{% endif %}"
-
-  calendar3_calendar_visible_filter:
-    alias: Toggle calendar3 Calendar
-    sequence:
-      - action: input_text.set_value
-        target:
-          entity_id: input_text.calendar3_calendar_filter
-        data:
-          value: "{% if is_state('input_text.calendar3_calendar_filter', '.*') %}^${% else %}.*{% endif %}"
-
-  calendar4_calendar_visible_filter:
-    alias: Toggle calendar4 Calendar
-    sequence:
-      - action: input_text.set_value
-        target:
-          entity_id: input_text.calendar4_calendar_filter
-        data:
-          value: "{% if is_state('input_text.calendar4_calendar_filter', '.*') %}^${% else %}.*{% endif %}"
-
-  family_calendar_visible_filter:
-    alias: Toggle Family Calendar
-    sequence:
-      - action: input_text.set_value
-        target:
-          entity_id: input_text.family_calendar_filter
-        data:
-          value: "{% if is_state('input_text.family_calendar_filter', '.*') %}^${% else %}.*{% endif %}"
-
-  birthdays_calendar_visible_filter:
-    alias: Toggle Birthdays Calendar
-    sequence:
-      - action: input_text.set_value
-        target:
-          entity_id: input_text.birthdays_calendar_filter
-        data:
-          value: "{% if is_state('input_text.birthdays_calendar_filter', '.*') %}^${% else %}.*{% endif %}"
-
-  holidays_calendar_visible_filter:
-    alias: Toggle Holidays Calendar
-    sequence:
-      - action: input_text.set_value
-        target:
-          entity_id: input_text.holidays_calendar_filter
-        data:
-          value: "{% if is_state('input_text.holidays_calendar_filter', '.*') %}^${% else %}.*{% endif %}"
+          value: "{% if is_state(filter_entity, '.*') %}^${% else %}.*{% endif %}"
 
   # --- Add Event Logic ---
-  add_google_calendar_event:
+  add_calendar_event:
     alias: Process Add Calendar Event
     sequence:
       - variables:
@@ -172,34 +133,75 @@ script:
           
           # Selects the entity based on the map above
           target_calendar: "{{ calendar_map.get(states('input_select.calendar_select'), 'calendar.family') }}" #<--- UPDATE THIS ENTITY
+          event_title: "{{ states('input_text.calendar_event_title') | trim }}"
+          all_day: "{{ is_state('input_boolean.calendar_all_day_event', 'on') }}"
+
+      # --- VALIDATION ---
+      - if:
+          - condition: template
+            value_template: "{{ event_title == '' }}"
+        then:
+          - action: browser_mod.notification
+            data:
+              message: "⚠️ Please enter an event title."
+          - stop: "Missing event title"
+
+      - if:
+          - condition: template
+            value_template: >-
+              {{ not all_day and
+                 states('input_datetime.calendar_event_end') <= states('input_datetime.calendar_event_start') }}
+        then:
+          - action: browser_mod.notification
+            data:
+              message: "⚠️ End time must be after start time."
+          - stop: "Invalid time range"
+
+      - if:
+          - condition: template
+            value_template: >-
+              {{ all_day and
+                 states('input_datetime.calendar_day_event_end') < states('input_datetime.calendar_day_event_start') }}
+        then:
+          - action: browser_mod.notification
+            data:
+              message: "⚠️ End date can't be before the start date."
+          - stop: "Invalid date range"
 
       - choose:
           # Scenario A: All Day Event
-          - conditions:
-              - condition: state
-                entity_id: input_boolean.calendar_all_day_event
-                state: "on"
+          - conditions: "{{ all_day }}"
             sequence:
-              - action: calendar.create_event
-                target:
-                  entity_id: "{{ target_calendar }}"
-                data:
-                  summary: "{{ states('input_text.calendar_event_title') }}"
-                  description: "{{ states('input_text.calendar_event_description') }}"
+              - variables:
                   start_date: "{{ states('input_datetime.calendar_day_event_start') }}"
-                  end_date: "{{ states('input_datetime.calendar_day_event_end') }}"
-          
+                  # Home Assistant's end_date is EXCLUSIVE (the event ends at
+                  # midnight leading into it), so a one-day event must end on the
+                  # following day. Bump the end date when it equals the start
+                  # (end < start is rejected by the validation above).
+                  end_date: >-
+                    {%- set raw_end = states('input_datetime.calendar_day_event_end') -%}
+                    {%- if raw_end > start_date -%}
+                      {{ raw_end }}
+                    {%- else -%}
+                      {{ (strptime(start_date, '%Y-%m-%d') + timedelta(days=1)).strftime('%Y-%m-%d') }}
+                    {%- endif -%}
+              - action: calendar.create_event
+                target:
+                  entity_id: "{{ target_calendar }}"
+                data:
+                  summary: "{{ event_title }}"
+                  description: "{{ states('input_text.calendar_event_description') }}"
+                  start_date: "{{ start_date }}"
+                  end_date: "{{ end_date }}"
+
           # Scenario B: Timed Event
-          - conditions:
-              - condition: state
-                entity_id: input_boolean.calendar_all_day_event
-                state: "off"
+          - conditions: "{{ not all_day }}"
             sequence:
               - action: calendar.create_event
                 target:
                   entity_id: "{{ target_calendar }}"
                 data:
-                  summary: "{{ states('input_text.calendar_event_title') }}"
+                  summary: "{{ event_title }}"
                   description: "{{ states('input_text.calendar_event_description') }}"
                   start_date_time: "{{ states('input_datetime.calendar_event_start') }}"
                   end_date_time: "{{ states('input_datetime.calendar_event_end') }}"
@@ -215,5 +217,57 @@ script:
           entity_id: input_text.calendar_event_description
         data:
           value: ""
+      - action: input_boolean.turn_off
+        target:
+          entity_id: input_boolean.calendar_all_day_event
       - action: browser_mod.close_popup
         data: {}
+      - action: browser_mod.notification
+        data:
+          message: "✓ Event added to {{ states('input_select.calendar_select') }}"
+
+  # --- Photo Screensaver (optional) ---
+  # Opens a fullscreen photo on every Browser Mod-registered browser; any tap or
+  # mouse movement closes it (autoclose). Upload a photo to /config/www/photos/
+  # first. For true idle-detection screensavers, kiosk software such as Fully
+  # Kiosk Browser does it better - this is a simple built-in alternative you can
+  # trigger from an automation (see the examples at the bottom of this file).
+  screensaver_start:
+    alias: Start Photo Screensaver
+    sequence:
+      - action: browser_mod.popup
+        data:
+          size: fullscreen
+          autoclose: true
+          hide_header: true
+          content:
+            type: picture
+            image: /local/photos/family.jpg # <--- UPDATE THIS (upload to /config/www/photos/)
+            tap_action:
+              action: none
+
+# ==============================================================================
+# 3. OPTIONAL AUTOMATIONS (uncomment to use)
+# ==============================================================================
+# automation:
+#   # Show the photo screensaver every evening.
+#   - alias: Calendar Photo Screensaver At Night
+#     triggers:
+#       - trigger: time
+#         at: "21:00:00"
+#     actions:
+#       - action: script.screensaver_start
+#
+#   # Switch between the light and dark Skylight themes with the sun.
+#   # NOTE: frontend.set_theme changes the *backend-selected* theme. It only
+#   # affects users whose profile theme is set to "Backend-selected".
+#   - alias: Skylight Auto Dark Mode
+#     triggers:
+#       - trigger: sun
+#         event: sunset
+#       - trigger: sun
+#         event: sunrise
+#     actions:
+#       - action: frontend.set_theme
+#         data:
+#           name: "{{ 'Skylight Dark' if trigger.event == 'sunset' else 'Skylight' }}"
