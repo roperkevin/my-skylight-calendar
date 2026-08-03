@@ -84,7 +84,7 @@ The hardware I originally used I chose based on what I mentioned above plus with
 |---|---|---|
 | [`dashboard.yaml`](dashboard.yaml) | The dashboard layout (header, buttons, calendar, popup) | Pasted into a new dashboard's raw configuration editor |
 | [`packages/family_calendar.yaml`](packages/family_calendar.yaml) | All helpers and scripts the dashboard needs | `/config/packages/` |
-| [`themes/skylight.yaml`](themes/skylight.yaml) | The Skylight theme (font + per-person colors) | `/config/themes/` |
+| [`themes/skylight.yaml`](themes/skylight.yaml) | The Skylight theme (design tokens: fonts, surfaces, per-person colors) | `/config/themes/` |
 | [`assets/calbackgrd.webp`](assets/calbackgrd.webp) | The dashboard background image | `/config/www/` (served as `/local/calbackgrd.webp`) |
 | `assets/` (other files) | README screenshots | Nowhere — documentation only |
 
@@ -170,7 +170,7 @@ Since Home Assistant updates, Holidays are now added via UI:
 
 ### 5. The Theme (Optional)
 
-To get the specific font look (Ovo):
+To get the full Skylight look (the Outfit font plus every color, radius and shadow the dashboard uses):
 
 1. Ensure your `configuration.yaml` has this line under `frontend:`
 
@@ -184,7 +184,7 @@ To get the specific font look (Ovo):
 4. Use File Editor and upload [assets/calbackgrd.webp](assets/calbackgrd.webp) to /www/ folder, that translates internally to /local on the dashboard.
 5. Restart Home Assistant.
 6. Go to your Profile (User Icon bottom left) and change **Theme** to `Skylight`.
-NOTE: The theme is not comprehensive, so keep that in mind
+NOTE: The dashboard works without the theme, but the theme is where the entire design system (fonts, colors, radii, shadows) lives — without it you get the plain fallback look.
 
 ---
 
@@ -206,7 +206,8 @@ The script validates the form before creating anything: it refuses an empty titl
 
 ## 🎨 Customizing
 
-* **Per-person colors** — edit the `*-default-primary-color` variables in [`themes/skylight.yaml`](themes/skylight.yaml). Both the buttons and the calendar events read them, so one edit changes everything. Reload themes afterwards (Developer tools → Actions → `frontend.reload_themes`).
+* **Per-person colors** — edit the `*-default-primary-color` variables in [`themes/skylight.yaml`](themes/skylight.yaml). The buttons, event chips and popups all read them, so one edit changes everything. Reload themes afterwards (Developer tools → Actions → `frontend.reload_themes`).
+* **Look & feel** — the whole design system lives in the `skylight-*` tokens in [`themes/skylight.yaml`](themes/skylight.yaml): card/chip radii, shadows, day-tile surfaces, the today highlight, event-chip tint and button states. The dashboard reads them with `var(--skylight-..., fallback)`, so retheming (or building your own variant) never requires touching `dashboard.yaml`.
 * **Week start day** — in `dashboard.yaml`, change the fallback in the `STARTDAY` template (marked with `UPDATE THIS IF NEEDED`). *Caveat:* the red weekend-header coloring in the `card_mod` styles assumes a Monday start (it targets the 7th/8th header cells); adjust those rules if you move the week start.
 * **12-hour clock** — in the `better-moment-card` at the top of `dashboard.yaml`, change `{{moment format=HH:mm}}` to `{{moment format=h:mm a}}`.
 * **Language** — change `locale: en` in the `week-planner-card` section of `dashboard.yaml`.
