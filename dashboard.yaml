@@ -10,20 +10,20 @@ views:
         cards:
           - type: custom:better-moment-card
             parentStyle: |
-              line-height:normal;
+              line-height: normal; font-family: var(--primary-font-family);
             moment:
               - parentStyle: |
-                  font-size:1em; text-align:center; margin-top:5px;
+                  font-size:0.95em; text-align:center; margin-top:6px; font-weight:600; text-transform:uppercase; letter-spacing:0.22em; color:var(--secondary-text-color);
                 templateRaw: |
                   {{moment format=cccc}}
               - parentStyle: |
-                  font-size:1.5em; text-align:center; margin-top:5px;
+                  font-size:1.4em; text-align:center; margin-top:2px; font-weight:500; color:var(--primary-text-color);
                 templateRaw: |
-                  {{moment format=LLLL dd, yyyy}}              
+                  {{moment format=LLLL dd, yyyy}}
               - parentStyle: |
-                  font-size:4em;  text-align:center; font-weight:400;
+                  font-size:4.4em; text-align:center; font-weight:300; letter-spacing:-0.02em; font-variant-numeric:tabular-nums; color:var(--primary-text-color);
                 templateRaw: |
-                  {{moment format=HH:mm}} 
+                  {{moment format=HH:mm}}
             grid_options:
               columns: 20
             card_mod:
@@ -41,6 +41,14 @@ views:
             grid_options:
               columns: 20
               rows: 3
+            card_mod:
+              style: |
+                ha-card {
+                  background: transparent !important;
+                  box-shadow: none !important;
+                  border: none !important;
+                  font-family: var(--primary-font-family) !important;
+                }
           - type: weather-forecast
             show_current: false
             show_forecast: true
@@ -56,6 +64,12 @@ views:
                   background: transparent !important;
                   box-shadow: none !important;
                   border: none !important;
+                }
+                .forecast .temp {
+                  font-weight: 600 !important;
+                }
+                .forecast .templow {
+                  color: var(--secondary-text-color) !important;
                 }
         column_span: 10
       # --- End HEADER SECTION (Date & Weather) ---
@@ -80,9 +94,17 @@ views:
       #       card_mod:
       #         style: |
       #           ha-card {
-      #             background: var(--skylight-cal-card-background, rgba(255, 255, 255, 0.6)) !important;
-      #             border-radius: 24px !important;
-      #             box-shadow: none !important;
+      #             background: var(--skylight-cal-card-background, rgba(255, 255, 255, 0.88)) !important;
+      #             border-radius: var(--skylight-radius-card, 28px) !important;
+      #             box-shadow: var(--skylight-shadow-card, 0 12px 40px rgba(35, 38, 46, 0.08)) !important;
+      #             border: none !important;
+      #           }
+      #           .event {
+      #             color: var(--skylight-event-text-color, #2a2d34) !important;
+      #             background-color: var(--border-color) !important;
+      #             background-color: color-mix(in srgb, var(--border-color) 16%, var(--skylight-chip-mix-base, #ffffff)) !important;
+      #             border-left: 3px solid var(--border-color) !important;
+      #             border-radius: var(--skylight-radius-chip, 10px) !important;
       #           }
       #   column_span: 10
       # --- End MEAL PLANNER STRIP ---
@@ -109,6 +131,13 @@ views:
                 card_mod:
                   style: |
                     ha-card { background: none; box-shadow: none; border: none; }
+                    h2 {
+                      margin: 0;
+                      font-size: 1.7em;
+                      font-weight: 700;
+                      letter-spacing: -0.01em;
+                      color: var(--primary-text-color);
+                    }
                 grid_options:
                   columns: 18
                   rows: auto
@@ -117,7 +146,8 @@ views:
               rows: auto
           - type: horizontal-stack
             cards:
-              # --- BUTTONS ---
+              # --- FILTER PILLS ---
+              # Active = solid person color; hidden = quiet "ghost" pill.
               - type: custom:bubble-card
                 card_type: button
                 button_type: name
@@ -134,9 +164,29 @@ views:
                   action: navigate
                   navigation_path: "#agenda-school"
                 styles: |
+                  ha-card {
+                    border-radius: 999px !important;
+                    border: 1px solid ${hass.states['input_text.school_calendar_filter'].state === '.*' ? 'var(--skylight-btn-off-border, #e3e0d8)' : 'transparent'} !important;
+                    box-shadow: ${hass.states['input_text.school_calendar_filter'].state === '.*' ? 'none' : 'var(--skylight-btn-shadow, 0 6px 18px rgba(35, 38, 46, 0.16))'} !important;
+                    transition: box-shadow .25s ease, border-color .25s ease !important;
+                  }
                   .bubble-button-background {
                     opacity: 1 !important;
-                    background-color: ${hass.states['input_text.school_calendar_filter'].state === '.*' ? 'lightgrey' : 'var(--school-default-primary-color)'} !important;
+                    border-radius: 999px !important;
+                    background-color: ${hass.states['input_text.school_calendar_filter'].state === '.*' ? 'var(--skylight-btn-off-bg, #ffffff)' : 'var(--school-default-primary-color)'} !important;
+                  }
+                  .bubble-icon-container {
+                    background: ${hass.states['input_text.school_calendar_filter'].state === '.*' ? 'var(--skylight-btn-off-icon-bg, rgba(35, 38, 46, 0.05))' : 'rgba(255, 255, 255, 0.22)'} !important;
+                  }
+                  .bubble-icon {
+                    opacity: 1 !important;
+                    color: ${hass.states['input_text.school_calendar_filter'].state === '.*' ? 'var(--skylight-btn-off-text, #8a8f9c)' : '#ffffff'} !important;
+                  }
+                  .bubble-name {
+                    opacity: 1 !important;
+                    font-weight: 600 !important;
+                    letter-spacing: 0.01em !important;
+                    color: ${hass.states['input_text.school_calendar_filter'].state === '.*' ? 'var(--skylight-btn-off-text, #8a8f9c)' : '#ffffff'} !important;
                   }
               # To show a person avatar instead, use button_type: state with entity: person.daniel
               - type: custom:bubble-card
@@ -155,9 +205,29 @@ views:
                   action: navigate
                   navigation_path: "#agenda-daniel"
                 styles: |
+                  ha-card {
+                    border-radius: 999px !important;
+                    border: 1px solid ${hass.states['input_text.daniel_calendar_filter'].state === '.*' ? 'var(--skylight-btn-off-border, #e3e0d8)' : 'transparent'} !important;
+                    box-shadow: ${hass.states['input_text.daniel_calendar_filter'].state === '.*' ? 'none' : 'var(--skylight-btn-shadow, 0 6px 18px rgba(35, 38, 46, 0.16))'} !important;
+                    transition: box-shadow .25s ease, border-color .25s ease !important;
+                  }
                   .bubble-button-background {
                     opacity: 1 !important;
-                    background-color: ${hass.states['input_text.daniel_calendar_filter'].state === '.*' ? 'lightgrey' : 'var(--daniel-default-primary-color)'} !important;
+                    border-radius: 999px !important;
+                    background-color: ${hass.states['input_text.daniel_calendar_filter'].state === '.*' ? 'var(--skylight-btn-off-bg, #ffffff)' : 'var(--daniel-default-primary-color)'} !important;
+                  }
+                  .bubble-icon-container {
+                    background: ${hass.states['input_text.daniel_calendar_filter'].state === '.*' ? 'var(--skylight-btn-off-icon-bg, rgba(35, 38, 46, 0.05))' : 'rgba(255, 255, 255, 0.22)'} !important;
+                  }
+                  .bubble-icon {
+                    opacity: 1 !important;
+                    color: ${hass.states['input_text.daniel_calendar_filter'].state === '.*' ? 'var(--skylight-btn-off-text, #8a8f9c)' : '#ffffff'} !important;
+                  }
+                  .bubble-name {
+                    opacity: 1 !important;
+                    font-weight: 600 !important;
+                    letter-spacing: 0.01em !important;
+                    color: ${hass.states['input_text.daniel_calendar_filter'].state === '.*' ? 'var(--skylight-btn-off-text, #8a8f9c)' : '#ffffff'} !important;
                   }
               - type: custom:bubble-card
                 card_type: button
@@ -175,9 +245,29 @@ views:
                   action: navigate
                   navigation_path: "#agenda-weather"
                 styles: |
+                  ha-card {
+                    border-radius: 999px !important;
+                    border: 1px solid ${hass.states['input_text.weather_calendar_filter'].state === '.*' ? 'var(--skylight-btn-off-border, #e3e0d8)' : 'transparent'} !important;
+                    box-shadow: ${hass.states['input_text.weather_calendar_filter'].state === '.*' ? 'none' : 'var(--skylight-btn-shadow, 0 6px 18px rgba(35, 38, 46, 0.16))'} !important;
+                    transition: box-shadow .25s ease, border-color .25s ease !important;
+                  }
                   .bubble-button-background {
                     opacity: 1 !important;
-                    background-color: ${hass.states['input_text.weather_calendar_filter'].state === '.*' ? 'lightgrey' : 'var(--weather-default-primary-color)'} !important;
+                    border-radius: 999px !important;
+                    background-color: ${hass.states['input_text.weather_calendar_filter'].state === '.*' ? 'var(--skylight-btn-off-bg, #ffffff)' : 'var(--weather-default-primary-color)'} !important;
+                  }
+                  .bubble-icon-container {
+                    background: ${hass.states['input_text.weather_calendar_filter'].state === '.*' ? 'var(--skylight-btn-off-icon-bg, rgba(35, 38, 46, 0.05))' : 'rgba(255, 255, 255, 0.22)'} !important;
+                  }
+                  .bubble-icon {
+                    opacity: 1 !important;
+                    color: ${hass.states['input_text.weather_calendar_filter'].state === '.*' ? 'var(--skylight-btn-off-text, #8a8f9c)' : '#ffffff'} !important;
+                  }
+                  .bubble-name {
+                    opacity: 1 !important;
+                    font-weight: 600 !important;
+                    letter-spacing: 0.01em !important;
+                    color: ${hass.states['input_text.weather_calendar_filter'].state === '.*' ? 'var(--skylight-btn-off-text, #8a8f9c)' : '#ffffff'} !important;
                   }
               - type: custom:bubble-card
                 card_type: button
@@ -192,9 +282,29 @@ views:
                   data:
                     filter_entity: input_text.family_calendar_filter
                 styles: |
+                  ha-card {
+                    border-radius: 999px !important;
+                    border: 1px solid ${hass.states['input_text.family_calendar_filter'].state === '.*' ? 'var(--skylight-btn-off-border, #e3e0d8)' : 'transparent'} !important;
+                    box-shadow: ${hass.states['input_text.family_calendar_filter'].state === '.*' ? 'none' : 'var(--skylight-btn-shadow, 0 6px 18px rgba(35, 38, 46, 0.16))'} !important;
+                    transition: box-shadow .25s ease, border-color .25s ease !important;
+                  }
                   .bubble-button-background {
                     opacity: 1 !important;
-                    background-color: ${hass.states['input_text.family_calendar_filter'].state === '.*' ? 'lightgrey' : 'var(--family-default-primary-color)'} !important;
+                    border-radius: 999px !important;
+                    background-color: ${hass.states['input_text.family_calendar_filter'].state === '.*' ? 'var(--skylight-btn-off-bg, #ffffff)' : 'var(--family-default-primary-color)'} !important;
+                  }
+                  .bubble-icon-container {
+                    background: ${hass.states['input_text.family_calendar_filter'].state === '.*' ? 'var(--skylight-btn-off-icon-bg, rgba(35, 38, 46, 0.05))' : 'rgba(255, 255, 255, 0.22)'} !important;
+                  }
+                  .bubble-icon {
+                    opacity: 1 !important;
+                    color: ${hass.states['input_text.family_calendar_filter'].state === '.*' ? 'var(--skylight-btn-off-text, #8a8f9c)' : '#ffffff'} !important;
+                  }
+                  .bubble-name {
+                    opacity: 1 !important;
+                    font-weight: 600 !important;
+                    letter-spacing: 0.01em !important;
+                    color: ${hass.states['input_text.family_calendar_filter'].state === '.*' ? 'var(--skylight-btn-off-text, #8a8f9c)' : '#ffffff'} !important;
                   }
               - type: custom:bubble-card
                 card_type: button
@@ -209,9 +319,29 @@ views:
                   data:
                     filter_entity: input_text.birthdays_calendar_filter
                 styles: |
+                  ha-card {
+                    border-radius: 999px !important;
+                    border: 1px solid ${hass.states['input_text.birthdays_calendar_filter'].state === '.*' ? 'var(--skylight-btn-off-border, #e3e0d8)' : 'transparent'} !important;
+                    box-shadow: ${hass.states['input_text.birthdays_calendar_filter'].state === '.*' ? 'none' : 'var(--skylight-btn-shadow, 0 6px 18px rgba(35, 38, 46, 0.16))'} !important;
+                    transition: box-shadow .25s ease, border-color .25s ease !important;
+                  }
                   .bubble-button-background {
                     opacity: 1 !important;
-                    background-color: ${hass.states['input_text.birthdays_calendar_filter'].state === '.*' ? 'lightgrey' : 'var(--birthdays-default-primary-color)'} !important;
+                    border-radius: 999px !important;
+                    background-color: ${hass.states['input_text.birthdays_calendar_filter'].state === '.*' ? 'var(--skylight-btn-off-bg, #ffffff)' : 'var(--birthdays-default-primary-color)'} !important;
+                  }
+                  .bubble-icon-container {
+                    background: ${hass.states['input_text.birthdays_calendar_filter'].state === '.*' ? 'var(--skylight-btn-off-icon-bg, rgba(35, 38, 46, 0.05))' : 'rgba(255, 255, 255, 0.22)'} !important;
+                  }
+                  .bubble-icon {
+                    opacity: 1 !important;
+                    color: ${hass.states['input_text.birthdays_calendar_filter'].state === '.*' ? 'var(--skylight-btn-off-text, #8a8f9c)' : '#ffffff'} !important;
+                  }
+                  .bubble-name {
+                    opacity: 1 !important;
+                    font-weight: 600 !important;
+                    letter-spacing: 0.01em !important;
+                    color: ${hass.states['input_text.birthdays_calendar_filter'].state === '.*' ? 'var(--skylight-btn-off-text, #8a8f9c)' : '#ffffff'} !important;
                   }
               - type: custom:bubble-card
                 card_type: button
@@ -226,15 +356,38 @@ views:
                   data:
                     filter_entity: input_text.holidays_calendar_filter
                 styles: |
+                  ha-card {
+                    border-radius: 999px !important;
+                    border: 1px solid ${hass.states['input_text.holidays_calendar_filter'].state === '.*' ? 'var(--skylight-btn-off-border, #e3e0d8)' : 'transparent'} !important;
+                    box-shadow: ${hass.states['input_text.holidays_calendar_filter'].state === '.*' ? 'none' : 'var(--skylight-btn-shadow, 0 6px 18px rgba(35, 38, 46, 0.16))'} !important;
+                    transition: box-shadow .25s ease, border-color .25s ease !important;
+                  }
                   .bubble-button-background {
                     opacity: 1 !important;
-                    background-color: ${hass.states['input_text.holidays_calendar_filter'].state === '.*' ? 'lightgrey' : 'var(--holidays-default-primary-color)'} !important;
+                    border-radius: 999px !important;
+                    background-color: ${hass.states['input_text.holidays_calendar_filter'].state === '.*' ? 'var(--skylight-btn-off-bg, #ffffff)' : 'var(--holidays-default-primary-color)'} !important;
+                  }
+                  .bubble-icon-container {
+                    background: ${hass.states['input_text.holidays_calendar_filter'].state === '.*' ? 'var(--skylight-btn-off-icon-bg, rgba(35, 38, 46, 0.05))' : 'rgba(255, 255, 255, 0.22)'} !important;
+                  }
+                  .bubble-icon {
+                    opacity: 1 !important;
+                    color: ${hass.states['input_text.holidays_calendar_filter'].state === '.*' ? 'var(--skylight-btn-off-text, #8a8f9c)' : '#ffffff'} !important;
+                  }
+                  .bubble-name {
+                    opacity: 1 !important;
+                    font-weight: 600 !important;
+                    letter-spacing: 0.01em !important;
+                    color: ${hass.states['input_text.holidays_calendar_filter'].state === '.*' ? 'var(--skylight-btn-off-text, #8a8f9c)' : '#ffffff'} !important;
                   }
             grid_options:
               columns: 45
               rows: auto
           - type: markdown
             content: " "
+            card_mod:
+              style: |
+                ha-card { background: none; box-shadow: none; border: none; }
             grid_options:
               columns: 3
               rows: auto
@@ -249,10 +402,19 @@ views:
               navigation_path: "#addcalendarevent"
             styles: |
               * { font-size: 1.05em !important; }
-              ha-card { --bubble-main-background-color: #393745 !important; width: 300px; }    
-              .bubble-icon { --mdc-icon-size: 30px !important; color: snow !important; opacity: 1; }
-              .bubble-icon-container { background: #393745 !important; display: flex; }
-              .bubble-name { color: snow !important; opacity: 1; display: flex; line-height: 18px; flex-direction: row; justify-content: center; flex-grow: 1; margin: 0 40px 0 0; pointer-events: none; position: relative; overflow: hidden; }
+              ha-card {
+                width: 300px;
+                border-radius: 999px !important;
+                box-shadow: var(--skylight-btn-shadow, 0 6px 18px rgba(35, 38, 46, 0.16)) !important;
+              }
+              .bubble-button-background {
+                opacity: 1 !important;
+                border-radius: 999px !important;
+                background-color: var(--skylight-cta-bg, #262a34) !important;
+              }
+              .bubble-icon { --mdc-icon-size: 26px !important; color: var(--skylight-cta-text, #ffffff) !important; opacity: 1; }
+              .bubble-icon-container { background: rgba(255, 255, 255, 0.12) !important; display: flex; }
+              .bubble-name { color: var(--skylight-cta-text, #ffffff) !important; font-weight: 600 !important; letter-spacing: 0.01em !important; opacity: 1; display: flex; line-height: 18px; flex-direction: row; justify-content: center; flex-grow: 1; margin: 0 40px 0 0; pointer-events: none; position: relative; overflow: hidden; }
             grid_options:
               columns: 10
               rows: 1
@@ -267,10 +429,20 @@ views:
               navigation_path: "#chores"
             styles: |
               * { font-size: 1.05em !important; }
-              ha-card { --bubble-main-background-color: #393745 !important; width: 200px; }
-              .bubble-icon { --mdc-icon-size: 30px !important; color: snow !important; opacity: 1; }
-              .bubble-icon-container { background: #393745 !important; display: flex; }
-              .bubble-name { color: snow !important; opacity: 1; display: flex; line-height: 18px; flex-direction: row; justify-content: center; flex-grow: 1; margin: 0 40px 0 0; pointer-events: none; position: relative; overflow: hidden; }
+              ha-card {
+                width: 200px;
+                border-radius: 999px !important;
+                border: 1px solid var(--skylight-btn-off-border, #e3e0d8) !important;
+                box-shadow: none !important;
+              }
+              .bubble-button-background {
+                opacity: 1 !important;
+                border-radius: 999px !important;
+                background-color: var(--skylight-surface, #ffffff) !important;
+              }
+              .bubble-icon { --mdc-icon-size: 26px !important; color: var(--primary-text-color, #23262e) !important; opacity: 1; }
+              .bubble-icon-container { background: var(--skylight-btn-off-icon-bg, rgba(35, 38, 46, 0.05)) !important; display: flex; }
+              .bubble-name { color: var(--primary-text-color, #23262e) !important; font-weight: 600 !important; letter-spacing: 0.01em !important; opacity: 1; display: flex; line-height: 18px; flex-direction: row; justify-content: center; flex-grow: 1; margin: 0 40px 0 0; pointer-events: none; position: relative; overflow: hidden; }
             grid_options:
               columns: 7
               rows: 1
@@ -282,8 +454,22 @@ views:
             name: Select View
             show_last_changed: false
             show_attribute: false
+            styles: |
+              ha-card {
+                border-radius: 24px !important;
+                border: 1px solid var(--skylight-btn-off-border, #e3e0d8) !important;
+                box-shadow: none !important;
+              }
+              .bubble-button-background, .bubble-select-background {
+                opacity: 1 !important;
+                background-color: var(--skylight-surface, #ffffff) !important;
+              }
+              .bubble-icon { color: var(--primary-text-color, #23262e) !important; opacity: 1 !important; }
+              .bubble-icon-container { background: var(--skylight-btn-off-icon-bg, rgba(35, 38, 46, 0.05)) !important; }
+              .bubble-name { color: var(--primary-text-color, #23262e) !important; font-weight: 600 !important; opacity: 1 !important; }
+              .bubble-state { color: var(--secondary-text-color, #6c7280) !important; opacity: 1 !important; }
         column_span: 10
-      # --- End CONTROLS SECTION (Buttons) ---        
+      # --- End CONTROLS SECTION (Buttons) ---
       # --- START CALENDAR SECTION (Week Planner Card) ---
       - type: grid
         cards:
@@ -341,7 +527,7 @@ views:
                   const sun = ((6 - idx + 7) % 7) + 2;
                   return '.container > .day.header:nth-of-type(' + sat + ') .text, ' +
                          '.container > .day.header:nth-of-type(' + sun + ') .text ' +
-                         '{ color: var(--skylight-weekend-text-color, #d32f2f) !important; }';
+                         '{ color: var(--skylight-weekend-text-color, #c96b5e) !important; }';
                 })()
             card:
               type: custom:week-planner-card
@@ -408,11 +594,26 @@ views:
 
                     /* === CARD BASE === */
                     ha-card {
-                      background: var(--skylight-cal-card-background, rgba(255, 255, 255, 0.6)) !important;
-                      border-radius: 24px !important;
-                      box-shadow: none !important;
+                      background: var(--skylight-cal-card-background, rgba(255, 255, 255, 0.88)) !important;
+                      border-radius: var(--skylight-radius-card, 28px) !important;
+                      border: none !important;
+                      box-shadow: var(--skylight-shadow-card, 0 12px 40px rgba(35, 38, 46, 0.08)) !important;
+                      padding: 18px 20px 20px !important;
                       height: clamp(480px, 70vh, 900px) !important;
                       max-height: clamp(480px, 70vh, 900px) !important;
+                    }
+
+                    /* === NAVIGATION ROW (arrows + month title) === */
+                    .container .navigation {
+                      padding: 0.1em 0.2em 0.5em !important;
+                      font-weight: 700 !important;
+                      color: var(--primary-text-color) !important;
+                    }
+
+                    .container .navigation .title {
+                      font-size: 1.5em !important;
+                      font-weight: 700 !important;
+                      letter-spacing: -0.01em !important;
                     }
 
                     /* === GRID LAYOUT === */
@@ -423,7 +624,7 @@ views:
                       display: grid !important;
                       grid-template-columns: repeat(${COLS}, minmax(0, 1fr)) !important;
                       grid-auto-flow: row dense !important;
-                      gap: 0 !important;
+                      gap: 6px !important;
                     }
 
                     .container .navigation,
@@ -431,24 +632,32 @@ views:
                       grid-column: 1 / -1 !important;
                     }
 
-                    /* WEEKDAY LABEL CELLS */
+                    /* === WEEKDAY LABEL CELLS === */
                     .day.header {
                       display: block !important;
                       grid-column: auto !important;
                       margin: 0 !important;
-                      padding: 0.2em !important;
+                      padding: 0.4em 0.2em !important;
                       text-align: center !important;
                       box-sizing: border-box !important;
+                      background: transparent !important;
+                      border: none !important;
                     }
 
                     .day.header .date .text {
-                      font-weight: 600 !important;
+                      font-size: 0.78em !important;
+                      font-weight: 700 !important;
+                      text-transform: uppercase !important;
+                      letter-spacing: 0.12em !important;
                     }
 
                     /* === DAY TILES === */
-                    .day {
-                      border: solid 1px var(--skylight-day-border-color, whitesmoke) !important;
-                      padding: 0.2% !important;
+                    /* Floating rounded tiles with gaps instead of ruled borders. */
+                    .day:not(.header) {
+                      background: var(--skylight-day-bg, #f8f7f3) !important;
+                      border: 1px solid var(--skylight-day-border-color, #efede6) !important;
+                      border-radius: var(--skylight-radius-tile, 14px) !important;
+                      padding: 0.45em 0.45em 0.55em !important;
                       width: auto !important;
                       min-width: 0 !important;
                       margin: 0 !important;
@@ -457,49 +666,84 @@ views:
                       justify-self: stretch !important;
                     }
 
-                    /* === YOUR ORIGINAL VISUAL RULES === */
-                    .event.past {
-                      opacity: .2 !important;
-                      background-color: var(--skylight-past-event-color, gray) !important;
+                    /* Today: soft amber tile with an accent ring */
+                    .day.today {
+                      background: var(--skylight-today-bg, #fdf4e3) !important;
+                      box-shadow: inset 0 0 0 2px var(--skylight-today-highlight-color, #f5a524) !important;
                     }
 
-                    .time {
-                      color: var(--skylight-event-text-color, #333333) !important;
-                      font-size: 0.8em !important;
-                    }
-
-                    .event {
-                      color: var(--skylight-event-text-color, #333333) !important;
-                      line-height: 16px !important;
-                      background-color: var(--border-color) !important;
-                      border-radius: 10px !important;
-                      max-height: 80px !important;
-                      overflow: hidden !important;
-                      font-size: 1.1em !important;
-                    }
-
-                    .none {
-                      background-color: transparent !important;
-                    }
-
-                    .today .number {
-                      border-radius: 5px !important;
-                      background-color: var(--skylight-today-highlight-color, orange) !important;
-                      padding-left: 4px !important;
-                      padding-right: 4px !important;
+                    /* === DATE NUMBERS & WEEKDAY TEXT IN TILES === */
+                    .day .date .number {
+                      font-weight: 700 !important;
+                      font-size: 2.2em !important;
+                      line-height: 1.15 !important;
+                      color: var(--primary-text-color) !important;
                     }
 
                     .day .date .text {
-                      font-size: 1em !important;
-                      font-weight: bold !important;
+                      font-size: 0.9em !important;
+                      font-weight: 600 !important;
                     }
 
-                    .day .date .number {
-                      font-weight: bold !important;
-                      font-size: 3em !important;
+                    .today .number {
+                      display: inline-block !important;
+                      background-color: var(--skylight-today-highlight-color, #f5a524) !important;
+                      color: #ffffff !important;
+                      border-radius: 12px !important;
+                      padding-left: 10px !important;
+                      padding-right: 10px !important;
                     }
 
-                    /* Weekday colors */
+                    /* Weather chip inside day tiles */
+                    .day .weather {
+                      font-size: 0.8em !important;
+                      color: var(--secondary-text-color) !important;
+                    }
+
+                    /* === EVENT CHIPS === */
+                    /* Soft tint of the calendar's color + a solid accent bar.
+                       The color-mix line wins on modern browsers; older ones
+                       keep the solid-color fallback above it. */
+                    .event {
+                      color: var(--skylight-event-text-color, #2a2d34) !important;
+                      background-color: var(--border-color) !important;
+                      background-color: color-mix(in srgb, var(--border-color) 16%, var(--skylight-chip-mix-base, #ffffff)) !important;
+                      border-left: 3px solid var(--border-color) !important;
+                      border-radius: var(--skylight-radius-chip, 10px) !important;
+                      padding: 0.35em 0.5em 0.4em 0.55em !important;
+                      line-height: 1.25 !important;
+                      font-size: 1.02em !important;
+                      font-weight: 500 !important;
+                      max-height: 84px !important;
+                      overflow: hidden !important;
+                    }
+
+                    .event.past {
+                      opacity: 0.35 !important;
+                      filter: grayscale(0.4) !important;
+                    }
+
+                    .time {
+                      color: var(--skylight-event-time-color, #787e8c) !important;
+                      font-size: 0.78em !important;
+                      font-weight: 600 !important;
+                      letter-spacing: 0.02em !important;
+                    }
+
+                    .event .location {
+                      font-size: 0.82em !important;
+                      color: var(--skylight-event-time-color, #787e8c) !important;
+                    }
+
+                    /* "No events" placeholder */
+                    .none {
+                      background-color: transparent !important;
+                      border: none !important;
+                      color: var(--secondary-text-color) !important;
+                      font-size: 0.9em !important;
+                    }
+
+                    /* === WEEKDAY LABEL COLORS === */
 
                     /* When showWeekDayText is true */
                     .day[data-weekday="1"] .date .text,
@@ -507,16 +751,16 @@ views:
                     .day[data-weekday="3"] .date .text,
                     .day[data-weekday="4"] .date .text,
                     .day[data-weekday="5"] .date .text {
-                      color: var(--skylight-weekday-text-color, #2e7d32) !important;
+                      color: var(--skylight-weekday-text-color, #8a8f9c) !important;
                     }
 
                     .day[data-weekday="6"] .date .text,
                     .day[data-weekday="7"] .date .text {
-                      color: var(--skylight-weekend-text-color, #d32f2f) !important;
+                      color: var(--skylight-weekend-text-color, #c96b5e) !important;
                     }
                     /* When showWeekDayText is false */
                     .container > .day.header .text {
-                      color: var(--skylight-weekday-text-color, #2e7d32) !important;
+                      color: var(--skylight-weekday-text-color, #8a8f9c) !important;
                     }
                     /* Weekend header cells: computed from the starting day by the
                        WEEKEND_CSS template variable, so they stay correct if you
@@ -526,15 +770,15 @@ views:
 
                     /* === RESPONSIVE BREAKPOINTS === */
                     @media (max-width: 1024px) {
-                      .day .date .number { font-size: 2em !important; }
-                      .day .date .text   { font-size: 0.95em !important; }
+                      .day .date .number { font-size: 1.8em !important; }
+                      .day .date .text   { font-size: 0.85em !important; }
                     }
 
                     @media (max-width: 768px) {
-                      .day .date .number { font-size: 1.6em !important; }
-                      .day .date .text   { font-size: 0.85em !important; }
-                      .event { font-size: 0.85em !important; line-height: 1.1em !important; }
-                      .time  { font-size: 0.75em !important; }
+                      .day .date .number { font-size: 1.5em !important; }
+                      .day .date .text   { font-size: 0.8em !important; }
+                      .event { font-size: 0.85em !important; line-height: 1.2 !important; }
+                      .time  { font-size: 0.72em !important; }
                     }
 
                     /* ========================================================= */
@@ -546,16 +790,25 @@ views:
                         font-size: clamp(10px, 2.6vw, 13px) !important;
                       }
 
+                      ha-card {
+                        padding: 10px 8px 12px !important;
+                      }
+
                       /* Condensed headers */
                       .container .header,
                       .container .navigation {
                         padding: 0.25em 0.4em !important;
                       }
 
+                      .container {
+                        gap: 3px !important;
+                      }
+
                       /* Day tiles tighter */
-                      .day {
-                        padding: 0.15em !important;
+                      .day:not(.header) {
+                        padding: 0.25em !important;
                         min-width: 0 !important;
+                        border-radius: 10px !important;
                       }
 
                       /* Smaller date numbers */
@@ -571,9 +824,10 @@ views:
                       /* Event chip reduced */
                       .event {
                         font-size: clamp(0.72em, 2.9vw, 0.85em) !important;
-                        line-height: 1.05em !important;
-                        padding: 0.25em 0.35em !important;
+                        line-height: 1.15 !important;
+                        padding: 0.25em 0.35em 0.25em 0.45em !important;
                         max-height: 62px !important;
+                        border-left-width: 2px !important;
                       }
 
                       .time {
@@ -639,12 +893,26 @@ views:
                 show_name: true
                 styles: |
                   .bubble-button-card-container {
+                    border-radius: 24px !important;
                     background:
                     ${hass.states['input_select.calendar_select'].state == 'School' ? 'var(--school-default-primary-color)'
                     : hass.states['input_select.calendar_select'].state == 'Daniel' ? 'var(--daniel-default-primary-color)'
                     : hass.states['input_select.calendar_select'].state == 'Weather' ? 'var(--weather-default-primary-color)'
                     : hass.states['input_select.calendar_select'].state == 'Family' ? 'var(--family-default-primary-color)'
-                    : 'gray'} !important;
+                    : 'var(--skylight-cta-bg, #262a34)'} !important;
+                  }
+                  .bubble-icon-container {
+                    background: rgba(255, 255, 255, 0.22) !important;
+                  }
+                  .bubble-icon {
+                    color: #ffffff !important;
+                    opacity: 1 !important;
+                  }
+                  .bubble-name {
+                    color: #ffffff !important;
+                    font-weight: 700 !important;
+                    letter-spacing: 0.01em !important;
+                    opacity: 1 !important;
                   }
               - type: vertical-stack
                 cards:
@@ -659,6 +927,18 @@ views:
                         name: All Day Event
                     title: Add Calendar Event
                     state_color: false
+                    card_mod:
+                      style: |
+                        ha-card {
+                          background: var(--skylight-surface, var(--card-background-color)) !important;
+                          border-radius: 20px !important;
+                          border: none !important;
+                          box-shadow: none !important;
+                        }
+                        .card-header {
+                          font-size: 1.2em !important;
+                          font-weight: 700 !important;
+                        }
                   - type: conditional
                     conditions:
                       - entity: input_boolean.calendar_all_day_event
@@ -670,6 +950,14 @@ views:
                           name: Start Time
                         - entity: input_datetime.calendar_event_end
                           name: End Time
+                      card_mod:
+                        style: |
+                          ha-card {
+                            background: var(--skylight-surface, var(--card-background-color)) !important;
+                            border-radius: 20px !important;
+                            border: none !important;
+                            box-shadow: none !important;
+                          }
                   - type: conditional
                     conditions:
                       - entity: input_boolean.calendar_all_day_event
@@ -681,6 +969,14 @@ views:
                           name: Event Start Date
                         - entity: input_datetime.calendar_day_event_end
                           name: Event End Date
+                      card_mod:
+                        style: |
+                          ha-card {
+                            background: var(--skylight-surface, var(--card-background-color)) !important;
+                            border-radius: 20px !important;
+                            border: none !important;
+                            box-shadow: none !important;
+                          }
                   - type: custom:bubble-card
                     card_type: button
                     button_type: name
@@ -692,13 +988,31 @@ views:
                       action: perform-action
                       perform_action: script.add_calendar_event
                     styles: |
+                      ha-card {
+                        border-radius: 999px !important;
+                        box-shadow: var(--skylight-btn-shadow, 0 6px 18px rgba(35, 38, 46, 0.16)) !important;
+                      }
                       .bubble-button-background {
                         opacity: 1 !important;
+                        border-radius: 999px !important;
                         background-color: ${hass.states['input_select.calendar_select'].state == 'School' ? 'var(--school-default-primary-color)'
                         : hass.states['input_select.calendar_select'].state == 'Daniel' ? 'var(--daniel-default-primary-color)'
                         : hass.states['input_select.calendar_select'].state == 'Weather' ? 'var(--weather-default-primary-color)'
                         : hass.states['input_select.calendar_select'].state == 'Family' ? 'var(--family-default-primary-color)'
-                        : 'gray'} !important;
+                        : 'var(--skylight-cta-bg, #262a34)'} !important;
+                      }
+                      .bubble-icon-container {
+                        background: rgba(255, 255, 255, 0.22) !important;
+                      }
+                      .bubble-icon {
+                        color: #ffffff !important;
+                        opacity: 1 !important;
+                      }
+                      .bubble-name {
+                        color: #ffffff !important;
+                        font-weight: 600 !important;
+                        letter-spacing: 0.01em !important;
+                        opacity: 1 !important;
                       }
           # --- CHORES POPUP ---
           # Requires the Local To-do integration: create one list per person
@@ -713,12 +1027,52 @@ views:
                 icon: mdi:clipboard-check-outline
                 show_icon: true
                 show_name: true
+                styles: |
+                  .bubble-button-card-container {
+                    border-radius: 24px !important;
+                    background: var(--skylight-cta-bg, #262a34) !important;
+                  }
+                  .bubble-icon-container {
+                    background: rgba(255, 255, 255, 0.12) !important;
+                  }
+                  .bubble-icon {
+                    color: var(--skylight-cta-text, #ffffff) !important;
+                    opacity: 1 !important;
+                  }
+                  .bubble-name {
+                    color: var(--skylight-cta-text, #ffffff) !important;
+                    font-weight: 700 !important;
+                    letter-spacing: 0.01em !important;
+                    opacity: 1 !important;
+                  }
               - type: todo-list
                 entity: todo.daniel # <--- UPDATE THIS ENTITY (Local To-do list)
                 title: Daniel
+                card_mod:
+                  style: |
+                    ha-card {
+                      background: var(--skylight-surface, var(--card-background-color)) !important;
+                      border-radius: 20px !important;
+                      border: none !important;
+                      box-shadow: none !important;
+                    }
+                    .header .name {
+                      font-weight: 700 !important;
+                    }
               - type: todo-list
                 entity: todo.family # <--- UPDATE THIS ENTITY (Local To-do list)
                 title: Family
+                card_mod:
+                  style: |
+                    ha-card {
+                      background: var(--skylight-surface, var(--card-background-color)) !important;
+                      border-radius: 20px !important;
+                      border: none !important;
+                      box-shadow: none !important;
+                    }
+                    .header .name {
+                      font-weight: 700 !important;
+                    }
           # --- PER-CALENDAR TODAY AGENDA POPUPS (opened by holding a calendar's button) ---
           - type: vertical-stack
             cards:
@@ -730,6 +1084,23 @@ views:
                 icon: mdi:calendar-today
                 show_icon: true
                 show_name: true
+                styles: |
+                  .bubble-button-card-container {
+                    border-radius: 24px !important;
+                    background: var(--school-default-primary-color) !important;
+                  }
+                  .bubble-icon-container {
+                    background: rgba(255, 255, 255, 0.22) !important;
+                  }
+                  .bubble-icon {
+                    color: #ffffff !important;
+                    opacity: 1 !important;
+                  }
+                  .bubble-name {
+                    color: #ffffff !important;
+                    font-weight: 700 !important;
+                    opacity: 1 !important;
+                  }
               - type: custom:week-planner-card
                 calendars:
                   - entity: calendar.school
@@ -742,6 +1113,30 @@ views:
                 compact: true
                 hideDaysWithoutEvents: false
                 locale: en
+                card_mod:
+                  style: |
+                    ha-card {
+                      background: var(--skylight-surface, var(--card-background-color)) !important;
+                      border-radius: 20px !important;
+                      border: none !important;
+                      box-shadow: none !important;
+                    }
+                    .event {
+                      color: var(--skylight-event-text-color, #2a2d34) !important;
+                      background-color: var(--border-color) !important;
+                      background-color: color-mix(in srgb, var(--border-color) 16%, var(--skylight-chip-mix-base, #ffffff)) !important;
+                      border-left: 3px solid var(--border-color) !important;
+                      border-radius: var(--skylight-radius-chip, 10px) !important;
+                    }
+                    .time {
+                      color: var(--skylight-event-time-color, #787e8c) !important;
+                      font-size: 0.8em !important;
+                      font-weight: 600 !important;
+                    }
+                    .none {
+                      background-color: transparent !important;
+                      color: var(--secondary-text-color) !important;
+                    }
           - type: vertical-stack
             cards:
               - type: custom:bubble-card
@@ -752,6 +1147,23 @@ views:
                 icon: mdi:calendar-today
                 show_icon: true
                 show_name: true
+                styles: |
+                  .bubble-button-card-container {
+                    border-radius: 24px !important;
+                    background: var(--daniel-default-primary-color) !important;
+                  }
+                  .bubble-icon-container {
+                    background: rgba(255, 255, 255, 0.22) !important;
+                  }
+                  .bubble-icon {
+                    color: #ffffff !important;
+                    opacity: 1 !important;
+                  }
+                  .bubble-name {
+                    color: #ffffff !important;
+                    font-weight: 700 !important;
+                    opacity: 1 !important;
+                  }
               - type: custom:week-planner-card
                 calendars:
                   - entity: calendar.daniel
@@ -764,6 +1176,30 @@ views:
                 compact: true
                 hideDaysWithoutEvents: false
                 locale: en
+                card_mod:
+                  style: |
+                    ha-card {
+                      background: var(--skylight-surface, var(--card-background-color)) !important;
+                      border-radius: 20px !important;
+                      border: none !important;
+                      box-shadow: none !important;
+                    }
+                    .event {
+                      color: var(--skylight-event-text-color, #2a2d34) !important;
+                      background-color: var(--border-color) !important;
+                      background-color: color-mix(in srgb, var(--border-color) 16%, var(--skylight-chip-mix-base, #ffffff)) !important;
+                      border-left: 3px solid var(--border-color) !important;
+                      border-radius: var(--skylight-radius-chip, 10px) !important;
+                    }
+                    .time {
+                      color: var(--skylight-event-time-color, #787e8c) !important;
+                      font-size: 0.8em !important;
+                      font-weight: 600 !important;
+                    }
+                    .none {
+                      background-color: transparent !important;
+                      color: var(--secondary-text-color) !important;
+                    }
           - type: vertical-stack
             cards:
               - type: custom:bubble-card
@@ -774,6 +1210,23 @@ views:
                 icon: mdi:calendar-today
                 show_icon: true
                 show_name: true
+                styles: |
+                  .bubble-button-card-container {
+                    border-radius: 24px !important;
+                    background: var(--weather-default-primary-color) !important;
+                  }
+                  .bubble-icon-container {
+                    background: rgba(255, 255, 255, 0.22) !important;
+                  }
+                  .bubble-icon {
+                    color: #ffffff !important;
+                    opacity: 1 !important;
+                  }
+                  .bubble-name {
+                    color: #ffffff !important;
+                    font-weight: 700 !important;
+                    opacity: 1 !important;
+                  }
               - type: custom:week-planner-card
                 calendars:
                   - entity: calendar.weather
@@ -786,10 +1239,34 @@ views:
                 compact: true
                 hideDaysWithoutEvents: false
                 locale: en
+                card_mod:
+                  style: |
+                    ha-card {
+                      background: var(--skylight-surface, var(--card-background-color)) !important;
+                      border-radius: 20px !important;
+                      border: none !important;
+                      box-shadow: none !important;
+                    }
+                    .event {
+                      color: var(--skylight-event-text-color, #2a2d34) !important;
+                      background-color: var(--border-color) !important;
+                      background-color: color-mix(in srgb, var(--border-color) 16%, var(--skylight-chip-mix-base, #ffffff)) !important;
+                      border-left: 3px solid var(--border-color) !important;
+                      border-radius: var(--skylight-radius-chip, 10px) !important;
+                    }
+                    .time {
+                      color: var(--skylight-event-time-color, #787e8c) !important;
+                      font-size: 0.8em !important;
+                      font-weight: 600 !important;
+                    }
+                    .none {
+                      background-color: transparent !important;
+                      color: var(--secondary-text-color) !important;
+                    }
     cards: []
     icon: mdi:calendar-blank-multiple
     background:
-      opacity: 62
+      opacity: 40
       alignment: center
       size: cover
       repeat: repeat

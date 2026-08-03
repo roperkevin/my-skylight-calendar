@@ -1,27 +1,23 @@
 Skylight:
   card-mod-theme: Skylight
 
-  # This file defines variables you can use to customize the look of your calendar.
-  # The dashboard and package YAML files in many places use the format: `var(--variable-name)` to substitute values
-  # defined in here.
+  # ============================================================================
+  # SKYLIGHT DESIGN SYSTEM
+  # ============================================================================
+  # This file is the single source of truth for the calendar's look. Every
+  # theme key below becomes a CSS variable (`--key-name`) that the dashboard's
+  # card-mod styles read via `var(--key-name, fallback)`.
   #
   # Example YAML using a variable `my-custom-value`:
   #
   ### define the variable in this file
   # my-custom-value: "Something good"
-  # 
+  #
   ### use the variable in a card_mod.style section in another YAML file
   # card_mod:
   #   style: |
   #     .title-text {
   #       content: "var(--my-custom-value)"
-  #     }
-  #
-  ### the resulting substitution if you inspect the run-time value of `.title-text.content` is:
-  # card_mod:
-  #   style: |
-  #     .title-text {
-  #       content: "Something good"
   #     }
   #
   ### !!REMEMBER!!
@@ -30,27 +26,22 @@ Skylight:
   # 2. Invoke the `All YAML configuration` reload (from Developer tools -> YAML)
   # 3. Reload Home Assistant (without restart from Settings -> System -> Power -> Quick Reload)
   # 4. Restart Home Assistant (from Settings -> System -> Power -> Restart Home Assistant)
-  
+
   ###################################
-  #### Font Variables
+  #### Typography
   ###################################
-  # --- 1. Load the Font (via card-mod) from Google with special notation so it appears in the header (or it won't work) ---
+  # Load the font (via card-mod) from Google with this special notation so it
+  # is injected into the document head (or it won't work).
   card-mod-root-yaml: |
     .: |
-      @import url('https://fonts.googleapis.com/css2?family=Ovo&display=swap');
-  
-  # defines the primary font value as "Ovo", falling back to any "serif" font if Ovo isn't available
-  primary-font-family: "'Ovo', serif"
+      @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap');
 
-  # --- 2. Apply the Font (using standard Home Assistant variables) ---
-  # font values for for the majority of the UI (titles, sidebar, etc.) uses the naming convention:
-  # ha-card-[class]-font-family
+  # "Outfit" is a friendly geometric sans-serif; falls back to system sans.
+  primary-font-family: "'Outfit', 'Trebuchet MS', sans-serif"
 
-  # set the font specifically for card headers
+  # Apply the font across Home Assistant's UI layers.
   ha-card-header-font-family: "var(--primary-font-family)"
-  #ha-card-body-font-family: "var(--primary-font-family) !important"
-
-  # legacy "Paper" variables (Polymer elements) - ensures deep UI elements match (common practice)
+  mdc-typography-font-family: "var(--primary-font-family)"
   paper-font-common-base_-_font-family: "var(--primary-font-family)"
   paper-font-common-code_-_font-family: "var(--primary-font-family)"
   paper-font-body1_-_font-family: "var(--primary-font-family)"
@@ -60,42 +51,89 @@ Skylight:
   paper-font-title_-_font-family: "var(--primary-font-family)"
 
   ###################################
-  #### Custom Variables
+  #### Core Home Assistant surfaces
   ###################################
-  # In this section, add your own variables and values that you can use to reduce redundancy
-  
-  #### Custom family member default colors
-  #### default calendar colors - format: [family-member.name]-default-primary-color: "[color value/name]"
-  school-default-primary-color: "#fb8072"
-  daniel-default-primary-color: "#fdbf6f"
-  weather-default-primary-color: "#a6cee3"
-  family-default-primary-color: "#4A90E2"
-  birthdays-default-primary-color: "#33a02c"
-  holidays-default-primary-color: "#ff7f00"
+  primary-background-color: "#F5F3EE"
+  secondary-background-color: "#ECEAE3"
+  card-background-color: "#FFFFFF"
+  ha-card-background: "#FFFFFF"
+  primary-text-color: "#23262E"
+  secondary-text-color: "#6C7280"
+  divider-color: "#E7E4DC"
+  primary-color: "#4C7FE4"
+  accent-color: "#4C7FE4"
+  ha-card-border-radius: "20px"
+  ha-card-border-width: "0"
+  ha-card-box-shadow: "0 6px 24px rgba(35, 38, 46, 0.06)"
 
-  #### Calendar surface & text colors (referenced by the dashboard's card-mod styles)
-  skylight-cal-card-background: "rgba(255, 255, 255, 0.6)"
-  skylight-event-text-color: "#333333"
-  skylight-weekday-text-color: "#2e7d32"
-  skylight-weekend-text-color: "#d32f2f"
-  skylight-today-highlight-color: "orange"
+  ###################################
+  #### Per-person calendar colors
+  ###################################
+  # One harmonized palette (matched saturation/lightness) — the buttons, the
+  # event chips and the popups all read these, so one edit changes everything.
+  # Format: [family-member.name]-default-primary-color: "[color value]"
+  school-default-primary-color: "#E45C4E"
+  daniel-default-primary-color: "#ECA33F"
+  weather-default-primary-color: "#4BA3CF"
+  family-default-primary-color: "#4C7FE4"
+  birthdays-default-primary-color: "#43A45E"
+  holidays-default-primary-color: "#ED7D33"
+
+  ###################################
+  #### Skylight design tokens
+  ###################################
+  # Shape & elevation
+  skylight-radius-card: "28px"
+  skylight-radius-tile: "14px"
+  skylight-radius-chip: "10px"
+  skylight-shadow-card: "0 12px 40px rgba(35, 38, 46, 0.08)"
+  skylight-btn-shadow: "0 6px 18px rgba(35, 38, 46, 0.16)"
+
+  # Calendar surfaces
+  skylight-cal-card-background: "rgba(255, 255, 255, 0.88)"
+  skylight-day-bg: "#F8F7F3"
+  skylight-day-border-color: "#EFEDE6"
+  skylight-today-bg: "#FDF4E3"
+  skylight-today-highlight-color: "#F5A524"
+
+  # Calendar text
+  skylight-weekday-text-color: "#8A8F9C"
+  skylight-weekend-text-color: "#C96B5E"
+  skylight-event-text-color: "#2A2D34"
+  skylight-event-time-color: "#787E8C"
   skylight-past-event-color: "gray"
-  skylight-day-border-color: "whitesmoke"
+
+  # Event chips: tint = person color mixed into this base
+  skylight-chip-mix-base: "#FFFFFF"
+
+  # Buttons & popup surfaces
+  skylight-surface: "#FFFFFF"
+  skylight-btn-off-bg: "#FFFFFF"
+  skylight-btn-off-text: "#8A8F9C"
+  skylight-btn-off-border: "#E3E0D8"
+  skylight-btn-off-icon-bg: "rgba(35, 38, 46, 0.05)"
+  skylight-cta-bg: "#262A34"
+  skylight-cta-text: "#FFFFFF"
+
+  # Bubble Card global defaults (picked up automatically by bubble-card)
+  bubble-main-background-color: "var(--skylight-surface)"
+  bubble-border-radius: "24px"
 
 ###################################
 #### Dark variant
 ###################################
-# Same layout and per-person colors, dark surfaces. Select it per profile, or
-# switch automatically with the sun using the example automation in
-# packages/family_calendar.yaml.
+# Same layout and per-person hues, slightly brightened for dark surfaces.
+# Select it per profile, or switch automatically with the sun using the
+# example automation in packages/family_calendar.yaml.
 Skylight Dark:
   card-mod-theme: Skylight Dark
 
   card-mod-root-yaml: |
     .: |
-      @import url('https://fonts.googleapis.com/css2?family=Ovo&display=swap');
-  primary-font-family: "'Ovo', serif"
+      @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap');
+  primary-font-family: "'Outfit', 'Trebuchet MS', sans-serif"
   ha-card-header-font-family: "var(--primary-font-family)"
+  mdc-typography-font-family: "var(--primary-font-family)"
   paper-font-common-base_-_font-family: "var(--primary-font-family)"
   paper-font-common-code_-_font-family: "var(--primary-font-family)"
   paper-font-body1_-_font-family: "var(--primary-font-family)"
@@ -104,28 +142,61 @@ Skylight Dark:
   paper-font-caption_-_font-family: "var(--primary-font-family)"
   paper-font-title_-_font-family: "var(--primary-font-family)"
 
-  # Standard HA dark surfaces
-  primary-background-color: "#1c1b22"
-  secondary-background-color: "#26252e"
-  card-background-color: "#2a2933"
-  ha-card-background: "#2a2933"
-  primary-text-color: "#e8e6e3"
-  secondary-text-color: "#b8b5af"
-  divider-color: "#3a3944"
+  # Core Home Assistant surfaces
+  primary-background-color: "#131419"
+  secondary-background-color: "#1B1D24"
+  card-background-color: "#20232B"
+  ha-card-background: "#20232B"
+  primary-text-color: "#ECEDF1"
+  secondary-text-color: "#9BA1AE"
+  divider-color: "#2C2F38"
+  primary-color: "#7396EC"
+  accent-color: "#7396EC"
+  ha-card-border-radius: "20px"
+  ha-card-border-width: "0"
+  ha-card-box-shadow: "0 6px 24px rgba(0, 0, 0, 0.35)"
 
-  # Same per-person palette as the light theme
-  school-default-primary-color: "#fb8072"
-  daniel-default-primary-color: "#fdbf6f"
-  weather-default-primary-color: "#a6cee3"
-  family-default-primary-color: "#4A90E2"
-  birthdays-default-primary-color: "#33a02c"
-  holidays-default-primary-color: "#ff7f00"
+  # Per-person palette, brightened for dark surfaces
+  school-default-primary-color: "#F0796D"
+  daniel-default-primary-color: "#F2B45F"
+  weather-default-primary-color: "#6FB7DD"
+  family-default-primary-color: "#7396EC"
+  birthdays-default-primary-color: "#63B87A"
+  holidays-default-primary-color: "#F29659"
 
-  # Calendar surface & text colors on dark
-  skylight-cal-card-background: "rgba(30, 30, 38, 0.75)"
-  skylight-event-text-color: "#e8e6e3"
-  skylight-weekday-text-color: "#81c784"
-  skylight-weekend-text-color: "#ef9a9a"
-  skylight-today-highlight-color: "#b26500"
+  # Shape & elevation
+  skylight-radius-card: "28px"
+  skylight-radius-tile: "14px"
+  skylight-radius-chip: "10px"
+  skylight-shadow-card: "0 12px 40px rgba(0, 0, 0, 0.45)"
+  skylight-btn-shadow: "0 6px 18px rgba(0, 0, 0, 0.45)"
+
+  # Calendar surfaces
+  skylight-cal-card-background: "rgba(26, 28, 35, 0.88)"
+  skylight-day-bg: "rgba(255, 255, 255, 0.04)"
+  skylight-day-border-color: "rgba(255, 255, 255, 0.06)"
+  skylight-today-bg: "#2B2519"
+  skylight-today-highlight-color: "#F5A524"
+
+  # Calendar text
+  skylight-weekday-text-color: "#8E94A3"
+  skylight-weekend-text-color: "#E08B80"
+  skylight-event-text-color: "#ECEDF1"
+  skylight-event-time-color: "#A3A9B6"
   skylight-past-event-color: "#555555"
-  skylight-day-border-color: "#3a3944"
+
+  # Event chips: tint = person color mixed into this base
+  skylight-chip-mix-base: "#262932"
+
+  # Buttons & popup surfaces
+  skylight-surface: "#20232B"
+  skylight-btn-off-bg: "#20232B"
+  skylight-btn-off-text: "#8E94A3"
+  skylight-btn-off-border: "#2E313B"
+  skylight-btn-off-icon-bg: "rgba(255, 255, 255, 0.06)"
+  skylight-cta-bg: "#343846"
+  skylight-cta-text: "#FFFFFF"
+
+  # Bubble Card global defaults (picked up automatically by bubble-card)
+  bubble-main-background-color: "var(--skylight-surface)"
+  bubble-border-radius: "24px"
