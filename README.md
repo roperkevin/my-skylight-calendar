@@ -124,10 +124,9 @@ Installing via HACS only downloads files; you must add the integration so HA reg
    ```
 
 3. Create a folder named `packages` in your HA config directory (if you don't have one).
-4. Download [packages/family_calendar.yaml](packages/family_calendar.yaml) from this repo.
-5. Search for string [ #<--- UPDATE THIS ENTITY]  and update the calendar entity ID to match your environment. Check section 3 for more details.
-6. Place the file inside your `packages/` folder.
-7. **Restart Home Assistant**.
+4. Download [packages/family_calendar.yaml](packages/family_calendar.yaml) from this repo. It is pre-configured for the calendars `Family`, `School`, `Daniel`, and `Weather` (see section 3). If your calendar entity IDs differ, update the `calendar_map` inside `script.add_calendar_event`.
+5. Place the file inside your `packages/` folder.
+6. **Restart Home Assistant**.
 
 ### 3. The Calendars
 
@@ -138,8 +137,9 @@ You can use **Google Calendars** or **Local Calendars**.
 
 1. Go to **Settings > Devices & Services**.
 2. Add the **Local Calendar** integration.
-3. Create calendars named exactly: `calendar1`, `calendar2`, `calendar3`, `calendar4`, `Family`.
-    * *If you use these names, the code works out of the box!*
+3. Create calendars named exactly: `Family`, `School`, `Daniel`, `Weather`, `Birthdays`.
+    * *These create the entities `calendar.family`, `calendar.school`, `calendar.daniel`, `calendar.weather`, `calendar.birthdays`, which is what the code expects — it works out of the box!*
+    * *`Holidays` comes from the Holiday integration (see "Setting up Holidays" below).*
 
 #### Option B: Custom Calendar
 
@@ -147,9 +147,9 @@ You can use **Google Calendars** or **Local Calendars**.
 2. Add the **Local Calendar** integration. or **Google Calendar**.
 3. Navigate to **Configuration > Integrations > Local Calendar** or **Google Calendar** and select "Add Entry"
 4. For each created entry, get the entity ID for updating the dashboard.yaml file.
-5. Open `dashboard.yaml`.
-6. Search for `# <--- UPDATE THIS ENTITY`.
-7. Update the entity ID matching your environment
+5. Open `dashboard.yaml` and update the entity IDs in the `calendars:` section of the week-planner card and in the agenda popups (currently `calendar.school`, `calendar.daniel`, `calendar.weather`, `calendar.family`, `calendar.birthdays`, `calendar.holidays`).
+6. Do the same for the `calendar_map` in `packages/family_calendar.yaml`.
+7. The weather cards use `weather.home` — search `dashboard.yaml` for `# <--- UPDATE THIS ENTITY` to find it and the remaining entities to match your environment.
 
 
 #### Setting up Holidays
@@ -216,14 +216,14 @@ The script validates the form before creating anything: it refuses an empty titl
 
 ### Chores (per-person to-do lists)
 
-1. Go to **Settings > Devices & Services > Add Integration > Local To-do** and create one list per person named `calendar1`…`calendar4` (or your own names).
-2. If you used your own names, update the `todo.*` entities in the Chores popup in `dashboard.yaml` (marked `UPDATE THIS ENTITY`).
+1. Go to **Settings > Devices & Services > Add Integration > Local To-do** and create your lists — the dashboard is pre-wired for `Daniel` and `Family` (entities `todo.daniel` and `todo.family`).
+2. If you used other names or want more lists, update the `todo.*` entities in the Chores popup in `dashboard.yaml` (marked `UPDATE THIS ENTITY`).
 3. Tap the **Chores** button on the dashboard. Kids can check items off right on the screen.
 4. Not interested? Delete the Chores button and the `#chores` popup from `dashboard.yaml`.
 
 ### Per-person "Today" agenda
 
-**Hold** (long-press) a person's button to pop up their agenda for today. The popups use the same calendar entities as the main view — update the `UPDATE THIS ENTITY` markers in the `#agenda1`–`#agenda4` popups.
+**Hold** (long-press) a calendar's button to pop up its agenda for today. The popups (`#agenda-school`, `#agenda-daniel`, `#agenda-weather`) use the same calendar entities as the main view.
 
 ### Meal planner strip
 
@@ -241,8 +241,8 @@ The theme file now also defines **`Skylight Dark`** — same layout and per-pers
 
 * **The Add Event popup doesn't open** — Browser Mod is installed via HACS but not added as an integration. See the note in the Prerequisites section, then restart HA.
 * **The calendar shows no events at all** — check the filter helpers (Developer tools → States, search `_calendar_filter`). A value of `.*` means that calendar is *hidden*; `^$` means visible. Tapping a person's button toggles between the two.
-* **The buttons show "Unknown" or don't color** — the `person.*` entities in `dashboard.yaml` don't exist in your install. Search `dashboard.yaml` for `UPDATE THIS ENTITY` and set every entity to match yours.
-* **Events I add on screen don't appear in Google Calendar** — the `calendar_map` inside `script.add_calendar_event` (in the package file) still points at the default `calendar.calendar1`-style entities. Update the mapping to your real calendar entities.
+* **The buttons don't color when tapped** — the `input_text.*_calendar_filter` helpers don't exist, which usually means the package file isn't loaded. Check the packages setup in section 2 and restart HA.
+* **Events I add on screen don't appear in Google Calendar** — the `calendar_map` inside `script.add_calendar_event` (in the package file) points at entities that don't exist in your install (it expects `calendar.school`, `calendar.daniel`, `calendar.weather`, `calendar.family`). Update the mapping to your real calendar entities.
 * **The background is missing** — `calbackgrd.webp` wasn't uploaded to `/config/www/`, or the dashboard's `background.image` path doesn't match the uploaded filename.
 * **Everything is the wrong font** — the theme isn't applied. Set your profile's theme to `Skylight` (per browser/user), and make sure `themes: !include_dir_merge_named themes` is in `configuration.yaml`.
 
