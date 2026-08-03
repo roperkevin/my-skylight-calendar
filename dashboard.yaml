@@ -171,20 +171,20 @@ views:
                 styles: |
                   .bubble-button-card-container {
                     background: none !important;
-                    border-radius: 999px !important;
+                    border-radius: var(--skylight-radius-card, 10px) !important;
                   }
                   .bubble-icon-container {
-                    border-radius: 999px !important;
+                    border-radius: var(--skylight-radius-chip, 6px) !important;
                   }
                   ha-card {
-                    border-radius: 999px !important;
+                    border-radius: var(--skylight-radius-card, 10px) !important;
                     border: 1px solid ${hass.states['input_text.school_calendar_filter'].state === '.*' ? 'var(--skylight-btn-off-border, #e9ecef)' : 'transparent'} !important;
                     box-shadow: ${hass.states['input_text.school_calendar_filter'].state === '.*' ? 'none' : 'var(--skylight-btn-shadow, 0 2px 6px rgba(104, 104, 104, 0.14))'} !important;
                     transition: box-shadow .25s ease, border-color .25s ease !important;
                   }
                   .bubble-button-background {
                     opacity: 1 !important;
-                    border-radius: 999px !important;
+                    border-radius: var(--skylight-radius-card, 10px) !important;
                     background-color: ${hass.states['input_text.school_calendar_filter'].state === '.*' ? 'var(--skylight-btn-off-bg, #ffffff)' : 'var(--school-default-primary-color)'} !important;
                   }
                   .bubble-icon-container {
@@ -219,20 +219,20 @@ views:
                 styles: |
                   .bubble-button-card-container {
                     background: none !important;
-                    border-radius: 999px !important;
+                    border-radius: var(--skylight-radius-card, 10px) !important;
                   }
                   .bubble-icon-container {
-                    border-radius: 999px !important;
+                    border-radius: var(--skylight-radius-chip, 6px) !important;
                   }
                   ha-card {
-                    border-radius: 999px !important;
+                    border-radius: var(--skylight-radius-card, 10px) !important;
                     border: 1px solid ${hass.states['input_text.daniel_calendar_filter'].state === '.*' ? 'var(--skylight-btn-off-border, #e9ecef)' : 'transparent'} !important;
                     box-shadow: ${hass.states['input_text.daniel_calendar_filter'].state === '.*' ? 'none' : 'var(--skylight-btn-shadow, 0 2px 6px rgba(104, 104, 104, 0.14))'} !important;
                     transition: box-shadow .25s ease, border-color .25s ease !important;
                   }
                   .bubble-button-background {
                     opacity: 1 !important;
-                    border-radius: 999px !important;
+                    border-radius: var(--skylight-radius-card, 10px) !important;
                     background-color: ${hass.states['input_text.daniel_calendar_filter'].state === '.*' ? 'var(--skylight-btn-off-bg, #ffffff)' : 'var(--daniel-default-primary-color)'} !important;
                   }
                   .bubble-icon-container {
@@ -266,20 +266,20 @@ views:
                 styles: |
                   .bubble-button-card-container {
                     background: none !important;
-                    border-radius: 999px !important;
+                    border-radius: var(--skylight-radius-card, 10px) !important;
                   }
                   .bubble-icon-container {
-                    border-radius: 999px !important;
+                    border-radius: var(--skylight-radius-chip, 6px) !important;
                   }
                   ha-card {
-                    border-radius: 999px !important;
+                    border-radius: var(--skylight-radius-card, 10px) !important;
                     border: 1px solid ${hass.states['input_text.weather_calendar_filter'].state === '.*' ? 'var(--skylight-btn-off-border, #e9ecef)' : 'transparent'} !important;
                     box-shadow: ${hass.states['input_text.weather_calendar_filter'].state === '.*' ? 'none' : 'var(--skylight-btn-shadow, 0 2px 6px rgba(104, 104, 104, 0.14))'} !important;
                     transition: box-shadow .25s ease, border-color .25s ease !important;
                   }
                   .bubble-button-background {
                     opacity: 1 !important;
-                    border-radius: 999px !important;
+                    border-radius: var(--skylight-radius-card, 10px) !important;
                     background-color: ${hass.states['input_text.weather_calendar_filter'].state === '.*' ? 'var(--skylight-btn-off-bg, #ffffff)' : 'var(--weather-default-primary-color)'} !important;
                   }
                   .bubble-icon-container {
@@ -310,20 +310,20 @@ views:
                 styles: |
                   .bubble-button-card-container {
                     background: none !important;
-                    border-radius: 999px !important;
+                    border-radius: var(--skylight-radius-card, 10px) !important;
                   }
                   .bubble-icon-container {
-                    border-radius: 999px !important;
+                    border-radius: var(--skylight-radius-chip, 6px) !important;
                   }
                   ha-card {
-                    border-radius: 999px !important;
+                    border-radius: var(--skylight-radius-card, 10px) !important;
                     border: 1px solid ${hass.states['input_text.family_calendar_filter'].state === '.*' ? 'var(--skylight-btn-off-border, #e9ecef)' : 'transparent'} !important;
                     box-shadow: ${hass.states['input_text.family_calendar_filter'].state === '.*' ? 'none' : 'var(--skylight-btn-shadow, 0 2px 6px rgba(104, 104, 104, 0.14))'} !important;
                     transition: box-shadow .25s ease, border-color .25s ease !important;
                   }
                   .bubble-button-background {
                     opacity: 1 !important;
-                    border-radius: 999px !important;
+                    border-radius: var(--skylight-radius-card, 10px) !important;
                     background-color: ${hass.states['input_text.family_calendar_filter'].state === '.*' ? 'var(--skylight-btn-off-bg, #ffffff)' : 'var(--family-default-primary-color)'} !important;
                   }
                   .bubble-icon-container {
@@ -354,20 +354,20 @@ views:
                 styles: |
                   .bubble-button-card-container {
                     background: none !important;
-                    border-radius: 999px !important;
+                    border-radius: var(--skylight-radius-card, 10px) !important;
                   }
                   .bubble-icon-container {
-                    border-radius: 999px !important;
+                    border-radius: var(--skylight-radius-chip, 6px) !important;
                   }
                   ha-card {
-                    border-radius: 999px !important;
+                    border-radius: var(--skylight-radius-card, 10px) !important;
                     border: 1px solid ${hass.states['input_text.birthdays_calendar_filter'].state === '.*' ? 'var(--skylight-btn-off-border, #e9ecef)' : 'transparent'} !important;
                     box-shadow: ${hass.states['input_text.birthdays_calendar_filter'].state === '.*' ? 'none' : 'var(--skylight-btn-shadow, 0 2px 6px rgba(104, 104, 104, 0.14))'} !important;
                     transition: box-shadow .25s ease, border-color .25s ease !important;
                   }
                   .bubble-button-background {
                     opacity: 1 !important;
-                    border-radius: 999px !important;
+                    border-radius: var(--skylight-radius-card, 10px) !important;
                     background-color: ${hass.states['input_text.birthdays_calendar_filter'].state === '.*' ? 'var(--skylight-btn-off-bg, #ffffff)' : 'var(--birthdays-default-primary-color)'} !important;
                   }
                   .bubble-icon-container {
@@ -398,20 +398,20 @@ views:
                 styles: |
                   .bubble-button-card-container {
                     background: none !important;
-                    border-radius: 999px !important;
+                    border-radius: var(--skylight-radius-card, 10px) !important;
                   }
                   .bubble-icon-container {
-                    border-radius: 999px !important;
+                    border-radius: var(--skylight-radius-chip, 6px) !important;
                   }
                   ha-card {
-                    border-radius: 999px !important;
+                    border-radius: var(--skylight-radius-card, 10px) !important;
                     border: 1px solid ${hass.states['input_text.holidays_calendar_filter'].state === '.*' ? 'var(--skylight-btn-off-border, #e9ecef)' : 'transparent'} !important;
                     box-shadow: ${hass.states['input_text.holidays_calendar_filter'].state === '.*' ? 'none' : 'var(--skylight-btn-shadow, 0 2px 6px rgba(104, 104, 104, 0.14))'} !important;
                     transition: box-shadow .25s ease, border-color .25s ease !important;
                   }
                   .bubble-button-background {
                     opacity: 1 !important;
-                    border-radius: 999px !important;
+                    border-radius: var(--skylight-radius-card, 10px) !important;
                     background-color: ${hass.states['input_text.holidays_calendar_filter'].state === '.*' ? 'var(--skylight-btn-off-bg, #ffffff)' : 'var(--holidays-default-primary-color)'} !important;
                   }
                   .bubble-icon-container {
@@ -451,19 +451,19 @@ views:
               * { font-size: 1.05em !important; }
               .bubble-button-card-container {
                 background: none !important;
-                border-radius: 999px !important;
+                border-radius: var(--skylight-radius-card, 10px) !important;
               }
               .bubble-icon-container {
-                border-radius: 999px !important;
+                border-radius: var(--skylight-radius-chip, 6px) !important;
               }
               ha-card {
                 width: 300px;
-                border-radius: 999px !important;
+                border-radius: var(--skylight-radius-card, 10px) !important;
                 box-shadow: var(--skylight-btn-shadow, 0 2px 6px rgba(104, 104, 104, 0.14)) !important;
               }
               .bubble-button-background {
                 opacity: 1 !important;
-                border-radius: 999px !important;
+                border-radius: var(--skylight-radius-card, 10px) !important;
                 background-color: var(--skylight-cta-bg, #0056b2) !important;
               }
               .bubble-icon { --mdc-icon-size: 26px !important; color: var(--skylight-cta-text, #ffffff) !important; opacity: 1; }
@@ -485,20 +485,20 @@ views:
               * { font-size: 1.05em !important; }
               .bubble-button-card-container {
                 background: none !important;
-                border-radius: 999px !important;
+                border-radius: var(--skylight-radius-card, 10px) !important;
               }
               .bubble-icon-container {
-                border-radius: 999px !important;
+                border-radius: var(--skylight-radius-chip, 6px) !important;
               }
               ha-card {
                 width: 200px;
-                border-radius: 999px !important;
+                border-radius: var(--skylight-radius-card, 10px) !important;
                 border: 1px solid var(--skylight-btn-off-border, #e9ecef) !important;
                 box-shadow: none !important;
               }
               .bubble-button-background {
                 opacity: 1 !important;
-                border-radius: 999px !important;
+                border-radius: var(--skylight-radius-card, 10px) !important;
                 background-color: var(--skylight-surface, #ffffff) !important;
               }
               .bubble-icon { --mdc-icon-size: 26px !important; color: var(--primary-text-color, #34343c) !important; opacity: 1; }
@@ -1069,18 +1069,18 @@ views:
                     styles: |
                       .bubble-button-card-container {
                         background: none !important;
-                        border-radius: 999px !important;
+                        border-radius: var(--skylight-radius-card, 10px) !important;
                       }
                       .bubble-icon-container {
-                        border-radius: 999px !important;
+                        border-radius: var(--skylight-radius-chip, 6px) !important;
                       }
                       ha-card {
-                        border-radius: 999px !important;
+                        border-radius: var(--skylight-radius-card, 10px) !important;
                         box-shadow: var(--skylight-btn-shadow, 0 2px 6px rgba(104, 104, 104, 0.14)) !important;
                       }
                       .bubble-button-background {
                         opacity: 1 !important;
-                        border-radius: 999px !important;
+                        border-radius: var(--skylight-radius-card, 10px) !important;
                         background-color: ${hass.states['input_select.calendar_select'].state == 'School' ? 'var(--school-default-primary-color)'
                         : hass.states['input_select.calendar_select'].state == 'Daniel' ? 'var(--daniel-default-primary-color)'
                         : hass.states['input_select.calendar_select'].state == 'Weather' ? 'var(--weather-default-primary-color)'
