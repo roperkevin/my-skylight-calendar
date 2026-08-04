@@ -71,7 +71,7 @@ The hardware I originally used I chose based on what I mentioned above plus with
 * **Two-way Sync:** Edit events on the screen or on our phones (Google Calendar).
 * **"Add Event" Popup:** A custom UI to add events to specific calendars directly from the screen.
 * **Weather & Date:** Beautiful, glanceable header.
-* **Tomorrow Alert:** A header banner that appears when events are coming up tomorrow, with a subtle bell animation.
+* **Tomorrow Alert:** A header row that appears when events are coming up tomorrow — each event as a badge pill in its calendar's color, with a subtle bell animation.
 * **Responsive:** Automatically adjusts day-count based on screen width (Mobile vs Desktop).
 * **Chores:** A popup with a per-person to-do list, powered by HA's built-in Local To-do.
 * **Per-person Agenda:** Hold a person's button to pop up their day at a glance.
@@ -209,7 +209,7 @@ The script validates the form before creating anything: it refuses an empty titl
 
 The package defines a trigger-based template sensor, `sensor.tomorrow_events`, that calls `calendar.get_events` for tomorrow (midnight to midnight) across all the family calendars — every 15 minutes, on startup, and right after an event is created, so additions from the Add Event popup show up immediately. Its state is the number of events tomorrow and its `events` attribute lists them sorted (all-day first, then by start time).
 
-The dashboard header wraps a markdown card in a `conditional` card that only renders when the sensor is above 0, so the banner disappears entirely on quiet days. It shows up to 5 events (`+N more` beyond that), eases in on load, and the bell icon gives a soft ring every few seconds — both animations are disabled for browsers that request reduced motion. The sensor auto-discovers every `calendar.*` entity in your install (no configuration needed, whatever your entity IDs look like), excluding any with `weather` in the ID so forecast feeds don't flood the alert. To limit it to specific calendars, replace the `wanted_calendars` template in the package file with a plain list — entities that don't exist are skipped safely. The sensor's `queried_calendars` attribute shows which calendars the last refresh actually asked.
+The dashboard header wraps a markdown card in a `conditional` card that only renders when the sensor is above 0, so the alert disappears entirely on quiet days. Each event renders as its own badge pill — a colored dot, tinted background and border in the event's calendar color (the same `*-default-primary-color` theme variables the buttons and event chips use, falling back to the accent blue for calendars without one), with timed events carrying a muted `HH:MM` prefix. It shows up to 5 pills (`+N more` beyond that), eases in on load, and the bell icon gives a soft ring every few seconds — both animations are disabled for browsers that request reduced motion. The sensor auto-discovers every `calendar.*` entity in your install (no configuration needed, whatever your entity IDs look like), excluding any with `weather` in the ID so forecast feeds don't flood the alert. To limit it to specific calendars, replace the `wanted_calendars` template in the package file with a plain list — entities that don't exist are skipped safely. The sensor's `queried_calendars` attribute shows which calendars the last refresh actually asked.
 
 ## 🎨 Customizing
 
