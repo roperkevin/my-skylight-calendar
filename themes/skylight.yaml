@@ -100,12 +100,21 @@ Skylight:
   skylight-shadow-card: "rgba(104, 104, 104, 0.05) 0 2px 6px 0, rgba(211, 209, 209, 0.15) 0 0 0 1px"
   skylight-btn-shadow: "0 2px 6px rgba(104, 104, 104, 0.14)"
 
-  # Calendar surfaces
-  skylight-cal-card-background: "#FFFFFF"
-  skylight-day-bg: "#F6F8FA"
-  skylight-day-border-color: "#EAEAEA"
-  skylight-today-bg: "#E1F5FE"
+  # Calendar surfaces — soft vertical gradients give the card and day tiles
+  # a gentle sense of depth without breaking Chirpy's flat language. The
+  # dashboard applies these with the `background:` shorthand, so gradients
+  # and solid colors are both valid values.
+  skylight-cal-card-background: "linear-gradient(175deg, #FFFFFF 0%, #F7F9FC 100%)"
+  skylight-day-bg: "linear-gradient(180deg, #F9FAFC 0%, #F1F4F8 100%)"
+  skylight-day-border-color: "#E7EAEE"
+  skylight-day-shadow: "0 1px 2px rgba(52, 52, 60, 0.04)"
+  skylight-day-hover-border-color: "#D5DBE2"
+  skylight-day-hover-shadow: "0 6px 16px rgba(52, 52, 60, 0.10)"
+  # Weekend tiles: a whisper of warmth so Sat/Sun read differently at a glance
+  skylight-weekend-day-bg: "linear-gradient(180deg, #FBF9F6 0%, #F6F2ED 100%)"
+  skylight-today-bg: "linear-gradient(180deg, #E6F4FE 0%, #D8EDFC 100%)"
   skylight-today-highlight-color: "#0070CB"
+  skylight-today-glow: "0 6px 20px rgba(0, 112, 203, 0.22)"
 
   # Calendar text
   skylight-weekday-text-color: "#757575"
@@ -115,8 +124,17 @@ Skylight:
   skylight-past-event-color: "gray"
 
   # Event chips: neutral surface with the calendar color as a left accent bar
+  # (the dashboard tints the surface with the calendar color via color-mix
+  # on browsers that support it)
   skylight-event-bg: "#FFFFFF"
   skylight-event-border: "#EAEAEA"
+  skylight-event-shadow: "0 1px 2px rgba(52, 52, 60, 0.05)"
+  skylight-event-hover-shadow: "0 4px 12px rgba(52, 52, 60, 0.12)"
+
+  # Calendar chrome: navigation-arrow hover wash and the thin scrollbar shown
+  # when a view scrolls inside the card
+  skylight-nav-hover-bg: "rgba(0, 86, 178, 0.08)"
+  skylight-scrollbar-thumb: "#D6DBE1"
 
   # Buttons & popup surfaces — Chirpy buttons are flat: white bg, 1px
   # #e9ecef border, muted text. The CTA uses the link blue.
@@ -187,12 +205,19 @@ Skylight Dark:
   skylight-shadow-card: "rgba(21, 21, 21, 0.72) 0 6px 18px 0, rgba(137, 135, 135, 0.24) 0 0 0 1px"
   skylight-btn-shadow: "0 2px 6px rgba(0, 0, 0, 0.45)"
 
-  # Calendar surfaces
-  skylight-cal-card-background: "#1E1E1E"
-  skylight-day-bg: "#252526"
-  skylight-day-border-color: "#2C2D2D"
-  skylight-today-bg: "rgba(7, 59, 104, 0.55)"
-  skylight-today-highlight-color: "#0075D1"
+  # Calendar surfaces — same gradient treatment as the light theme, tuned so
+  # the tiles lift slightly off the near-black canvas
+  skylight-cal-card-background: "linear-gradient(175deg, #222327 0%, #1B1C1F 100%)"
+  skylight-day-bg: "linear-gradient(180deg, #27282C 0%, #212226 100%)"
+  skylight-day-border-color: "#2E2F33"
+  skylight-day-shadow: "0 1px 2px rgba(0, 0, 0, 0.25)"
+  skylight-day-hover-border-color: "#3B3D42"
+  skylight-day-hover-shadow: "0 6px 16px rgba(0, 0, 0, 0.45)"
+  # Weekend tiles: a whisper of warmth so Sat/Sun read differently at a glance
+  skylight-weekend-day-bg: "linear-gradient(180deg, #2A282B 0%, #242225 100%)"
+  skylight-today-bg: "linear-gradient(180deg, rgba(14, 72, 122, 0.60) 0%, rgba(9, 50, 86, 0.60) 100%)"
+  skylight-today-highlight-color: "#1E88E5"
+  skylight-today-glow: "0 6px 22px rgba(30, 136, 229, 0.40)"
 
   # Calendar text
   skylight-weekday-text-color: "#A7A7A7"
@@ -202,9 +227,17 @@ Skylight Dark:
   skylight-past-event-color: "#555555"
 
   # Event chips: neutral raised surface with the calendar color as a left
-  # accent bar; bold near-white title over muted details
+  # accent bar; bold near-white title over muted details (the dashboard tints
+  # the surface with the calendar color via color-mix where supported)
   skylight-event-bg: "#2A2C33"
   skylight-event-border: "rgba(255, 255, 255, 0.08)"
+  skylight-event-shadow: "0 1px 3px rgba(0, 0, 0, 0.35)"
+  skylight-event-hover-shadow: "0 4px 14px rgba(0, 0, 0, 0.55)"
+
+  # Calendar chrome: navigation-arrow hover wash and the thin scrollbar shown
+  # when a view scrolls inside the card
+  skylight-nav-hover-bg: "rgba(138, 180, 248, 0.12)"
+  skylight-scrollbar-thumb: "#3A3C41"
 
   # Buttons & popup surfaces — Chirpy dark buttons: the sidebar-btn
   # #232328 bg (readable against the #1b1b1e canvas, unlike the card

@@ -806,22 +806,49 @@ views:
                       border-radius: var(--skylight-radius-card, 10px) !important;
                       border: none !important;
                       box-shadow: var(--skylight-shadow-card, rgba(104, 104, 104, 0.05) 0 2px 6px 0, rgba(211, 209, 209, 0.15) 0 0 0 1px) !important;
-                      padding: 18px 20px 20px !important;
+                      padding: 20px 22px 22px !important;
                       ${HEIGHT_CSS}
+                    }
+
+                    /* Slim scrollbar for the views that scroll inside the card */
+                    ha-card::-webkit-scrollbar {
+                      width: 8px;
+                    }
+                    ha-card::-webkit-scrollbar-track {
+                      background: transparent;
+                    }
+                    ha-card::-webkit-scrollbar-thumb {
+                      background: var(--skylight-scrollbar-thumb, #d6dbe1);
+                      border-radius: 8px;
                     }
 
                     /* === NAVIGATION ROW (arrows + month title) === */
                     .container .navigation {
-                      padding: 0.1em 0.2em 0.5em !important;
+                      padding: 0.1em 0.2em 0.6em !important;
                       font-weight: 700 !important;
                       color: var(--primary-text-color) !important;
                     }
 
                     .container .navigation .title {
                       font-family: var(--skylight-heading-font-family, var(--primary-font-family)) !important;
-                      font-size: 1.5em !important;
+                      font-size: 1.55em !important;
                       font-weight: 700 !important;
                       letter-spacing: -0.01em !important;
+                    }
+
+                    /* Round tap targets for the prev/next arrows */
+                    .container .navigation ha-icon {
+                      cursor: pointer;
+                      padding: 4px !important;
+                      border-radius: 50% !important;
+                      transition: background-color .2s ease, transform .2s ease;
+                    }
+
+                    @media (hover: hover) {
+                      .container .navigation ha-icon:hover {
+                        background-color: var(--skylight-nav-hover-bg, rgba(0, 86, 178, 0.08)) !important;
+                        transform: scale(1.08);
+                      }
                     }
 
                     /* === GRID LAYOUT === */
@@ -832,7 +859,7 @@ views:
                       display: grid !important;
                       grid-template-columns: repeat(${COLS}, minmax(0, 1fr)) !important;
                       grid-auto-flow: row dense !important;
-                      gap: 6px !important;
+                      gap: 8px !important;
                     }
 
                     .container .navigation,
@@ -860,31 +887,55 @@ views:
                     }
 
                     /* === DAY TILES === */
-                    /* Floating rounded tiles with gaps instead of ruled borders. */
+                    /* Floating rounded tiles with gaps instead of ruled borders,
+                       a whisper of elevation, and a gentle lift on hover. */
                     .day:not(.header) {
                       background: var(--skylight-day-bg, #f6f8fa) !important;
-                      border: 1px solid var(--skylight-day-border-color, #eaeaea) !important;
+                      border: 1px solid var(--skylight-day-border-color, #e7eaee) !important;
                       border-radius: var(--skylight-radius-tile, 6px) !important;
-                      padding: 0.45em 0.45em 0.55em !important;
+                      box-shadow: var(--skylight-day-shadow, 0 1px 2px rgba(52, 52, 60, 0.04)) !important;
+                      padding: 0.5em 0.5em 0.6em !important;
                       width: auto !important;
                       min-width: 0 !important;
                       margin: 0 !important;
                       box-sizing: border-box !important;
                       align-self: stretch !important;
                       justify-self: stretch !important;
+                      transition: border-color .25s ease, box-shadow .25s ease, transform .25s ease;
                     }
 
-                    /* Today: soft amber tile with an accent ring */
+                    @media (hover: hover) {
+                      /* Today keeps its accent ring + glow, so it skips the
+                         generic hover shadow. */
+                      .day:not(.header):not(.today):hover {
+                        border-color: var(--skylight-day-hover-border-color, #d5dbe2) !important;
+                        box-shadow: var(--skylight-day-hover-shadow, 0 6px 16px rgba(52, 52, 60, 0.10)) !important;
+                        transform: translateY(-2px);
+                      }
+                    }
+
+                    /* Weekend tiles: subtly warmer surface (data-weekday is
+                       1-7 with Monday = 1, so 6/7 are Sat/Sun) */
+                    .day:not(.header):not(.today)[data-weekday="6"],
+                    .day:not(.header):not(.today)[data-weekday="7"] {
+                      background: var(--skylight-weekend-day-bg, linear-gradient(180deg, #fbf9f6 0%, #f6f2ed 100%)) !important;
+                    }
+
+                    /* Today: tinted tile with an accent ring and a soft glow */
                     .day.today {
                       background: var(--skylight-today-bg, #e1f5fe) !important;
-                      box-shadow: inset 0 0 0 2px var(--skylight-today-highlight-color, #0070cb) !important;
+                      border-color: transparent !important;
+                      box-shadow: inset 0 0 0 2px var(--skylight-today-highlight-color, #0070cb),
+                                  var(--skylight-today-glow, 0 6px 20px rgba(0, 112, 203, 0.22)) !important;
                     }
 
                     /* === DATE NUMBERS & WEEKDAY TEXT IN TILES === */
                     .day .date .number {
+                      font-family: var(--skylight-heading-font-family, var(--primary-font-family)) !important;
                       font-weight: 700 !important;
                       font-size: 2.2em !important;
                       line-height: 1.15 !important;
+                      font-variant-numeric: tabular-nums !important;
                       color: var(--primary-text-color) !important;
                     }
 
@@ -900,6 +951,7 @@ views:
                       border-radius: var(--skylight-radius-chip, 6px) !important;
                       padding-left: 10px !important;
                       padding-right: 10px !important;
+                      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.18) !important;
                     }
 
                     /* Weather chip inside day tiles */
@@ -910,20 +962,32 @@ views:
 
                     /* === EVENT CHIPS === */
                     /* Soft tint of the calendar's color + a solid accent bar.
-                       The color-mix line wins on modern browsers; older ones
-                       keep the solid-color fallback above it. */
+                       week-planner-card sets --border-color per event to the
+                       calendar's color; the color-mix line blends 8% of it
+                       into the chip surface on modern browsers, while older
+                       ones keep the solid-color fallback above it. */
                     .event {
                       color: var(--skylight-event-text-color, #34343c) !important;
                       background-color: var(--skylight-event-bg, #ffffff) !important;
+                      background-color: color-mix(in srgb, var(--border-color) 8%, var(--skylight-event-bg, #ffffff)) !important;
                       border: 1px solid var(--skylight-event-border, #eaeaea) !important;
                       border-left: 3px solid var(--border-color) !important;
                       border-radius: var(--skylight-radius-chip, 6px) !important;
-                      padding: 0.35em 0.5em 0.4em 0.55em !important;
+                      box-shadow: var(--skylight-event-shadow, 0 1px 2px rgba(52, 52, 60, 0.05)) !important;
+                      padding: 0.4em 0.55em 0.45em 0.6em !important;
                       line-height: 1.25 !important;
                       font-size: 1.02em !important;
                       font-weight: 500 !important;
                       max-height: 84px !important;
                       overflow: hidden !important;
+                      transition: box-shadow .2s ease, transform .2s ease;
+                    }
+
+                    @media (hover: hover) {
+                      .event:hover {
+                        box-shadow: var(--skylight-event-hover-shadow, 0 4px 12px rgba(52, 52, 60, 0.12)) !important;
+                        transform: translateY(-1px);
+                      }
                     }
 
                     /* Bold title over a muted detail line */
@@ -943,6 +1007,7 @@ views:
                       font-size: 0.78em !important;
                       font-weight: 600 !important;
                       letter-spacing: 0.02em !important;
+                      font-variant-numeric: tabular-nums !important;
                     }
 
                     .event .location {
@@ -956,6 +1021,8 @@ views:
                       border: none !important;
                       color: var(--secondary-text-color) !important;
                       font-size: 0.9em !important;
+                      font-style: italic !important;
+                      opacity: 0.8 !important;
                     }
 
                     /* === WEEKDAY LABEL COLORS === */
@@ -981,6 +1048,13 @@ views:
                        WEEKEND_CSS template variable, so they stay correct if you
                        change STARTDAY. */
                     ${WEEKEND_CSS}
+
+                    /* Today's weekday label picks up the accent (after the
+                       weekend rules on purpose: at equal specificity the
+                       later rule wins, so today stays accented on weekends). */
+                    .day.today .date .text {
+                      color: var(--skylight-today-highlight-color, #0070cb) !important;
+                    }
 
 
                     /* === RESPONSIVE BREAKPOINTS === */
@@ -1346,9 +1420,11 @@ views:
                     .event {
                       color: var(--skylight-event-text-color, #34343c) !important;
                       background-color: var(--skylight-event-bg, #ffffff) !important;
+                      background-color: color-mix(in srgb, var(--border-color) 8%, var(--skylight-event-bg, #ffffff)) !important;
                       border: 1px solid var(--skylight-event-border, #eaeaea) !important;
                       border-left: 3px solid var(--border-color) !important;
                       border-radius: var(--skylight-radius-chip, 6px) !important;
+                      box-shadow: var(--skylight-event-shadow, 0 1px 2px rgba(52, 52, 60, 0.05)) !important;
                     }
                     .event .title,
                     .event .name,
@@ -1414,9 +1490,11 @@ views:
                     .event {
                       color: var(--skylight-event-text-color, #34343c) !important;
                       background-color: var(--skylight-event-bg, #ffffff) !important;
+                      background-color: color-mix(in srgb, var(--border-color) 8%, var(--skylight-event-bg, #ffffff)) !important;
                       border: 1px solid var(--skylight-event-border, #eaeaea) !important;
                       border-left: 3px solid var(--border-color) !important;
                       border-radius: var(--skylight-radius-chip, 6px) !important;
+                      box-shadow: var(--skylight-event-shadow, 0 1px 2px rgba(52, 52, 60, 0.05)) !important;
                     }
                     .event .title,
                     .event .name,
@@ -1482,9 +1560,11 @@ views:
                     .event {
                       color: var(--skylight-event-text-color, #34343c) !important;
                       background-color: var(--skylight-event-bg, #ffffff) !important;
+                      background-color: color-mix(in srgb, var(--border-color) 8%, var(--skylight-event-bg, #ffffff)) !important;
                       border: 1px solid var(--skylight-event-border, #eaeaea) !important;
                       border-left: 3px solid var(--border-color) !important;
                       border-radius: var(--skylight-radius-chip, 6px) !important;
+                      box-shadow: var(--skylight-event-shadow, 0 1px 2px rgba(52, 52, 60, 0.05)) !important;
                     }
                     .event .title,
                     .event .name,
