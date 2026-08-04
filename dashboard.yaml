@@ -699,90 +699,14 @@ views:
             card:
               type: horizontal-stack
               cards:
-                # --- ACTION PILLS ---
+                # --- VIEW SELECTOR ---
                 # Same tinted-pill recipe as the "Coming up tomorrow" alert
                 # pills, using the accent color (the tomorrow pills' fallback
                 # hue for calendars without their own color) so the whole
                 # chrome row reads as one family. The plain background/border
                 # lines are fallbacks for browsers without color-mix.
-                - type: custom:bubble-card
-                  card_type: button
-                  button_type: name
-                  name: Add Event
-                  icon: mdi:calendar-plus
-                  tap_action:
-                    action: navigate
-                    navigation_path: "#addcalendarevent"
-                  styles: |
-                    .bubble-button-card-container {
-                      background: none !important;
-                      border-radius: 999px !important;
-                    }
-                    ha-card {
-                      background: none !important;
-                      border-radius: 999px !important;
-                      border: 1px solid var(--skylight-event-border, #eaeaea) !important;
-                      border-color: color-mix(in srgb, var(--skylight-today-highlight-color, #0070cb) 45%, var(--skylight-event-border, #eaeaea)) !important;
-                      box-shadow: var(--skylight-event-shadow, 0 1px 2px rgba(52, 52, 60, 0.05)) !important;
-                    }
-                    .bubble-button-background {
-                      opacity: 1 !important;
-                      border-radius: 999px !important;
-                      background-color: var(--skylight-event-bg, #ffffff) !important;
-                      background-color: color-mix(in srgb, var(--skylight-today-highlight-color, #0070cb) 14%, var(--skylight-event-bg, #ffffff)) !important;
-                    }
-                    .bubble-icon-container {
-                      background: none !important;
-                    }
-                    .bubble-icon {
-                      opacity: 1 !important;
-                      color: var(--skylight-today-highlight-color, #0070cb) !important;
-                    }
-                    .bubble-name {
-                      opacity: 1 !important;
-                      font-weight: 600 !important;
-                      letter-spacing: 0.01em !important;
-                      color: var(--skylight-event-text-color, var(--primary-text-color)) !important;
-                    }
-                - type: custom:bubble-card
-                  card_type: button
-                  button_type: name
-                  name: Chores
-                  icon: mdi:clipboard-check-outline
-                  tap_action:
-                    action: navigate
-                    navigation_path: "#chores"
-                  styles: |
-                    .bubble-button-card-container {
-                      background: none !important;
-                      border-radius: 999px !important;
-                    }
-                    ha-card {
-                      background: none !important;
-                      border-radius: 999px !important;
-                      border: 1px solid var(--skylight-event-border, #eaeaea) !important;
-                      border-color: color-mix(in srgb, var(--skylight-today-highlight-color, #0070cb) 45%, var(--skylight-event-border, #eaeaea)) !important;
-                      box-shadow: var(--skylight-event-shadow, 0 1px 2px rgba(52, 52, 60, 0.05)) !important;
-                    }
-                    .bubble-button-background {
-                      opacity: 1 !important;
-                      border-radius: 999px !important;
-                      background-color: var(--skylight-event-bg, #ffffff) !important;
-                      background-color: color-mix(in srgb, var(--skylight-today-highlight-color, #0070cb) 14%, var(--skylight-event-bg, #ffffff)) !important;
-                    }
-                    .bubble-icon-container {
-                      background: none !important;
-                    }
-                    .bubble-icon {
-                      opacity: 1 !important;
-                      color: var(--skylight-today-highlight-color, #0070cb) !important;
-                    }
-                    .bubble-name {
-                      opacity: 1 !important;
-                      font-weight: 600 !important;
-                      letter-spacing: 0.01em !important;
-                      color: var(--skylight-event-text-color, var(--primary-text-color)) !important;
-                    }
+                # (The Add Event and Chores buttons used to live here; they
+                # moved into the navigation sidebar next to the calendar.)
                 - type: custom:bubble-card
                   card_type: select
                   entity: input_select.calendar_view
@@ -839,699 +763,995 @@ views:
       # --- START CALENDAR SECTION (Week Planner Card) ---
       - type: grid
         cards:
-          - type: custom:config-template-card
-            entities:
-              - input_text.school_calendar_filter
-              - input_text.daniel_calendar_filter
-              - input_text.weather_calendar_filter
-              - input_text.family_calendar_filter
-              - input_text.holidays_calendar_filter
-              - input_text.birthdays_calendar_filter
-              - input_select.calendar_view
-            variables:
-              SCHOOLCAL: states['input_text.school_calendar_filter']?.state
-              DANIELCAL: states['input_text.daniel_calendar_filter']?.state
-              WEATHERCAL: states['input_text.weather_calendar_filter']?.state
-              FAMCAL: states['input_text.family_calendar_filter']?.state
-              HOLCAL: states['input_text.holidays_calendar_filter']?.state
-              BIRCAL: states['input_text.birthdays_calendar_filter']?.state
-              VIEW: states['input_select.calendar_view']?.state
-              STARTDAY: |
-                (() => {
-                  const calendarView = states['input_select.calendar_view']?.state;
-                  if (calendarView === 'Today') return 'today';
-                  if (calendarView === 'Tomorrow') return 'tomorrow';
-                  // Fallback <--- UPDATE THIS IF NEEDED, valid values are: monday, tuesday, wednesday, thursday, friday, saturday, sunday
-                  return 'monday';
-                })()
-              DAYS: |
-                (() => {
-                  const calendarView = states['input_select.calendar_view']?.state;
-                  if (calendarView === 'Today') return 1;
-                  if (calendarView === 'Tomorrow') return 1;
-                  if (calendarView === 'Week') return 7;
-                  if (calendarView === 'Biweek') return 14;
-                  // else return "month"
-                  return "month";
-                })()
-              COLS: |
-                (() => {
-                  const calendarView = states['input_select.calendar_view']?.state;
-                  if (calendarView === 'Today' || calendarView === 'Tomorrow') return 1;
-                  return 7;
-                })()
-              MAXEVENTS: |
-                (() => {
-                  const calendarView = states['input_select.calendar_view']?.state;
-                  // Month tiles share the screen with 5-6 rows, so a busy day
-                  // can't show everything anyway — cap the chips and let the
-                  // card render its "more events" line instead of stretching
-                  // the whole row. The other views have room: 0 = unlimited.
-                  const uncapped = ['Today', 'Tomorrow', 'Week', 'Biweek'];
-                  if (uncapped.includes(calendarView)) return 0;
-                  return 4;
-                })()
-              HEIGHT_CSS: |
-                (() => {
-                  const calendarView = states['input_select.calendar_view']?.state;
-                  // Month view renders 5-6 rows of tiles, which can never fit a
-                  // fixed 70vh card, so let it grow. The shorter views keep the
-                  // clamped height so the card fills the screen nicely. Keep the
-                  // view list in sync with the DAYS template above: anything
-                  // unrecognized falls through to a month layout there, so it
-                  // must get the auto height here too.
-                  const clampedViews = ['Today', 'Tomorrow', 'Week', 'Biweek'];
-                  if (clampedViews.includes(calendarView)) {
-                    // overflow-y is a safety net: an unusually event-heavy day
-                    // scrolls inside the card instead of spilling past its
-                    // rounded bottom edge.
-                    return 'height: clamp(480px, 70vh, 900px) !important; max-height: clamp(480px, 70vh, 900px) !important; overflow-y: auto !important;';
-                  }
-                  return 'height: auto !important; max-height: none !important;';
-                })()
-              WEEKEND_CSS: |
-                (() => {
-                  const calendarView = states['input_select.calendar_view']?.state;
-                  if (calendarView === 'Today' || calendarView === 'Tomorrow') return '';
-                  // Keep this in sync with the STARTDAY fallback above.
-                  const startingDay = 'monday';
-                  const week = ['monday','tuesday','wednesday','thursday','friday','saturday','sunday'];
-                  const idx = week.indexOf(startingDay);
-                  // Header cells are :nth-of-type(offset + 2), offset counted from the starting day.
-                  const sat = ((5 - idx + 7) % 7) + 2;
-                  const sun = ((6 - idx + 7) % 7) + 2;
-                  return '.container > .day.header:nth-of-type(' + sat + ') .text, ' +
-                         '.container > .day.header:nth-of-type(' + sun + ') .text ' +
-                         '{ color: var(--skylight-weekend-text-color, #df3c30) !important; }';
-                })()
-            card:
-              type: custom:week-planner-card
-              calendars:
-                # --- MAP CALENDARS HERE ---
-                - entity: calendar.school
-                  name: School
-                  color: "var(--school-default-primary-color)"
-                  filter: ${ SCHOOLCAL }
-                - entity: calendar.daniel
-                  name: Daniel
-                  color: "var(--daniel-default-primary-color)"
-                  filter: ${ DANIELCAL }
-                - entity: calendar.weather
-                  name: Weather
-                  color: "var(--weather-default-primary-color)"
-                  filter: ${ WEATHERCAL }
-                - entity: calendar.family
-                  name: Family
-                  color: "var(--family-default-primary-color)"
-                  filter: ${ FAMCAL }
-                - entity: calendar.birthdays
-                  name: Birthdays
-                  color: "var(--birthdays-default-primary-color)"
-                  filter: ${ BIRCAL }
-                - entity: calendar.holidays # <--- Check this entity ID after adding the Holiday integration
-                  name: Holidays
-                  color: "var(--holidays-default-primary-color)"
-                  filter: ${ HOLCAL }
-              days: ${ DAYS }
-              maxDayEvents: ${ MAXEVENTS }
-              startingDay: ${ STARTDAY }
-              showNavigation: true
-              showWeekDayText: false # <--- Requires week-planner-card v1.13.0 or higher
-              startingDayOffset: 0
-              hideWeekend: false
-              noCardBackground: false
-              compact: false
-              weather:
-                showCondition: true
-                showTemperature: true
-                showLowTemperature: true
-                useTwiceDaily: false
-                entity: weather.home # <--- UPDATE THIS ENTITY
-              locale: en
-              showLocation: true
-              hidePastEvents: false
-              hideDaysWithoutEvents: false
-              hideTodayWithoutEvents: false
-              combineSimilarEvents: true
-              showLegend: false
-              legendToggle: false
-              card_mod:
-                # config-template-card can't substitute ${...} inside a larger
-                # string (it evals everything between the string's first "${"
-                # and its final character), so the whole style must be ONE
-                # template: a JS template literal returning the CSS, in which
-                # COLS and WEEKEND_CSS interpolate normally.
-                style: |-
-                  ${`
-                    /* === BASE SAFETY === */
-                    :host {
-                      overflow: hidden;
-                    }
-
-                    /* === CARD BASE === */
-                    ha-card {
-                      background: var(--skylight-cal-card-background, #ffffff) !important;
-                      border-radius: var(--skylight-radius-card, 10px) !important;
-                      border: none !important;
-                      box-shadow: var(--skylight-shadow-card, rgba(104, 104, 104, 0.05) 0 2px 6px 0, rgba(211, 209, 209, 0.15) 0 0 0 1px) !important;
-                      padding: 20px 22px 22px !important;
-                      /* Keep the per-day forecast a quiet chip: the stock
-                         30px icon reads louder than the date numbers. */
-                      --weather-icon-size: 20px;
-                      ${HEIGHT_CSS}
-                    }
-
-                    /* Slim scrollbar for the views that scroll inside the card */
-                    ha-card::-webkit-scrollbar {
-                      width: 8px;
-                    }
-                    ha-card::-webkit-scrollbar-track {
-                      background: transparent;
-                    }
-                    ha-card::-webkit-scrollbar-thumb {
-                      background: var(--skylight-scrollbar-thumb, #d6dbe1);
-                      border-radius: 8px;
-                    }
-
-                    /* === NAVIGATION ROW (month title + arrow cluster) === */
-                    /* The card renders the controls first — <ul><li>prev</li>
-                       <li>today</li><li>next</li></ul> — then <div class="month">.
-                       row-reverse + space-between flips the visual order so the
-                       month reads first on the left and the controls sit tucked
-                       against the right edge, like a proper calendar toolbar,
-                       without touching the card's markup. */
-                    .container .navigation {
-                      display: flex !important;
-                      flex-direction: row-reverse !important;
-                      justify-content: space-between !important;
-                      align-items: center !important;
-                      gap: 12px !important;
-                      padding: 0.1em 0.2em 0.7em !important;
-                      user-select: none;
-                      -webkit-tap-highlight-color: transparent;
-                    }
-
-                    .container .navigation .month {
-                      font-family: var(--skylight-heading-font-family, var(--primary-font-family)) !important;
-                      font-size: 1.7em !important;
-                      font-weight: 700 !important;
-                      letter-spacing: -0.01em !important;
-                      line-height: 1.15 !important;
-                      color: var(--primary-text-color) !important;
-                      min-width: 0;
-                      white-space: nowrap;
-                      overflow: hidden;
-                      text-overflow: ellipsis;
-                    }
-
-                    /* Prev / today / next share one quiet segmented capsule,
-                       dressed like the chrome buttons above the card. */
-                    .container .navigation ul {
-                      display: inline-flex !important;
-                      align-items: center !important;
-                      gap: 2px !important;
-                      flex: none !important;
-                      margin: 0 !important;
-                      padding: 3px !important;
-                      list-style: none !important;
-                      background: var(--skylight-btn-off-bg, #ffffff) !important;
-                      border: 1px solid var(--skylight-btn-off-border, #e9ecef) !important;
-                      border-radius: 999px !important;
-                      box-shadow: var(--skylight-btn-shadow, 0 2px 6px rgba(104, 104, 104, 0.14)) !important;
-                    }
-
-                    .container .navigation ul li {
-                      display: flex !important;
-                      align-items: center !important;
-                      justify-content: center !important;
-                      width: 34px !important;
-                      height: 34px !important;
-                      border-radius: 999px !important;
-                      cursor: pointer !important;
-                      color: var(--skylight-btn-off-text, #757575) !important;
-                      transition: background-color .2s ease, color .2s ease, transform .15s ease;
-                    }
-
-                    .container .navigation ul li ha-icon {
-                      --mdc-icon-size: 20px;
-                      color: inherit !important;
-                    }
-
-                    /* The middle control jumps back to today: mark it with the
-                       accent so its purpose reads at a glance. */
-                    .container .navigation ul li:nth-child(2) {
-                      color: var(--skylight-today-highlight-color, #0070cb) !important;
-                    }
-
-                    @media (hover: hover) {
-                      .container .navigation ul li:hover {
-                        background-color: var(--skylight-nav-hover-bg, rgba(0, 86, 178, 0.08)) !important;
-                        color: var(--skylight-today-highlight-color, #0070cb) !important;
-                      }
-                    }
-
-                    .container .navigation ul li:active {
-                      transform: scale(0.9);
-                    }
-
-                    /* === GRID LAYOUT === */
-                    /* The column count follows the selected view (7 for
-                       Week/Biweek/Month, 1 for Today/Tomorrow) via the COLS
-                       template variable above. */
-                    .container {
-                      display: grid !important;
-                      grid-template-columns: repeat(${COLS}, minmax(0, 1fr)) !important;
-                      grid-auto-flow: row dense !important;
-                      gap: 8px !important;
-                    }
-
-                    .container .navigation,
-                    .container .header {
-                      grid-column: 1 / -1 !important;
-                    }
-
-                    /* === WEEKDAY LABEL CELLS === */
-                    .day.header {
-                      display: block !important;
-                      grid-column: auto !important;
-                      margin: 0 !important;
-                      padding: 0.4em 0.2em !important;
-                      text-align: center !important;
-                      box-sizing: border-box !important;
-                      background: transparent !important;
-                      border: none !important;
-                      min-width: 0 !important;
-                      overflow: hidden !important;
-                    }
-
-                    /* Full weekday names are wide: at kiosk font sizes the
-                       fixed 0.78em used to let "WEDNESDAY" spill into
-                       "THURSDAY". The clamp scales the labels with the
-                       viewport, and the nowrap/ellipsis guard means a
-                       too-narrow column trims tidily instead of overlapping
-                       its neighbor. Both selectors on purpose: the first
-                       (higher specificity) beats the generic .day .date .text
-                       size below; the second catches header markup without a
-                       .date wrapper. */
-                    .day.header .date .text,
-                    .container > .day.header .text {
-                      display: block !important;
-                      font-size: clamp(0.6em, 1vw, 0.78em) !important;
-                      font-weight: 700 !important;
-                      text-transform: uppercase !important;
-                      letter-spacing: 0.1em !important;
-                      white-space: nowrap !important;
-                      overflow: hidden !important;
-                      text-overflow: ellipsis !important;
-                    }
-
-                    /* === DAY TILES === */
-                    /* Floating rounded tiles with gaps instead of ruled borders,
-                       a whisper of elevation, and a gentle lift on hover. */
-                    .day:not(.header) {
-                      background: var(--skylight-day-bg, #f6f8fa) !important;
-                      border: 1px solid var(--skylight-day-border-color, #e7eaee) !important;
-                      border-radius: var(--skylight-radius-tile, 6px) !important;
-                      box-shadow: var(--skylight-day-shadow, 0 1px 2px rgba(52, 52, 60, 0.04)) !important;
-                      padding: 0.5em 0.5em 0.6em !important;
-                      width: auto !important;
-                      min-width: 0 !important;
-                      margin: 0 !important;
-                      box-sizing: border-box !important;
-                      align-self: stretch !important;
-                      justify-self: stretch !important;
-                      transition: border-color .25s ease, box-shadow .25s ease, transform .25s ease;
-                    }
-
-                    @media (hover: hover) {
-                      /* Today keeps its accent ring + glow, so it skips the
-                         generic hover shadow. */
-                      .day:not(.header):not(.today):hover {
-                        border-color: var(--skylight-day-hover-border-color, #d5dbe2) !important;
-                        box-shadow: var(--skylight-day-hover-shadow, 0 6px 16px rgba(52, 52, 60, 0.10)) !important;
-                        transform: translateY(-2px);
-                      }
-                    }
-
-                    /* === DAY TILE INTERNAL LAYOUT === */
-                    /* The stock card floats the weather chip over the tile's
-                       top-right corner (position: absolute, stacked above the
-                       date), so on narrow tiles the temperatures and icon land
-                       on top of the date number and the first event — worst on
-                       today, whose solid number badge sits in the same corner.
-                       A single-column grid stacks date, weather and events,
-                       each clamped to the tile's width (minmax(0, 1fr), so
-                       no track can grow past the tile). The old layout put
-                       the nowrap weather chip in an auto column next to the
-                       date: a wide forecast ("99 °F / 68 °F") forced the
-                       grid tracks wider than the tile, and since the events
-                       row spanned those same tracks, every chip inherited
-                       the overflow and spilled into the neighboring day. On
-                       its own full-width row the forecast fits on one line,
-                       and if it ever doesn't, it trims with an ellipsis
-                       instead of stretching the tile's tracks. */
-                    .day:not(.header) {
-                      display: grid !important;
-                      grid-template-columns: minmax(0, 1fr) !important;
-                      /* Tiles stretch to their row's height; the trailing
-                         1fr row soaks up the slack so the date and weather
-                         rows stay snug at the top. */
-                      grid-template-rows: auto auto minmax(0, 1fr) !important;
-                      align-items: start !important;
-                      /* Belt and braces: whatever a future card version puts
-                         inside a tile, it clips at the rounded edge instead
-                         of bleeding into the next column. */
-                      overflow: hidden !important;
-                    }
-
-                    .day:not(.header) > .date {
-                      grid-column: 1 !important;
-                      min-width: 0 !important;
-                    }
-
-                    .day:not(.header) > .weather {
-                      grid-column: 1 !important;
-                      position: static !important;
-                      z-index: auto !important;
-                      justify-self: end !important;
-                      min-width: 0 !important;
-                      max-width: 100% !important;
-                      white-space: nowrap !important;
-                      overflow: hidden !important;
-                      text-overflow: ellipsis !important;
-                      margin: 2px 0 4px !important;
-                    }
-
-                    .day:not(.header) > .events {
-                      grid-column: 1 / -1 !important;
-                      min-width: 0 !important;
-                    }
-
-                    /* Weekend tiles: subtly warmer surface (data-weekday is
-                       1-7 with Monday = 1, so 6/7 are Sat/Sun) */
-                    .day:not(.header):not(.today)[data-weekday="6"],
-                    .day:not(.header):not(.today)[data-weekday="7"] {
-                      background: var(--skylight-weekend-day-bg, linear-gradient(180deg, #fbf9f6 0%, #f6f2ed 100%)) !important;
-                    }
-
-                    /* Today: accent ring + soft glow on the standard tile
-                       surface. No tinted fill — the old translucent wash sat
-                       over the tile's content and muddied the event chips. */
-                    .day.today {
-                      background: var(--skylight-day-bg, #f6f8fa) !important;
-                      border-color: transparent !important;
-                      box-shadow: inset 0 0 0 2px var(--skylight-today-highlight-color, #0070cb),
-                                  var(--skylight-today-glow, 0 6px 20px rgba(0, 112, 203, 0.22)) !important;
-                    }
-
-                    /* === DATE NUMBERS & WEEKDAY TEXT IN TILES === */
-                    .day .date .number {
-                      font-family: var(--skylight-heading-font-family, var(--primary-font-family)) !important;
-                      font-weight: 700 !important;
-                      font-size: 2.2em !important;
-                      line-height: 1.15 !important;
-                      font-variant-numeric: tabular-nums !important;
-                      color: var(--primary-text-color) !important;
-                    }
-
-                    .day .date .text {
-                      font-size: 0.9em !important;
-                      font-weight: 600 !important;
-                    }
-
-                    .today .number {
-                      display: inline-block !important;
-                      background-color: var(--skylight-today-highlight-color, #0070cb) !important;
-                      color: #ffffff !important;
-                      border-radius: var(--skylight-radius-chip, 6px) !important;
-                      padding-left: 10px !important;
-                      padding-right: 10px !important;
-                      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.18) !important;
-                    }
-
-                    /* Weather chip inside day tiles */
-                    .day .weather {
-                      font-size: 0.8em !important;
-                      color: var(--secondary-text-color) !important;
-                    }
-
-                    /* === EVENT CHIPS === */
-                    /* Soft tint of the calendar's color + a solid accent bar.
-                       week-planner-card sets --border-color per event to the
-                       calendar's color; the color-mix line blends 8% of it
-                       into the chip surface on modern browsers, while older
-                       ones keep the solid-color fallback above it. */
-                    .event {
-                      color: var(--skylight-event-text-color, #34343c) !important;
-                      background-color: var(--skylight-event-bg, #ffffff) !important;
-                      background-color: color-mix(in srgb, var(--border-color) 8%, var(--skylight-event-bg, #ffffff)) !important;
-                      border: 1px solid var(--skylight-event-border, #eaeaea) !important;
-                      border-left: 3px solid var(--border-color) !important;
-                      border-radius: var(--skylight-radius-chip, 6px) !important;
-                      box-shadow: var(--skylight-event-shadow, 0 1px 2px rgba(52, 52, 60, 0.05)) !important;
-                      padding: 0.4em 0.55em 0.45em 0.6em !important;
-                      line-height: 1.25 !important;
-                      font-size: 1.02em !important;
-                      font-weight: 500 !important;
-                      min-width: 0 !important;
-                      overflow: hidden !important;
-                      transition: box-shadow .2s ease, transform .2s ease;
-                    }
-
-                    /* === EVENT CONTENT FITTING === */
-                    /* The chip is a flex row whose .inner column keeps the
-                       default min-width:auto, so any word wider than the chip
-                       pushed .inner past the edge and overflow:hidden sliced
-                       it mid-letter ("Kinderg…" became "Kinderg"). Letting
-                       .inner shrink and breaking long words keeps every label
-                       inside the chip; the clamps below then trade lost tails
-                       for a tidy ellipsis instead of a hard clip, which also
-                       bounds the chip's height without the old fixed
-                       max-height. */
-                    .event .inner {
-                      min-width: 0 !important;
-                    }
-
-                    .event .title,
-                    .event .description,
-                    .event .location {
-                      overflow-wrap: anywhere !important;
-                    }
-
-                    .event .title {
-                      display: -webkit-box !important;
-                      -webkit-box-orient: vertical !important;
-                      -webkit-line-clamp: 2 !important;
-                      overflow: hidden !important;
-                    }
-
-                    .event .time,
-                    .event .location {
-                      white-space: nowrap !important;
-                      overflow: hidden !important;
-                      text-overflow: ellipsis !important;
-                    }
-
-                    @media (hover: hover) {
-                      .event:hover {
-                        box-shadow: var(--skylight-event-hover-shadow, 0 4px 12px rgba(52, 52, 60, 0.12)) !important;
-                        transform: translateY(-1px);
-                      }
-                    }
-
-                    /* Bold title over a muted detail line */
-                    .event .title,
-                    .event .name,
-                    .event .summary {
-                      font-weight: 600 !important;
-                    }
-
-                    .event.past {
-                      /* Faded but still legible — 0.35 turned today's earlier
-                         events into ghosts, especially on the tinted today
-                         tile in dark mode. */
-                      opacity: 0.5 !important;
-                      filter: grayscale(0.4) !important;
-                    }
-
-                    .time {
-                      color: var(--skylight-event-time-color, #757575) !important;
-                      font-size: 0.78em !important;
-                      font-weight: 600 !important;
-                      letter-spacing: 0.02em !important;
-                      font-variant-numeric: tabular-nums !important;
-                    }
-
-                    .event .location {
-                      font-size: 0.82em !important;
-                      color: var(--skylight-event-time-color, #757575) !important;
-                    }
-
-                    /* "No events" placeholder and the month view's
-                       "more events" line (from maxDayEvents) */
-                    .none,
-                    .more {
-                      background-color: transparent !important;
-                      border: none !important;
-                      color: var(--secondary-text-color) !important;
-                      font-size: 0.9em !important;
-                      font-style: italic !important;
-                      opacity: 0.8 !important;
-                    }
-
-                    .more {
-                      font-weight: 600 !important;
-                    }
-
-                    /* === WEEKDAY LABEL COLORS === */
-
-                    /* When showWeekDayText is true */
-                    .day[data-weekday="1"] .date .text,
-                    .day[data-weekday="2"] .date .text,
-                    .day[data-weekday="3"] .date .text,
-                    .day[data-weekday="4"] .date .text,
-                    .day[data-weekday="5"] .date .text {
-                      color: var(--skylight-weekday-text-color, #757575) !important;
-                    }
-
-                    .day[data-weekday="6"] .date .text,
-                    .day[data-weekday="7"] .date .text {
-                      color: var(--skylight-weekend-text-color, #df3c30) !important;
-                    }
-                    /* When showWeekDayText is false */
-                    .container > .day.header .text {
-                      color: var(--skylight-weekday-text-color, #757575) !important;
-                    }
-                    /* Weekend header cells: computed from the starting day by the
-                       WEEKEND_CSS template variable, so they stay correct if you
-                       change STARTDAY. */
-                    ${WEEKEND_CSS}
-
-                    /* Today's weekday label picks up the accent (after the
-                       weekend rules on purpose: at equal specificity the
-                       later rule wins, so today stays accented on weekends). */
-                    .day.today .date .text {
-                      color: var(--skylight-today-highlight-color, #0070cb) !important;
-                    }
-
-
-                    /* === RESPONSIVE BREAKPOINTS === */
-                    @media (max-width: 1024px) {
-                      .day .date .number { font-size: 1.8em !important; }
-                      .day .date .text   { font-size: 0.85em !important; }
-                    }
-
-                    @media (max-width: 768px) {
-                      .day .date .number { font-size: 1.5em !important; }
-                      .day .date .text   { font-size: 0.8em !important; }
-                      .event { font-size: 0.85em !important; line-height: 1.2 !important; }
-                      .time  { font-size: 0.72em !important; }
-                    }
-
-                    /* ========================================================= */
-                    /* === MOBILE OVERLAP FIX + TWO‑LINE WRAP FOR TITLES ======== */
-                    /* ========================================================= */
-                    @media (max-width: 480px) {
-
-                      :host {
-                        font-size: clamp(10px, 2.6vw, 13px) !important;
-                      }
-
-                      ha-card {
-                        padding: 10px 8px 12px !important;
-                      }
-
-                      /* Condensed headers */
-                      .container .header,
-                      .container .navigation {
-                        padding: 0.25em 0.4em !important;
-                      }
-
-                      .container .navigation .month {
-                        font-size: 1.25em !important;
-                      }
-
-                      .container .navigation ul li {
-                        width: 30px !important;
-                        height: 30px !important;
-                      }
-
-                      .container .navigation ul li ha-icon {
-                        --mdc-icon-size: 18px;
-                      }
-
-                      .container {
-                        gap: 3px !important;
-                      }
-
-                      /* Day tiles tighter */
-                      .day:not(.header) {
-                        padding: 0.25em !important;
-                        min-width: 0 !important;
-                        border-radius: var(--skylight-radius-tile, 6px) !important;
-                      }
-
-                      /* Smaller date numbers */
-                      .day .date .number {
-                        font-size: clamp(1.1em, 4.5vw, 1.4em) !important;
-                        line-height: 1.1 !important;
-                      }
-                      .day .date .text {
-                        font-size: clamp(0.72em, 3.2vw, 0.85em) !important;
-                        line-height: 1.1 !important;
-                      }
-
-                      /* Event chip reduced (height is bounded by the line
-                         clamps, not a fixed max-height) */
-                      .event {
-                        font-size: clamp(0.72em, 2.9vw, 0.85em) !important;
-                        line-height: 1.15 !important;
-                        padding: 0.25em 0.35em 0.25em 0.45em !important;
-                        border-left-width: 2px !important;
-                      }
-
-                      .time {
-                        font-size: clamp(0.65em, 2.5vw, 0.78em) !important;
-                      }
-
-                      /* === TWO-LINE WRAP FOR TITLES === */
-                      .event .title,
-                      .event .name,
-                      .event .summary,
-                      .event .location,
-                      .event .desc,
-                      .event .description {
-                        display: -webkit-box !important;
-                        -webkit-box-orient: vertical !important;
-                        -webkit-line-clamp: 2 !important;   /* <<< Two lines max */
-                        overflow: hidden !important;
-                        text-overflow: ellipsis !important;
-                        white-space: normal !important;
-                        line-height: 1.1em !important;
-                        max-height: calc(1.1em * 2) !important;
-                      }
-                    }
-
-                    /* Slightly larger phones / small tablets */
-                    @media (min-width: 481px) and (max-width: 768px) {
-
-                      :host {
-                        font-size: clamp(11px, 2.2vw, 14px) !important;
-                      }
-
-                      .event .title,
-                      .event .name,
-                      .event .summary {
-                        display: -webkit-box !important;
-                        -webkit-line-clamp: 2 !important;
-                        overflow: hidden !important;
-                      }
-                    }
-                  `}
+          # --- NAVIGATION SIDEBAR + CALENDAR ROW ---
+          # The Skylight-style rail and the calendar share one
+          # horizontal-stack so they sit side by side at any viewport width.
+          # (Section columns can't guarantee that: the Sections view caps
+          # how many of the view's 10 columns actually render on a given
+          # screen, so a 1-column rail section just stacks above the
+          # calendar on real displays.) The mod-card wrapper sizes the flex
+          # row: the rail hugs a fixed width, the calendar takes the rest,
+          # and on narrow screens the row folds into a column with the rail
+          # on top.
+          - type: custom:mod-card
             grid_options:
-              columns: 120
-              rows: 1
-              showDescription: false
+              columns: full
+              rows: auto
+            card_mod:
+              style:
+                .: |
+                  ha-card {
+                    background: none !important;
+                    border: none !important;
+                    box-shadow: none !important;
+                  }
+                hui-horizontal-stack-card $: |
+                  #root {
+                    align-items: stretch;
+                    gap: 12px;
+                  }
+                  /* !important throughout: the stack's own stylesheet gives
+                     every child flex: 1 / width: 100%, which would split the
+                     row 50/50 (or stack the folded rail's buttons one per
+                     line) if it won. */
+                  #root > * {
+                    margin: 0 !important;
+                    min-width: 0 !important;
+                  }
+                  #root > *:first-child {
+                    flex: 0 0 156px !important;
+                    width: 156px !important;
+                  }
+                  #root > *:last-child {
+                    flex: 1 1 0 !important;
+                    width: auto !important;
+                  }
+                  /* Narrow screens: the rail moves above the calendar (its
+                     own styles re-flow the buttons into a wrapping row). */
+                  @media (max-width: 1000px) {
+                    #root {
+                      flex-direction: column !important;
+                    }
+                    #root > *:first-child {
+                      flex: 0 0 auto !important;
+                      width: auto !important;
+                    }
+                  }
+            card:
+              type: horizontal-stack
+              cards:
+                # --- NAVIGATION SIDEBAR (rail) ---
+                # Every entry is an ordinary bubble-card button: Add Event
+                # and Chores navigate to their pop-up hashes, Photos runs
+                # the screensaver script from the package, and Calendar
+                # navigates to "#calendar" — a hash no pop-up uses, so it
+                # simply closes whatever is open. Copy a button and point it
+                # at a new hash or script to add an entry; delete a block to
+                # remove one.
+                - type: custom:mod-card
+                  card_mod:
+                    # card-mod can't attach to stack cards (same trick as the pill
+                    # rows above): the mod-card wrapper draws the rail surface and
+                    # keeps it sticky so it stays in reach when the Month view
+                    # makes the page scroll.
+                    style:
+                      .: |
+                        ha-card {
+                          background: var(--skylight-surface, #ffffff) !important;
+                          border: none !important;
+                          border-radius: var(--skylight-radius-card, 10px) !important;
+                          box-shadow: var(--skylight-shadow-card, rgba(104, 104, 104, 0.05) 0 2px 6px 0, rgba(211, 209, 209, 0.15) 0 0 0 1px) !important;
+                          padding: 8px !important;
+                          position: sticky;
+                          top: 12px;
+                        }
+                      hui-vertical-stack-card $: |
+                        #root {
+                          gap: 2px;
+                        }
+                        #root > * {
+                          margin: 0 !important;
+                        }
+                        /* On narrow screens the rail sits above the calendar,
+                           so re-flow the menu into a wrapping row of compact
+                           buttons. !important is load-bearing: the stack's
+                           own stylesheet gives every child width: 100%,
+                           which put each button on its own line. */
+                        @media (max-width: 1000px) {
+                          #root {
+                            flex-direction: row !important;
+                            flex-wrap: wrap !important;
+                            gap: 6px !important;
+                          }
+                          #root > * {
+                            flex: 1 1 130px !important;
+                            width: auto !important;
+                            min-width: 130px !important;
+                          }
+                        }
+                  card:
+                    type: vertical-stack
+                    cards:
+                      # --- SIDEBAR ITEMS ---
+                      # Quiet menu rows on the rail surface: accent icon in a soft
+                      # square, hover wash from the same token as the calendar's
+                      # arrow cluster. All four share the identical style block.
+                      - type: custom:bubble-card
+                        card_type: button
+                        button_type: name
+                        name: Calendar
+                        icon: mdi:calendar-month
+                        show_icon: true
+                        show_name: true
+                        tap_action:
+                          action: navigate
+                          navigation_path: "#calendar"
+                        styles: |
+                          .bubble-button-card-container {
+                            background: none !important;
+                            border-radius: var(--skylight-radius-chip, 6px) !important;
+                          }
+                          ha-card {
+                            background: none !important;
+                            border: none !important;
+                            border-radius: var(--skylight-radius-chip, 6px) !important;
+                            box-shadow: none !important;
+                          }
+                          .bubble-button-background {
+                            opacity: 1 !important;
+                            border-radius: var(--skylight-radius-chip, 6px) !important;
+                            background-color: transparent !important;
+                            transition: background-color .2s ease;
+                          }
+                          @media (hover: hover) {
+                            .bubble-button-card-container:hover .bubble-button-background {
+                              background-color: var(--skylight-nav-hover-bg, rgba(0, 86, 178, 0.08)) !important;
+                            }
+                          }
+                          .bubble-icon-container {
+                            background: var(--skylight-btn-off-icon-bg, rgba(0, 0, 0, 0.04)) !important;
+                            border-radius: var(--skylight-radius-chip, 6px) !important;
+                          }
+                          .bubble-icon {
+                            opacity: 1 !important;
+                            color: var(--skylight-today-highlight-color, #0070cb) !important;
+                          }
+                          .bubble-name {
+                            opacity: 1 !important;
+                            font-weight: 600 !important;
+                            letter-spacing: 0.01em !important;
+                            color: var(--skylight-event-text-color, var(--primary-text-color)) !important;
+                          }
+                      - type: custom:bubble-card
+                        card_type: button
+                        button_type: name
+                        name: Add Event
+                        icon: mdi:calendar-plus
+                        show_icon: true
+                        show_name: true
+                        tap_action:
+                          action: navigate
+                          navigation_path: "#addcalendarevent"
+                        styles: |
+                          .bubble-button-card-container {
+                            background: none !important;
+                            border-radius: var(--skylight-radius-chip, 6px) !important;
+                          }
+                          ha-card {
+                            background: none !important;
+                            border: none !important;
+                            border-radius: var(--skylight-radius-chip, 6px) !important;
+                            box-shadow: none !important;
+                          }
+                          .bubble-button-background {
+                            opacity: 1 !important;
+                            border-radius: var(--skylight-radius-chip, 6px) !important;
+                            background-color: transparent !important;
+                            transition: background-color .2s ease;
+                          }
+                          @media (hover: hover) {
+                            .bubble-button-card-container:hover .bubble-button-background {
+                              background-color: var(--skylight-nav-hover-bg, rgba(0, 86, 178, 0.08)) !important;
+                            }
+                          }
+                          .bubble-icon-container {
+                            background: var(--skylight-btn-off-icon-bg, rgba(0, 0, 0, 0.04)) !important;
+                            border-radius: var(--skylight-radius-chip, 6px) !important;
+                          }
+                          .bubble-icon {
+                            opacity: 1 !important;
+                            color: var(--skylight-today-highlight-color, #0070cb) !important;
+                          }
+                          .bubble-name {
+                            opacity: 1 !important;
+                            font-weight: 600 !important;
+                            letter-spacing: 0.01em !important;
+                            color: var(--skylight-event-text-color, var(--primary-text-color)) !important;
+                          }
+                      - type: custom:bubble-card
+                        card_type: button
+                        button_type: name
+                        name: Chores
+                        icon: mdi:clipboard-check-outline
+                        show_icon: true
+                        show_name: true
+                        tap_action:
+                          action: navigate
+                          navigation_path: "#chores"
+                        styles: |
+                          .bubble-button-card-container {
+                            background: none !important;
+                            border-radius: var(--skylight-radius-chip, 6px) !important;
+                          }
+                          ha-card {
+                            background: none !important;
+                            border: none !important;
+                            border-radius: var(--skylight-radius-chip, 6px) !important;
+                            box-shadow: none !important;
+                          }
+                          .bubble-button-background {
+                            opacity: 1 !important;
+                            border-radius: var(--skylight-radius-chip, 6px) !important;
+                            background-color: transparent !important;
+                            transition: background-color .2s ease;
+                          }
+                          @media (hover: hover) {
+                            .bubble-button-card-container:hover .bubble-button-background {
+                              background-color: var(--skylight-nav-hover-bg, rgba(0, 86, 178, 0.08)) !important;
+                            }
+                          }
+                          .bubble-icon-container {
+                            background: var(--skylight-btn-off-icon-bg, rgba(0, 0, 0, 0.04)) !important;
+                            border-radius: var(--skylight-radius-chip, 6px) !important;
+                          }
+                          .bubble-icon {
+                            opacity: 1 !important;
+                            color: var(--skylight-today-highlight-color, #0070cb) !important;
+                          }
+                          .bubble-name {
+                            opacity: 1 !important;
+                            font-weight: 600 !important;
+                            letter-spacing: 0.01em !important;
+                            color: var(--skylight-event-text-color, var(--primary-text-color)) !important;
+                          }
+                      # Runs script.screensaver_start from the package (upload a
+                      # photo and set its path in the script first — see the
+                      # README's Photo screensaver section).
+                      - type: custom:bubble-card
+                        card_type: button
+                        button_type: name
+                        name: Photos
+                        icon: mdi:image-multiple-outline
+                        show_icon: true
+                        show_name: true
+                        tap_action:
+                          action: perform-action
+                          perform_action: script.screensaver_start
+                        styles: |
+                          .bubble-button-card-container {
+                            background: none !important;
+                            border-radius: var(--skylight-radius-chip, 6px) !important;
+                          }
+                          ha-card {
+                            background: none !important;
+                            border: none !important;
+                            border-radius: var(--skylight-radius-chip, 6px) !important;
+                            box-shadow: none !important;
+                          }
+                          .bubble-button-background {
+                            opacity: 1 !important;
+                            border-radius: var(--skylight-radius-chip, 6px) !important;
+                            background-color: transparent !important;
+                            transition: background-color .2s ease;
+                          }
+                          @media (hover: hover) {
+                            .bubble-button-card-container:hover .bubble-button-background {
+                              background-color: var(--skylight-nav-hover-bg, rgba(0, 86, 178, 0.08)) !important;
+                            }
+                          }
+                          .bubble-icon-container {
+                            background: var(--skylight-btn-off-icon-bg, rgba(0, 0, 0, 0.04)) !important;
+                            border-radius: var(--skylight-radius-chip, 6px) !important;
+                          }
+                          .bubble-icon {
+                            opacity: 1 !important;
+                            color: var(--skylight-today-highlight-color, #0070cb) !important;
+                          }
+                          .bubble-name {
+                            opacity: 1 !important;
+                            font-weight: 600 !important;
+                            letter-spacing: 0.01em !important;
+                            color: var(--skylight-event-text-color, var(--primary-text-color)) !important;
+                          }
+                - type: custom:config-template-card
+                  entities:
+                    - input_text.school_calendar_filter
+                    - input_text.daniel_calendar_filter
+                    - input_text.weather_calendar_filter
+                    - input_text.family_calendar_filter
+                    - input_text.holidays_calendar_filter
+                    - input_text.birthdays_calendar_filter
+                    - input_select.calendar_view
+                  variables:
+                    SCHOOLCAL: states['input_text.school_calendar_filter']?.state
+                    DANIELCAL: states['input_text.daniel_calendar_filter']?.state
+                    WEATHERCAL: states['input_text.weather_calendar_filter']?.state
+                    FAMCAL: states['input_text.family_calendar_filter']?.state
+                    HOLCAL: states['input_text.holidays_calendar_filter']?.state
+                    BIRCAL: states['input_text.birthdays_calendar_filter']?.state
+                    VIEW: states['input_select.calendar_view']?.state
+                    STARTDAY: |
+                      (() => {
+                        const calendarView = states['input_select.calendar_view']?.state;
+                        if (calendarView === 'Today') return 'today';
+                        if (calendarView === 'Tomorrow') return 'tomorrow';
+                        // Fallback <--- UPDATE THIS IF NEEDED, valid values are: monday, tuesday, wednesday, thursday, friday, saturday, sunday
+                        return 'monday';
+                      })()
+                    DAYS: |
+                      (() => {
+                        const calendarView = states['input_select.calendar_view']?.state;
+                        if (calendarView === 'Today') return 1;
+                        if (calendarView === 'Tomorrow') return 1;
+                        if (calendarView === 'Week') return 7;
+                        if (calendarView === 'Biweek') return 14;
+                        // else return "month"
+                        return "month";
+                      })()
+                    COLS: |
+                      (() => {
+                        const calendarView = states['input_select.calendar_view']?.state;
+                        if (calendarView === 'Today' || calendarView === 'Tomorrow') return 1;
+                        return 7;
+                      })()
+                    MAXEVENTS: |
+                      (() => {
+                        const calendarView = states['input_select.calendar_view']?.state;
+                        // Month tiles share the screen with 5-6 rows, so a busy day
+                        // can't show everything anyway — cap the chips and let the
+                        // card render its "more events" line instead of stretching
+                        // the whole row. The other views have room: 0 = unlimited.
+                        const uncapped = ['Today', 'Tomorrow', 'Week', 'Biweek'];
+                        if (uncapped.includes(calendarView)) return 0;
+                        return 4;
+                      })()
+                    HEIGHT_CSS: |
+                      (() => {
+                        const calendarView = states['input_select.calendar_view']?.state;
+                        // Month view renders 5-6 rows of tiles, which can never fit a
+                        // fixed 70vh card, so let it grow. The shorter views keep the
+                        // clamped height so the card fills the screen nicely. Keep the
+                        // view list in sync with the DAYS template above: anything
+                        // unrecognized falls through to a month layout there, so it
+                        // must get the auto height here too.
+                        const clampedViews = ['Today', 'Tomorrow', 'Week', 'Biweek'];
+                        if (clampedViews.includes(calendarView)) {
+                          // overflow-y is a safety net: an unusually event-heavy day
+                          // scrolls inside the card instead of spilling past its
+                          // rounded bottom edge.
+                          return 'height: clamp(480px, 70vh, 900px) !important; max-height: clamp(480px, 70vh, 900px) !important; overflow-y: auto !important;';
+                        }
+                        return 'height: auto !important; max-height: none !important;';
+                      })()
+                    WEEKEND_CSS: |
+                      (() => {
+                        const calendarView = states['input_select.calendar_view']?.state;
+                        if (calendarView === 'Today' || calendarView === 'Tomorrow') return '';
+                        // Keep this in sync with the STARTDAY fallback above.
+                        const startingDay = 'monday';
+                        const week = ['monday','tuesday','wednesday','thursday','friday','saturday','sunday'];
+                        const idx = week.indexOf(startingDay);
+                        // Header cells are :nth-of-type(offset + 2), offset counted from the starting day.
+                        const sat = ((5 - idx + 7) % 7) + 2;
+                        const sun = ((6 - idx + 7) % 7) + 2;
+                        return '.container > .day.header:nth-of-type(' + sat + ') .text, ' +
+                               '.container > .day.header:nth-of-type(' + sun + ') .text ' +
+                               '{ color: var(--skylight-weekend-text-color, #df3c30) !important; }';
+                      })()
+                  card:
+                    type: custom:week-planner-card
+                    calendars:
+                      # --- MAP CALENDARS HERE ---
+                      - entity: calendar.school
+                        name: School
+                        color: "var(--school-default-primary-color)"
+                        filter: ${ SCHOOLCAL }
+                      - entity: calendar.daniel
+                        name: Daniel
+                        color: "var(--daniel-default-primary-color)"
+                        filter: ${ DANIELCAL }
+                      - entity: calendar.weather
+                        name: Weather
+                        color: "var(--weather-default-primary-color)"
+                        filter: ${ WEATHERCAL }
+                      - entity: calendar.family
+                        name: Family
+                        color: "var(--family-default-primary-color)"
+                        filter: ${ FAMCAL }
+                      - entity: calendar.birthdays
+                        name: Birthdays
+                        color: "var(--birthdays-default-primary-color)"
+                        filter: ${ BIRCAL }
+                      - entity: calendar.holidays # <--- Check this entity ID after adding the Holiday integration
+                        name: Holidays
+                        color: "var(--holidays-default-primary-color)"
+                        filter: ${ HOLCAL }
+                    days: ${ DAYS }
+                    maxDayEvents: ${ MAXEVENTS }
+                    startingDay: ${ STARTDAY }
+                    showNavigation: true
+                    showWeekDayText: false # <--- Requires week-planner-card v1.13.0 or higher
+                    startingDayOffset: 0
+                    hideWeekend: false
+                    noCardBackground: false
+                    compact: false
+                    weather:
+                      showCondition: true
+                      showTemperature: true
+                      showLowTemperature: true
+                      useTwiceDaily: false
+                      entity: weather.home # <--- UPDATE THIS ENTITY
+                    locale: en
+                    showLocation: true
+                    hidePastEvents: false
+                    hideDaysWithoutEvents: false
+                    hideTodayWithoutEvents: false
+                    combineSimilarEvents: true
+                    showLegend: false
+                    legendToggle: false
+                    card_mod:
+                      # config-template-card can't substitute ${...} inside a larger
+                      # string (it evals everything between the string's first "${"
+                      # and its final character), so the whole style must be ONE
+                      # template: a JS template literal returning the CSS, in which
+                      # COLS and WEEKEND_CSS interpolate normally.
+                      style: |-
+                        ${`
+                          /* === BASE SAFETY === */
+                          :host {
+                            overflow: hidden;
+                          }
+
+                          /* === CARD BASE === */
+                          ha-card {
+                            background: var(--skylight-cal-card-background, #ffffff) !important;
+                            border-radius: var(--skylight-radius-card, 10px) !important;
+                            border: none !important;
+                            box-shadow: var(--skylight-shadow-card, rgba(104, 104, 104, 0.05) 0 2px 6px 0, rgba(211, 209, 209, 0.15) 0 0 0 1px) !important;
+                            padding: 20px 22px 22px !important;
+                            /* Keep the per-day forecast a quiet chip: the stock
+                               30px icon reads louder than the date numbers. */
+                            --weather-icon-size: 20px;
+                            ${HEIGHT_CSS}
+                          }
+
+                          /* Slim scrollbar for the views that scroll inside the card */
+                          ha-card::-webkit-scrollbar {
+                            width: 8px;
+                          }
+                          ha-card::-webkit-scrollbar-track {
+                            background: transparent;
+                          }
+                          ha-card::-webkit-scrollbar-thumb {
+                            background: var(--skylight-scrollbar-thumb, #d6dbe1);
+                            border-radius: 8px;
+                          }
+
+                          /* === NAVIGATION ROW (month title + arrow cluster) === */
+                          /* The card renders the controls first — <ul><li>prev</li>
+                             <li>today</li><li>next</li></ul> — then <div class="month">.
+                             row-reverse + space-between flips the visual order so the
+                             month reads first on the left and the controls sit tucked
+                             against the right edge, like a proper calendar toolbar,
+                             without touching the card's markup. */
+                          .container .navigation {
+                            display: flex !important;
+                            flex-direction: row-reverse !important;
+                            justify-content: space-between !important;
+                            align-items: center !important;
+                            gap: 12px !important;
+                            padding: 0.1em 0.2em 0.7em !important;
+                            user-select: none;
+                            -webkit-tap-highlight-color: transparent;
+                          }
+
+                          .container .navigation .month {
+                            font-family: var(--skylight-heading-font-family, var(--primary-font-family)) !important;
+                            font-size: 1.7em !important;
+                            font-weight: 700 !important;
+                            letter-spacing: -0.01em !important;
+                            line-height: 1.15 !important;
+                            color: var(--primary-text-color) !important;
+                            min-width: 0;
+                            white-space: nowrap;
+                            overflow: hidden;
+                            text-overflow: ellipsis;
+                          }
+
+                          /* Prev / today / next share one quiet segmented capsule,
+                             dressed like the chrome buttons above the card. */
+                          .container .navigation ul {
+                            display: inline-flex !important;
+                            align-items: center !important;
+                            gap: 2px !important;
+                            flex: none !important;
+                            margin: 0 !important;
+                            padding: 3px !important;
+                            list-style: none !important;
+                            background: var(--skylight-btn-off-bg, #ffffff) !important;
+                            border: 1px solid var(--skylight-btn-off-border, #e9ecef) !important;
+                            border-radius: 999px !important;
+                            box-shadow: var(--skylight-btn-shadow, 0 2px 6px rgba(104, 104, 104, 0.14)) !important;
+                          }
+
+                          .container .navigation ul li {
+                            display: flex !important;
+                            align-items: center !important;
+                            justify-content: center !important;
+                            width: 34px !important;
+                            height: 34px !important;
+                            border-radius: 999px !important;
+                            cursor: pointer !important;
+                            color: var(--skylight-btn-off-text, #757575) !important;
+                            transition: background-color .2s ease, color .2s ease, transform .15s ease;
+                          }
+
+                          .container .navigation ul li ha-icon {
+                            --mdc-icon-size: 20px;
+                            color: inherit !important;
+                          }
+
+                          /* The middle control jumps back to today: mark it with the
+                             accent so its purpose reads at a glance. */
+                          .container .navigation ul li:nth-child(2) {
+                            color: var(--skylight-today-highlight-color, #0070cb) !important;
+                          }
+
+                          @media (hover: hover) {
+                            .container .navigation ul li:hover {
+                              background-color: var(--skylight-nav-hover-bg, rgba(0, 86, 178, 0.08)) !important;
+                              color: var(--skylight-today-highlight-color, #0070cb) !important;
+                            }
+                          }
+
+                          .container .navigation ul li:active {
+                            transform: scale(0.9);
+                          }
+
+                          /* === GRID LAYOUT === */
+                          /* The column count follows the selected view (7 for
+                             Week/Biweek/Month, 1 for Today/Tomorrow) via the COLS
+                             template variable above. */
+                          .container {
+                            display: grid !important;
+                            grid-template-columns: repeat(${COLS}, minmax(0, 1fr)) !important;
+                            grid-auto-flow: row dense !important;
+                            gap: 8px !important;
+                          }
+
+                          .container .navigation,
+                          .container .header {
+                            grid-column: 1 / -1 !important;
+                          }
+
+                          /* === WEEKDAY LABEL CELLS === */
+                          .day.header {
+                            display: block !important;
+                            grid-column: auto !important;
+                            margin: 0 !important;
+                            padding: 0.4em 0.2em !important;
+                            text-align: center !important;
+                            box-sizing: border-box !important;
+                            background: transparent !important;
+                            border: none !important;
+                            min-width: 0 !important;
+                            overflow: hidden !important;
+                          }
+
+                          /* Full weekday names are wide: at kiosk font sizes the
+                             fixed 0.78em used to let "WEDNESDAY" spill into
+                             "THURSDAY". The clamp scales the labels with the
+                             viewport, and the nowrap/ellipsis guard means a
+                             too-narrow column trims tidily instead of overlapping
+                             its neighbor. Both selectors on purpose: the first
+                             (higher specificity) beats the generic .day .date .text
+                             size below; the second catches header markup without a
+                             .date wrapper. */
+                          .day.header .date .text,
+                          .container > .day.header .text {
+                            display: block !important;
+                            font-size: clamp(0.6em, 1vw, 0.78em) !important;
+                            font-weight: 700 !important;
+                            text-transform: uppercase !important;
+                            letter-spacing: 0.1em !important;
+                            white-space: nowrap !important;
+                            overflow: hidden !important;
+                            text-overflow: ellipsis !important;
+                          }
+
+                          /* === DAY TILES === */
+                          /* Floating rounded tiles with gaps instead of ruled borders,
+                             a whisper of elevation, and a gentle lift on hover. */
+                          .day:not(.header) {
+                            background: var(--skylight-day-bg, #f6f8fa) !important;
+                            border: 1px solid var(--skylight-day-border-color, #e7eaee) !important;
+                            border-radius: var(--skylight-radius-tile, 6px) !important;
+                            box-shadow: var(--skylight-day-shadow, 0 1px 2px rgba(52, 52, 60, 0.04)) !important;
+                            padding: 0.5em 0.5em 0.6em !important;
+                            width: auto !important;
+                            min-width: 0 !important;
+                            margin: 0 !important;
+                            box-sizing: border-box !important;
+                            align-self: stretch !important;
+                            justify-self: stretch !important;
+                            transition: border-color .25s ease, box-shadow .25s ease, transform .25s ease;
+                          }
+
+                          @media (hover: hover) {
+                            /* Today keeps its accent ring + glow, so it skips the
+                               generic hover shadow. */
+                            .day:not(.header):not(.today):hover {
+                              border-color: var(--skylight-day-hover-border-color, #d5dbe2) !important;
+                              box-shadow: var(--skylight-day-hover-shadow, 0 6px 16px rgba(52, 52, 60, 0.10)) !important;
+                              transform: translateY(-2px);
+                            }
+                          }
+
+                          /* === DAY TILE INTERNAL LAYOUT === */
+                          /* The stock card floats the weather chip over the tile's
+                             top-right corner (position: absolute, stacked above the
+                             date), so on narrow tiles the temperatures and icon land
+                             on top of the date number and the first event — worst on
+                             today, whose solid number badge sits in the same corner.
+                             A single-column grid stacks date, weather and events,
+                             each clamped to the tile's width (minmax(0, 1fr), so
+                             no track can grow past the tile). The old layout put
+                             the nowrap weather chip in an auto column next to the
+                             date: a wide forecast ("99 °F / 68 °F") forced the
+                             grid tracks wider than the tile, and since the events
+                             row spanned those same tracks, every chip inherited
+                             the overflow and spilled into the neighboring day. On
+                             its own full-width row the forecast fits on one line,
+                             and if it ever doesn't, it trims with an ellipsis
+                             instead of stretching the tile's tracks. */
+                          .day:not(.header) {
+                            display: grid !important;
+                            grid-template-columns: minmax(0, 1fr) !important;
+                            /* Tiles stretch to their row's height; the trailing
+                               1fr row soaks up the slack so the date and weather
+                               rows stay snug at the top. */
+                            grid-template-rows: auto auto minmax(0, 1fr) !important;
+                            align-items: start !important;
+                            /* Belt and braces: whatever a future card version puts
+                               inside a tile, it clips at the rounded edge instead
+                               of bleeding into the next column. */
+                            overflow: hidden !important;
+                          }
+
+                          .day:not(.header) > .date {
+                            grid-column: 1 !important;
+                            min-width: 0 !important;
+                          }
+
+                          .day:not(.header) > .weather {
+                            grid-column: 1 !important;
+                            position: static !important;
+                            z-index: auto !important;
+                            justify-self: end !important;
+                            min-width: 0 !important;
+                            max-width: 100% !important;
+                            white-space: nowrap !important;
+                            overflow: hidden !important;
+                            text-overflow: ellipsis !important;
+                            margin: 2px 0 4px !important;
+                          }
+
+                          .day:not(.header) > .events {
+                            grid-column: 1 / -1 !important;
+                            min-width: 0 !important;
+                          }
+
+                          /* Weekend tiles: subtly warmer surface (data-weekday is
+                             1-7 with Monday = 1, so 6/7 are Sat/Sun) */
+                          .day:not(.header):not(.today)[data-weekday="6"],
+                          .day:not(.header):not(.today)[data-weekday="7"] {
+                            background: var(--skylight-weekend-day-bg, linear-gradient(180deg, #fbf9f6 0%, #f6f2ed 100%)) !important;
+                          }
+
+                          /* Today: accent ring + soft glow on the standard tile
+                             surface. No tinted fill — the old translucent wash sat
+                             over the tile's content and muddied the event chips. */
+                          .day.today {
+                            background: var(--skylight-day-bg, #f6f8fa) !important;
+                            border-color: transparent !important;
+                            box-shadow: inset 0 0 0 2px var(--skylight-today-highlight-color, #0070cb),
+                                        var(--skylight-today-glow, 0 6px 20px rgba(0, 112, 203, 0.22)) !important;
+                          }
+
+                          /* === DATE NUMBERS & WEEKDAY TEXT IN TILES === */
+                          .day .date .number {
+                            font-family: var(--skylight-heading-font-family, var(--primary-font-family)) !important;
+                            font-weight: 700 !important;
+                            font-size: 2.2em !important;
+                            line-height: 1.15 !important;
+                            font-variant-numeric: tabular-nums !important;
+                            color: var(--primary-text-color) !important;
+                          }
+
+                          .day .date .text {
+                            font-size: 0.9em !important;
+                            font-weight: 600 !important;
+                          }
+
+                          .today .number {
+                            display: inline-block !important;
+                            background-color: var(--skylight-today-highlight-color, #0070cb) !important;
+                            color: #ffffff !important;
+                            border-radius: var(--skylight-radius-chip, 6px) !important;
+                            padding-left: 10px !important;
+                            padding-right: 10px !important;
+                            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.18) !important;
+                          }
+
+                          /* Weather chip inside day tiles */
+                          .day .weather {
+                            font-size: 0.8em !important;
+                            color: var(--secondary-text-color) !important;
+                          }
+
+                          /* === EVENT CHIPS === */
+                          /* Soft tint of the calendar's color + a solid accent bar.
+                             week-planner-card sets --border-color per event to the
+                             calendar's color; the color-mix line blends 8% of it
+                             into the chip surface on modern browsers, while older
+                             ones keep the solid-color fallback above it. */
+                          .event {
+                            color: var(--skylight-event-text-color, #34343c) !important;
+                            background-color: var(--skylight-event-bg, #ffffff) !important;
+                            background-color: color-mix(in srgb, var(--border-color) 8%, var(--skylight-event-bg, #ffffff)) !important;
+                            border: 1px solid var(--skylight-event-border, #eaeaea) !important;
+                            border-left: 3px solid var(--border-color) !important;
+                            border-radius: var(--skylight-radius-chip, 6px) !important;
+                            box-shadow: var(--skylight-event-shadow, 0 1px 2px rgba(52, 52, 60, 0.05)) !important;
+                            padding: 0.4em 0.55em 0.45em 0.6em !important;
+                            line-height: 1.25 !important;
+                            font-size: 1.02em !important;
+                            font-weight: 500 !important;
+                            min-width: 0 !important;
+                            overflow: hidden !important;
+                            transition: box-shadow .2s ease, transform .2s ease;
+                          }
+
+                          /* === EVENT CONTENT FITTING === */
+                          /* The chip is a flex row whose .inner column keeps the
+                             default min-width:auto, so any word wider than the chip
+                             pushed .inner past the edge and overflow:hidden sliced
+                             it mid-letter ("Kinderg…" became "Kinderg"). Letting
+                             .inner shrink and breaking long words keeps every label
+                             inside the chip; the clamps below then trade lost tails
+                             for a tidy ellipsis instead of a hard clip, which also
+                             bounds the chip's height without the old fixed
+                             max-height. */
+                          .event .inner {
+                            min-width: 0 !important;
+                          }
+
+                          .event .title,
+                          .event .description,
+                          .event .location {
+                            overflow-wrap: anywhere !important;
+                          }
+
+                          .event .title {
+                            display: -webkit-box !important;
+                            -webkit-box-orient: vertical !important;
+                            -webkit-line-clamp: 2 !important;
+                            overflow: hidden !important;
+                          }
+
+                          .event .time,
+                          .event .location {
+                            white-space: nowrap !important;
+                            overflow: hidden !important;
+                            text-overflow: ellipsis !important;
+                          }
+
+                          @media (hover: hover) {
+                            .event:hover {
+                              box-shadow: var(--skylight-event-hover-shadow, 0 4px 12px rgba(52, 52, 60, 0.12)) !important;
+                              transform: translateY(-1px);
+                            }
+                          }
+
+                          /* Bold title over a muted detail line */
+                          .event .title,
+                          .event .name,
+                          .event .summary {
+                            font-weight: 600 !important;
+                          }
+
+                          .event.past {
+                            /* Faded but still legible — 0.35 turned today's earlier
+                               events into ghosts, especially on the tinted today
+                               tile in dark mode. */
+                            opacity: 0.5 !important;
+                            filter: grayscale(0.4) !important;
+                          }
+
+                          .time {
+                            color: var(--skylight-event-time-color, #757575) !important;
+                            font-size: 0.78em !important;
+                            font-weight: 600 !important;
+                            letter-spacing: 0.02em !important;
+                            font-variant-numeric: tabular-nums !important;
+                          }
+
+                          .event .location {
+                            font-size: 0.82em !important;
+                            color: var(--skylight-event-time-color, #757575) !important;
+                          }
+
+                          /* "No events" placeholder and the month view's
+                             "more events" line (from maxDayEvents) */
+                          .none,
+                          .more {
+                            background-color: transparent !important;
+                            border: none !important;
+                            color: var(--secondary-text-color) !important;
+                            font-size: 0.9em !important;
+                            font-style: italic !important;
+                            opacity: 0.8 !important;
+                          }
+
+                          .more {
+                            font-weight: 600 !important;
+                          }
+
+                          /* === WEEKDAY LABEL COLORS === */
+
+                          /* When showWeekDayText is true */
+                          .day[data-weekday="1"] .date .text,
+                          .day[data-weekday="2"] .date .text,
+                          .day[data-weekday="3"] .date .text,
+                          .day[data-weekday="4"] .date .text,
+                          .day[data-weekday="5"] .date .text {
+                            color: var(--skylight-weekday-text-color, #757575) !important;
+                          }
+
+                          .day[data-weekday="6"] .date .text,
+                          .day[data-weekday="7"] .date .text {
+                            color: var(--skylight-weekend-text-color, #df3c30) !important;
+                          }
+                          /* When showWeekDayText is false */
+                          .container > .day.header .text {
+                            color: var(--skylight-weekday-text-color, #757575) !important;
+                          }
+                          /* Weekend header cells: computed from the starting day by the
+                             WEEKEND_CSS template variable, so they stay correct if you
+                             change STARTDAY. */
+                          ${WEEKEND_CSS}
+
+                          /* Today's weekday label picks up the accent (after the
+                             weekend rules on purpose: at equal specificity the
+                             later rule wins, so today stays accented on weekends). */
+                          .day.today .date .text {
+                            color: var(--skylight-today-highlight-color, #0070cb) !important;
+                          }
+
+
+                          /* === RESPONSIVE BREAKPOINTS === */
+                          @media (max-width: 1024px) {
+                            .day .date .number { font-size: 1.8em !important; }
+                            .day .date .text   { font-size: 0.85em !important; }
+                          }
+
+                          @media (max-width: 768px) {
+                            .day .date .number { font-size: 1.5em !important; }
+                            .day .date .text   { font-size: 0.8em !important; }
+                            .event { font-size: 0.85em !important; line-height: 1.2 !important; }
+                            .time  { font-size: 0.72em !important; }
+                          }
+
+                          /* ========================================================= */
+                          /* === MOBILE OVERLAP FIX + TWO‑LINE WRAP FOR TITLES ======== */
+                          /* ========================================================= */
+                          @media (max-width: 480px) {
+
+                            :host {
+                              font-size: clamp(10px, 2.6vw, 13px) !important;
+                            }
+
+                            ha-card {
+                              padding: 10px 8px 12px !important;
+                            }
+
+                            /* Condensed headers */
+                            .container .header,
+                            .container .navigation {
+                              padding: 0.25em 0.4em !important;
+                            }
+
+                            .container .navigation .month {
+                              font-size: 1.25em !important;
+                            }
+
+                            .container .navigation ul li {
+                              width: 30px !important;
+                              height: 30px !important;
+                            }
+
+                            .container .navigation ul li ha-icon {
+                              --mdc-icon-size: 18px;
+                            }
+
+                            .container {
+                              gap: 3px !important;
+                            }
+
+                            /* Day tiles tighter */
+                            .day:not(.header) {
+                              padding: 0.25em !important;
+                              min-width: 0 !important;
+                              border-radius: var(--skylight-radius-tile, 6px) !important;
+                            }
+
+                            /* Smaller date numbers */
+                            .day .date .number {
+                              font-size: clamp(1.1em, 4.5vw, 1.4em) !important;
+                              line-height: 1.1 !important;
+                            }
+                            .day .date .text {
+                              font-size: clamp(0.72em, 3.2vw, 0.85em) !important;
+                              line-height: 1.1 !important;
+                            }
+
+                            /* Event chip reduced (height is bounded by the line
+                               clamps, not a fixed max-height) */
+                            .event {
+                              font-size: clamp(0.72em, 2.9vw, 0.85em) !important;
+                              line-height: 1.15 !important;
+                              padding: 0.25em 0.35em 0.25em 0.45em !important;
+                              border-left-width: 2px !important;
+                            }
+
+                            .time {
+                              font-size: clamp(0.65em, 2.5vw, 0.78em) !important;
+                            }
+
+                            /* === TWO-LINE WRAP FOR TITLES === */
+                            .event .title,
+                            .event .name,
+                            .event .summary,
+                            .event .location,
+                            .event .desc,
+                            .event .description {
+                              display: -webkit-box !important;
+                              -webkit-box-orient: vertical !important;
+                              -webkit-line-clamp: 2 !important;   /* <<< Two lines max */
+                              overflow: hidden !important;
+                              text-overflow: ellipsis !important;
+                              white-space: normal !important;
+                              line-height: 1.1em !important;
+                              max-height: calc(1.1em * 2) !important;
+                            }
+                          }
+
+                          /* Slightly larger phones / small tablets */
+                          @media (min-width: 481px) and (max-width: 768px) {
+
+                            :host {
+                              font-size: clamp(11px, 2.2vw, 14px) !important;
+                            }
+
+                            .event .title,
+                            .event .name,
+                            .event .summary {
+                              display: -webkit-box !important;
+                              -webkit-line-clamp: 2 !important;
+                              overflow: hidden !important;
+                            }
+                          }
+                        `}
         column_span: 10
       # --- End CALENDAR SECTION (Week Planner Card) ---
       # --- START POPUP SECTION (Hidden) ---

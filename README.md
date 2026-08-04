@@ -67,6 +67,7 @@ The hardware I originally used I chose based on what I mentioned above plus with
 
 ## ✨ Features
 
+* **Navigation Sidebar:** A Skylight-style rail docked next to the calendar — Calendar, Add Event, Chores and Photos — that stays in reach while the page scrolls and re-flows into a button row on narrow screens.
 * **Family-wide & Individual Views:** Toggle specific family members' calendars on/off.
 * **Two-way Sync:** Edit events on the screen or on our phones (Google Calendar).
 * **"Add Event" Popup:** A custom UI to add events to specific calendars directly from the screen.
@@ -219,6 +220,7 @@ The dashboard header wraps a markdown card in a `conditional` card that only ren
 * **12-hour clock** — in the `better-moment-card` at the top of `dashboard.yaml`, change `{{moment format=HH:mm}}` to `{{moment format=h:mm a}}`.
 * **Language** — change `locale: en` in the `week-planner-card` section of `dashboard.yaml`.
 * **Fewer/more family members** — remove or copy a button in `dashboard.yaml` (each passes its own `filter_entity`) and the matching `input_text` helper + calendar entry. The shared `script.toggle_calendar_filter` needs no changes.
+* **Sidebar entries** — the navigation sidebar (search `dashboard.yaml` for `NAVIGATION SIDEBAR`) is a plain stack of bubble-card buttons: copy one and point its `tap_action` at a new popup hash (e.g. `#mypopup`) or a script to add an entry; delete a block to remove one. The Calendar button navigates to `#calendar`, a hash no popup uses, so it just closes any open popup and returns to the grid.
 
 ## 🧩 Optional Features
 
@@ -226,8 +228,8 @@ The dashboard header wraps a markdown card in a `conditional` card that only ren
 
 1. Go to **Settings > Devices & Services > Add Integration > Local To-do** and create your lists — the dashboard is pre-wired for `Daniel` and `Family` (entities `todo.daniel` and `todo.family`).
 2. If you used other names or want more lists, update the `todo.*` entities in the Chores popup in `dashboard.yaml` (marked `UPDATE THIS ENTITY`).
-3. Tap the **Chores** button on the dashboard. Kids can check items off right on the screen.
-4. Not interested? Delete the Chores button and the `#chores` popup from `dashboard.yaml`.
+3. Tap **Chores** in the navigation sidebar. Kids can check items off right on the screen.
+4. Not interested? Delete the Chores button from the sidebar and the `#chores` popup from `dashboard.yaml`.
 
 ### Per-person "Today" agenda
 
@@ -239,7 +241,7 @@ A commented-out section in `dashboard.yaml` (search for `MEAL PLANNER STRIP`) re
 
 ### Photo screensaver
 
-`script.screensaver_start` (from the package) opens a fullscreen photo on every registered browser; any tap or mouse movement dismisses it. Upload a photo to `/config/www/photos/` and update the path in the script. An example automation at the bottom of the package file triggers it nightly — for true idle-detection screensavers, kiosk software like Fully Kiosk Browser is the better tool.
+`script.screensaver_start` (from the package) opens a fullscreen photo on every registered browser; any tap or mouse movement dismisses it. The **Photos** button in the navigation sidebar runs it on demand. Upload a photo to `/config/www/photos/` and update the path in the script. An example automation at the bottom of the package file triggers it nightly — for true idle-detection screensavers, kiosk software like Fully Kiosk Browser is the better tool.
 
 ### Dark mode
 
@@ -275,6 +277,7 @@ If you installed a previous version of this project, note these renames (update 
 * The seven `*_calendar_visible_filter` scripts were consolidated into a single `script.toggle_calendar_filter` that takes a `filter_entity` parameter (the dashboard buttons already pass it).
 * `script.add_google_calendar_event` was renamed to `script.add_calendar_event` (it always worked with any calendar type, not just Google).
 * The `button-card` HACS dependency is no longer needed.
+* The **Add Event** and **Chores** buttons moved from the header row into the new navigation sidebar next to the calendar (the header row keeps the filter pills and the view selector).
 * The background image is now `calbackgrd.webp` (much smaller download); re-upload it to `/www/` or keep your existing `.png` and point the dashboard `background.image` at it.
 
 My original post was just to give a high level overview of how to do it and allow people to adjust code to make it work in their specific scenarios.
