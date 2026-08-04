@@ -71,6 +71,7 @@ The hardware I originally used I chose based on what I mentioned above plus with
 * **Two-way Sync:** Edit events on the screen or on our phones (Google Calendar).
 * **"Add Event" Popup:** A custom UI to add events to specific calendars directly from the screen.
 * **Weather & Date:** Beautiful, glanceable header.
+* **Tomorrow Alert:** A header banner that appears when events are coming up tomorrow, with a subtle bell animation.
 * **Responsive:** Automatically adjusts day-count based on screen width (Mobile vs Desktop).
 * **Chores:** A popup with a per-person to-do list, powered by HA's built-in Local To-do.
 * **Per-person Agenda:** Hold a person's button to pop up their day at a glance.
@@ -204,6 +205,12 @@ The "Add Event" popup uses a single script that handles logic for multiple peopl
 
 The script validates the form before creating anything: it refuses an empty title, a timed event whose end is not after its start, and an all-day event whose end date is before its start date (showing a Browser Mod notification instead), automatically extends a same-day all-day event to the next day (Home Assistant treats the end date as exclusive), and resets the form after a successful add.
 
+### Tomorrow Alert
+
+The package defines a trigger-based template sensor, `sensor.tomorrow_events`, that calls `calendar.get_events` for tomorrow (midnight to midnight) across all the family calendars — every 15 minutes, on startup, and right after an event is created, so additions from the Add Event popup show up immediately. Its state is the number of events tomorrow and its `events` attribute lists them sorted (all-day first, then by start time).
+
+The dashboard header wraps a markdown card in a `conditional` card that only renders when the sensor is above 0, so the banner disappears entirely on quiet days. It shows up to 5 events (`+N more` beyond that), eases in on load, and the bell icon gives a soft ring every few seconds — both animations are disabled for browsers that request reduced motion. If your calendar entities differ from the defaults, update the `entity_id` list in the sensor's `calendar.get_events` action (marked `UPDATE THESE ENTITIES` in the package file). The Weather calendar is deliberately excluded so forecast feeds don't flood the alert.
+
 ## 🎨 Customizing
 
 * **Per-person colors** — edit the `*-default-primary-color` variables in [`themes/skylight.yaml`](themes/skylight.yaml). The buttons, event chips and popups all read them, so one edit changes everything. Reload themes afterwards (Developer tools → Actions → `frontend.reload_themes`).
@@ -244,6 +251,7 @@ The theme file now also defines **`Skylight Dark`** — same layout and per-pers
 * **The calendar shows no events at all** — check the filter helpers (Developer tools → States, search `_calendar_filter`). A value of `.*` means that calendar is *hidden*; `^$` means visible. Tapping a person's button toggles between the two.
 * **The buttons don't color when tapped** — the `input_text.*_calendar_filter` helpers don't exist, which usually means the package file isn't loaded. Check the packages setup in section 2 and restart HA.
 * **Events I add on screen don't appear in Google Calendar** — the `calendar_map` inside `script.add_calendar_event` (in the package file) points at entities that don't exist in your install (it expects `calendar.school`, `calendar.daniel`, `calendar.weather`, `calendar.family`). Update the mapping to your real calendar entities.
+* **The Tomorrow banner never shows up** — check `sensor.tomorrow_events` in Developer tools → States. If it's missing, the package isn't loaded (see section 2); if it's `unavailable`, one of the calendar entities in its `calendar.get_events` action doesn't exist in your install — update the list (marked `UPDATE THESE ENTITIES` in the package file). Also note it refreshes on a 15-minute cycle, so a freshly synced external event can take a few minutes to appear.
 * **The background is missing** — `calbackgrd.webp` wasn't uploaded to `/config/www/`, or the dashboard's `background.image` path doesn't match the uploaded filename.
 * **Everything is the wrong font** — the theme isn't applied. Set your profile's theme to `Skylight` (per browser/user), and make sure `themes: !include_dir_merge_named themes` is in `configuration.yaml`.
 
