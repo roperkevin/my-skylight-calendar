@@ -1694,6 +1694,7 @@ views:
                     background: var(--skylight-cta-bg, #0056b2) !important;
                   }
                   .bubble-icon-container {
+                    border-radius: var(--skylight-radius-chip, 6px) !important;
                     background: rgba(255, 255, 255, 0.12) !important;
                   }
                   .bubble-icon {
@@ -1706,13 +1707,24 @@ views:
                     letter-spacing: 0.01em !important;
                     opacity: 1 !important;
                   }
+                  /* Match the Add Event popup: quiet chrome close button */
+                  .bubble-close-button {
+                    background: var(--skylight-btn-off-bg, #ffffff) !important;
+                    border: 1px solid var(--skylight-btn-off-border, #e9ecef) !important;
+                    border-radius: var(--skylight-radius-card, 10px) !important;
+                    color: var(--skylight-btn-off-text, #757575) !important;
+                    opacity: 1 !important;
+                  }
+              # The per-list titles (Daniel / Family) stay — unlike the Add
+              # Event popup's duplicated heading, they distinguish the two
+              # lists. Transparent backgrounds keep the popup one panel.
               - type: todo-list
                 entity: todo.daniel # <--- UPDATE THIS ENTITY (Local To-do list)
                 title: Daniel
                 card_mod:
                   style: |
                     ha-card {
-                      background: var(--skylight-surface, var(--card-background-color)) !important;
+                      background: transparent !important;
                       border-radius: var(--skylight-radius-card, 10px) !important;
                       border: none !important;
                       box-shadow: none !important;
@@ -1726,7 +1738,7 @@ views:
                 card_mod:
                   style: |
                     ha-card {
-                      background: var(--skylight-surface, var(--card-background-color)) !important;
+                      background: transparent !important;
                       border-radius: var(--skylight-radius-card, 10px) !important;
                       border: none !important;
                       box-shadow: none !important;
@@ -1751,6 +1763,7 @@ views:
                     background: var(--school-default-primary-color) !important;
                   }
                   .bubble-icon-container {
+                    border-radius: var(--skylight-radius-chip, 6px) !important;
                     background: rgba(255, 255, 255, 0.22) !important;
                   }
                   .bubble-icon {
@@ -1760,6 +1773,14 @@ views:
                   .bubble-name {
                     color: #ffffff !important;
                     font-weight: 700 !important;
+                    opacity: 1 !important;
+                  }
+                  /* Match the Add Event popup: quiet chrome close button */
+                  .bubble-close-button {
+                    background: var(--skylight-btn-off-bg, #ffffff) !important;
+                    border: 1px solid var(--skylight-btn-off-border, #e9ecef) !important;
+                    border-radius: var(--skylight-radius-card, 10px) !important;
+                    color: var(--skylight-btn-off-text, #757575) !important;
                     opacity: 1 !important;
                   }
               - type: custom:week-planner-card
@@ -1777,7 +1798,7 @@ views:
                 card_mod:
                   style: |
                     ha-card {
-                      background: var(--skylight-surface, var(--card-background-color)) !important;
+                      background: transparent !important;
                       border-radius: var(--skylight-radius-card, 10px) !important;
                       border: none !important;
                       box-shadow: none !important;
@@ -1832,6 +1853,7 @@ views:
                     background: var(--daniel-default-primary-color) !important;
                   }
                   .bubble-icon-container {
+                    border-radius: var(--skylight-radius-chip, 6px) !important;
                     background: rgba(255, 255, 255, 0.22) !important;
                   }
                   .bubble-icon {
@@ -1841,6 +1863,14 @@ views:
                   .bubble-name {
                     color: #ffffff !important;
                     font-weight: 700 !important;
+                    opacity: 1 !important;
+                  }
+                  /* Match the Add Event popup: quiet chrome close button */
+                  .bubble-close-button {
+                    background: var(--skylight-btn-off-bg, #ffffff) !important;
+                    border: 1px solid var(--skylight-btn-off-border, #e9ecef) !important;
+                    border-radius: var(--skylight-radius-card, 10px) !important;
+                    color: var(--skylight-btn-off-text, #757575) !important;
                     opacity: 1 !important;
                   }
               - type: custom:week-planner-card
@@ -1858,7 +1888,7 @@ views:
                 card_mod:
                   style: |
                     ha-card {
-                      background: var(--skylight-surface, var(--card-background-color)) !important;
+                      background: transparent !important;
                       border-radius: var(--skylight-radius-card, 10px) !important;
                       border: none !important;
                       box-shadow: none !important;
@@ -1913,6 +1943,7 @@ views:
                     background: var(--weather-default-primary-color) !important;
                   }
                   .bubble-icon-container {
+                    border-radius: var(--skylight-radius-chip, 6px) !important;
                     background: rgba(255, 255, 255, 0.22) !important;
                   }
                   .bubble-icon {
@@ -1922,6 +1953,14 @@ views:
                   .bubble-name {
                     color: #ffffff !important;
                     font-weight: 700 !important;
+                    opacity: 1 !important;
+                  }
+                  /* Match the Add Event popup: quiet chrome close button */
+                  .bubble-close-button {
+                    background: var(--skylight-btn-off-bg, #ffffff) !important;
+                    border: 1px solid var(--skylight-btn-off-border, #e9ecef) !important;
+                    border-radius: var(--skylight-radius-card, 10px) !important;
+                    color: var(--skylight-btn-off-text, #757575) !important;
                     opacity: 1 !important;
                   }
               - type: custom:week-planner-card
@@ -1939,7 +1978,7 @@ views:
                 card_mod:
                   style: |
                     ha-card {
-                      background: var(--skylight-surface, var(--card-background-color)) !important;
+                      background: transparent !important;
                       border-radius: var(--skylight-radius-card, 10px) !important;
                       border: none !important;
                       box-shadow: none !important;
