@@ -699,90 +699,14 @@ views:
             card:
               type: horizontal-stack
               cards:
-                # --- ACTION PILLS ---
+                # --- VIEW SELECTOR ---
                 # Same tinted-pill recipe as the "Coming up tomorrow" alert
                 # pills, using the accent color (the tomorrow pills' fallback
                 # hue for calendars without their own color) so the whole
                 # chrome row reads as one family. The plain background/border
                 # lines are fallbacks for browsers without color-mix.
-                - type: custom:bubble-card
-                  card_type: button
-                  button_type: name
-                  name: Add Event
-                  icon: mdi:calendar-plus
-                  tap_action:
-                    action: navigate
-                    navigation_path: "#addcalendarevent"
-                  styles: |
-                    .bubble-button-card-container {
-                      background: none !important;
-                      border-radius: 999px !important;
-                    }
-                    ha-card {
-                      background: none !important;
-                      border-radius: 999px !important;
-                      border: 1px solid var(--skylight-event-border, #eaeaea) !important;
-                      border-color: color-mix(in srgb, var(--skylight-today-highlight-color, #0070cb) 45%, var(--skylight-event-border, #eaeaea)) !important;
-                      box-shadow: var(--skylight-event-shadow, 0 1px 2px rgba(52, 52, 60, 0.05)) !important;
-                    }
-                    .bubble-button-background {
-                      opacity: 1 !important;
-                      border-radius: 999px !important;
-                      background-color: var(--skylight-event-bg, #ffffff) !important;
-                      background-color: color-mix(in srgb, var(--skylight-today-highlight-color, #0070cb) 14%, var(--skylight-event-bg, #ffffff)) !important;
-                    }
-                    .bubble-icon-container {
-                      background: none !important;
-                    }
-                    .bubble-icon {
-                      opacity: 1 !important;
-                      color: var(--skylight-today-highlight-color, #0070cb) !important;
-                    }
-                    .bubble-name {
-                      opacity: 1 !important;
-                      font-weight: 600 !important;
-                      letter-spacing: 0.01em !important;
-                      color: var(--skylight-event-text-color, var(--primary-text-color)) !important;
-                    }
-                - type: custom:bubble-card
-                  card_type: button
-                  button_type: name
-                  name: Chores
-                  icon: mdi:clipboard-check-outline
-                  tap_action:
-                    action: navigate
-                    navigation_path: "#chores"
-                  styles: |
-                    .bubble-button-card-container {
-                      background: none !important;
-                      border-radius: 999px !important;
-                    }
-                    ha-card {
-                      background: none !important;
-                      border-radius: 999px !important;
-                      border: 1px solid var(--skylight-event-border, #eaeaea) !important;
-                      border-color: color-mix(in srgb, var(--skylight-today-highlight-color, #0070cb) 45%, var(--skylight-event-border, #eaeaea)) !important;
-                      box-shadow: var(--skylight-event-shadow, 0 1px 2px rgba(52, 52, 60, 0.05)) !important;
-                    }
-                    .bubble-button-background {
-                      opacity: 1 !important;
-                      border-radius: 999px !important;
-                      background-color: var(--skylight-event-bg, #ffffff) !important;
-                      background-color: color-mix(in srgb, var(--skylight-today-highlight-color, #0070cb) 14%, var(--skylight-event-bg, #ffffff)) !important;
-                    }
-                    .bubble-icon-container {
-                      background: none !important;
-                    }
-                    .bubble-icon {
-                      opacity: 1 !important;
-                      color: var(--skylight-today-highlight-color, #0070cb) !important;
-                    }
-                    .bubble-name {
-                      opacity: 1 !important;
-                      font-weight: 600 !important;
-                      letter-spacing: 0.01em !important;
-                      color: var(--skylight-event-text-color, var(--primary-text-color)) !important;
-                    }
+                # (The Add Event and Chores buttons used to live here; they
+                # moved into the navigation sidebar next to the calendar.)
                 - type: custom:bubble-card
                   card_type: select
                   entity: input_select.calendar_view
@@ -836,6 +760,256 @@ views:
                     }
         column_span: 10
       # --- End CONTROLS SECTION (Buttons) ---
+      # --- START NAVIGATION SIDEBAR ---
+      # A Skylight-style rail docked to the calendar's left edge (this section
+      # spans 1 of the view's 10 columns; the calendar section next to it
+      # spans the other 9). Every entry is an ordinary bubble-card button:
+      # the Add Event and Chores buttons navigate to their pop-up hashes,
+      # Photos runs the screensaver script from the package, and Calendar
+      # navigates to "#calendar" — a hash no pop-up uses, so tapping it
+      # simply closes whatever is open and lands back on the grid. To add
+      # your own entry, copy a button and point it at a new pop-up hash or
+      # script; to remove one, just delete its block.
+      # On narrow screens the view collapses to a single column and the rail
+      # re-flows into a wrapping row of buttons above the calendar.
+      - type: grid
+        cards:
+          - type: custom:mod-card
+            grid_options:
+              columns: 12
+              rows: auto
+            card_mod:
+              # card-mod can't attach to stack cards (same trick as the pill
+              # rows above): the mod-card wrapper draws the rail surface and
+              # keeps it sticky so it stays in reach when the Month view
+              # makes the page scroll.
+              style:
+                .: |
+                  ha-card {
+                    background: var(--skylight-surface, #ffffff) !important;
+                    border: none !important;
+                    border-radius: var(--skylight-radius-card, 10px) !important;
+                    box-shadow: var(--skylight-shadow-card, rgba(104, 104, 104, 0.05) 0 2px 6px 0, rgba(211, 209, 209, 0.15) 0 0 0 1px) !important;
+                    padding: 8px !important;
+                    position: sticky;
+                    top: 12px;
+                  }
+                hui-vertical-stack-card $: |
+                  #root {
+                    gap: 2px;
+                  }
+                  #root > * {
+                    margin: 0 !important;
+                  }
+                  /* When the view collapses to one column (tablet/mobile),
+                     the rail becomes a wrapping row above the calendar. */
+                  @media (max-width: 1000px) {
+                    #root {
+                      flex-direction: row;
+                      flex-wrap: wrap;
+                      gap: 6px;
+                    }
+                    #root > * {
+                      flex: 1 1 auto;
+                      min-width: 130px;
+                    }
+                  }
+            card:
+              type: vertical-stack
+              cards:
+                # --- SIDEBAR ITEMS ---
+                # Quiet menu rows on the rail surface: accent icon in a soft
+                # square, hover wash from the same token as the calendar's
+                # arrow cluster. All four share the identical style block.
+                - type: custom:bubble-card
+                  card_type: button
+                  button_type: name
+                  name: Calendar
+                  icon: mdi:calendar-month
+                  show_icon: true
+                  show_name: true
+                  tap_action:
+                    action: navigate
+                    navigation_path: "#calendar"
+                  styles: |
+                    .bubble-button-card-container {
+                      background: none !important;
+                      border-radius: var(--skylight-radius-chip, 6px) !important;
+                    }
+                    ha-card {
+                      background: none !important;
+                      border: none !important;
+                      border-radius: var(--skylight-radius-chip, 6px) !important;
+                      box-shadow: none !important;
+                    }
+                    .bubble-button-background {
+                      opacity: 1 !important;
+                      border-radius: var(--skylight-radius-chip, 6px) !important;
+                      background-color: transparent !important;
+                      transition: background-color .2s ease;
+                    }
+                    @media (hover: hover) {
+                      .bubble-button-card-container:hover .bubble-button-background {
+                        background-color: var(--skylight-nav-hover-bg, rgba(0, 86, 178, 0.08)) !important;
+                      }
+                    }
+                    .bubble-icon-container {
+                      background: var(--skylight-btn-off-icon-bg, rgba(0, 0, 0, 0.04)) !important;
+                      border-radius: var(--skylight-radius-chip, 6px) !important;
+                    }
+                    .bubble-icon {
+                      opacity: 1 !important;
+                      color: var(--skylight-today-highlight-color, #0070cb) !important;
+                    }
+                    .bubble-name {
+                      opacity: 1 !important;
+                      font-weight: 600 !important;
+                      letter-spacing: 0.01em !important;
+                      color: var(--skylight-event-text-color, var(--primary-text-color)) !important;
+                    }
+                - type: custom:bubble-card
+                  card_type: button
+                  button_type: name
+                  name: Add Event
+                  icon: mdi:calendar-plus
+                  show_icon: true
+                  show_name: true
+                  tap_action:
+                    action: navigate
+                    navigation_path: "#addcalendarevent"
+                  styles: |
+                    .bubble-button-card-container {
+                      background: none !important;
+                      border-radius: var(--skylight-radius-chip, 6px) !important;
+                    }
+                    ha-card {
+                      background: none !important;
+                      border: none !important;
+                      border-radius: var(--skylight-radius-chip, 6px) !important;
+                      box-shadow: none !important;
+                    }
+                    .bubble-button-background {
+                      opacity: 1 !important;
+                      border-radius: var(--skylight-radius-chip, 6px) !important;
+                      background-color: transparent !important;
+                      transition: background-color .2s ease;
+                    }
+                    @media (hover: hover) {
+                      .bubble-button-card-container:hover .bubble-button-background {
+                        background-color: var(--skylight-nav-hover-bg, rgba(0, 86, 178, 0.08)) !important;
+                      }
+                    }
+                    .bubble-icon-container {
+                      background: var(--skylight-btn-off-icon-bg, rgba(0, 0, 0, 0.04)) !important;
+                      border-radius: var(--skylight-radius-chip, 6px) !important;
+                    }
+                    .bubble-icon {
+                      opacity: 1 !important;
+                      color: var(--skylight-today-highlight-color, #0070cb) !important;
+                    }
+                    .bubble-name {
+                      opacity: 1 !important;
+                      font-weight: 600 !important;
+                      letter-spacing: 0.01em !important;
+                      color: var(--skylight-event-text-color, var(--primary-text-color)) !important;
+                    }
+                - type: custom:bubble-card
+                  card_type: button
+                  button_type: name
+                  name: Chores
+                  icon: mdi:clipboard-check-outline
+                  show_icon: true
+                  show_name: true
+                  tap_action:
+                    action: navigate
+                    navigation_path: "#chores"
+                  styles: |
+                    .bubble-button-card-container {
+                      background: none !important;
+                      border-radius: var(--skylight-radius-chip, 6px) !important;
+                    }
+                    ha-card {
+                      background: none !important;
+                      border: none !important;
+                      border-radius: var(--skylight-radius-chip, 6px) !important;
+                      box-shadow: none !important;
+                    }
+                    .bubble-button-background {
+                      opacity: 1 !important;
+                      border-radius: var(--skylight-radius-chip, 6px) !important;
+                      background-color: transparent !important;
+                      transition: background-color .2s ease;
+                    }
+                    @media (hover: hover) {
+                      .bubble-button-card-container:hover .bubble-button-background {
+                        background-color: var(--skylight-nav-hover-bg, rgba(0, 86, 178, 0.08)) !important;
+                      }
+                    }
+                    .bubble-icon-container {
+                      background: var(--skylight-btn-off-icon-bg, rgba(0, 0, 0, 0.04)) !important;
+                      border-radius: var(--skylight-radius-chip, 6px) !important;
+                    }
+                    .bubble-icon {
+                      opacity: 1 !important;
+                      color: var(--skylight-today-highlight-color, #0070cb) !important;
+                    }
+                    .bubble-name {
+                      opacity: 1 !important;
+                      font-weight: 600 !important;
+                      letter-spacing: 0.01em !important;
+                      color: var(--skylight-event-text-color, var(--primary-text-color)) !important;
+                    }
+                # Runs script.screensaver_start from the package (upload a
+                # photo and set its path in the script first — see the
+                # README's Photo screensaver section).
+                - type: custom:bubble-card
+                  card_type: button
+                  button_type: name
+                  name: Photos
+                  icon: mdi:image-multiple-outline
+                  show_icon: true
+                  show_name: true
+                  tap_action:
+                    action: perform-action
+                    perform_action: script.screensaver_start
+                  styles: |
+                    .bubble-button-card-container {
+                      background: none !important;
+                      border-radius: var(--skylight-radius-chip, 6px) !important;
+                    }
+                    ha-card {
+                      background: none !important;
+                      border: none !important;
+                      border-radius: var(--skylight-radius-chip, 6px) !important;
+                      box-shadow: none !important;
+                    }
+                    .bubble-button-background {
+                      opacity: 1 !important;
+                      border-radius: var(--skylight-radius-chip, 6px) !important;
+                      background-color: transparent !important;
+                      transition: background-color .2s ease;
+                    }
+                    @media (hover: hover) {
+                      .bubble-button-card-container:hover .bubble-button-background {
+                        background-color: var(--skylight-nav-hover-bg, rgba(0, 86, 178, 0.08)) !important;
+                      }
+                    }
+                    .bubble-icon-container {
+                      background: var(--skylight-btn-off-icon-bg, rgba(0, 0, 0, 0.04)) !important;
+                      border-radius: var(--skylight-radius-chip, 6px) !important;
+                    }
+                    .bubble-icon {
+                      opacity: 1 !important;
+                      color: var(--skylight-today-highlight-color, #0070cb) !important;
+                    }
+                    .bubble-name {
+                      opacity: 1 !important;
+                      font-weight: 600 !important;
+                      letter-spacing: 0.01em !important;
+                      color: var(--skylight-event-text-color, var(--primary-text-color)) !important;
+                    }
+        column_span: 1
+      # --- End NAVIGATION SIDEBAR ---
       # --- START CALENDAR SECTION (Week Planner Card) ---
       - type: grid
         cards:
@@ -1529,10 +1703,10 @@ views:
                     }
                   `}
             grid_options:
-              columns: 120
+              columns: full
               rows: 1
               showDescription: false
-        column_span: 10
+        column_span: 9
       # --- End CALENDAR SECTION (Week Planner Card) ---
       # --- START POPUP SECTION (Hidden) ---
       - type: grid
