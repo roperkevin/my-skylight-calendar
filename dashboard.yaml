@@ -75,6 +75,80 @@ views:
                 .forecast .templow {
                   color: var(--secondary-text-color) !important;
                 }
+          # --- TOMORROW ALERT BANNER ---
+          # Reads sensor.tomorrow_events (from packages/family_calendar.yaml)
+          # and only appears when something is on tomorrow's agenda. The
+          # banner eases in on load and the bell gives a soft ring every few
+          # seconds; both animations respect prefers-reduced-motion.
+          - type: conditional
+            conditions:
+              - condition: numeric_state
+                entity: sensor.tomorrow_events
+                above: 0
+            card:
+              type: markdown
+              # The folded block (>-) collapses these lines into one, so the
+              # rendered markdown stays a single paragraph. All-day events
+              # show just their title; timed ones are prefixed with HH:MM
+              # (switch timestamp_custom to '%-I:%M %p' for a 12-hour clock).
+              content: >-
+                {%- set events = state_attr('sensor.tomorrow_events', 'events') or [] -%}
+                {%- set shown = events[:5] -%}
+                <ha-icon icon="mdi:bell-ring-outline"></ha-icon>
+                **Coming up tomorrow:**
+                {% for ev in shown -%}
+                {% if not loop.first %} · {% endif -%}
+                {% if not ev.all_day %}{{ as_timestamp(ev.start) | timestamp_custom('%H:%M') }} {% endif -%}
+                {{ ev.summary }}
+                {%- endfor %}
+                {%- if events | length > 5 %} · +{{ events | length - 5 }} more{% endif %}
+              card_mod:
+                style:
+                  .: |
+                    ha-card {
+                      background: var(--skylight-cal-card-background, #ffffff) !important;
+                      border: none !important;
+                      border-left: 4px solid var(--skylight-today-highlight-color, #0070cb) !important;
+                      border-radius: var(--skylight-radius-card, 10px) !important;
+                      box-shadow: var(--skylight-shadow-card, rgba(104, 104, 104, 0.05) 0 2px 6px 0, rgba(211, 209, 209, 0.15) 0 0 0 1px) !important;
+                      padding: 4px 16px !important;
+                      font-family: var(--primary-font-family) !important;
+                      animation: skylight-alert-in 0.7s cubic-bezier(0.22, 1, 0.36, 1) both;
+                    }
+                    @keyframes skylight-alert-in {
+                      from { opacity: 0; transform: translateY(-8px); }
+                      to   { opacity: 1; transform: translateY(0); }
+                    }
+                    @media (prefers-reduced-motion: reduce) {
+                      ha-card { animation: none !important; }
+                    }
+                  ha-markdown $: |
+                    p {
+                      margin: 0 !important;
+                      line-height: 1.5;
+                      color: var(--primary-text-color);
+                    }
+                    ha-icon {
+                      color: var(--skylight-today-highlight-color, #0070cb);
+                      --mdc-icon-size: 19px;
+                      vertical-align: text-bottom;
+                      margin-right: 2px;
+                      transform-origin: 50% 10%;
+                      animation: skylight-bell-ring 6s ease-in-out infinite;
+                    }
+                    /* Still for most of the cycle, then a quick soft ring */
+                    @keyframes skylight-bell-ring {
+                      0%, 88%, 100% { transform: rotate(0deg); }
+                      90% { transform: rotate(9deg); }
+                      93% { transform: rotate(-7deg); }
+                      96% { transform: rotate(4deg); }
+                      98% { transform: rotate(-2deg); }
+                    }
+                    @media (prefers-reduced-motion: reduce) {
+                      ha-icon { animation: none !important; }
+                    }
+            grid_options:
+              columns: full
         column_span: 10
       # --- End HEADER SECTION (Date & Weather) ---
       # --- OPTIONAL: MEAL PLANNER STRIP (Skylight-style dinner row) ---

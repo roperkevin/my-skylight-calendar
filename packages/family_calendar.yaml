@@ -85,7 +85,65 @@ input_boolean:
     name: All Day Event
     icon: mdi:calendar-clock
 
-# 2. SCRIPTS (The Logic)
+# 2. TEMPLATE SENSORS (Tomorrow's agenda for the header alert)
+template:
+  # Collects tomorrow's events from every calendar into one sensor the
+  # dashboard's header alert banner reads. State = number of events tomorrow
+  # (the banner hides itself at 0); the `events` attribute holds them sorted
+  # with all-day events first, then by start time.
+  - triggers:
+      # Refresh every 15 minutes (which also rolls "tomorrow" over shortly
+      # after midnight), on startup, and right after an event is created so
+      # additions made from the Add Event popup show up immediately.
+      - trigger: time_pattern
+        minutes: "/15"
+      - trigger: homeassistant
+        event: start
+      - trigger: event
+        event_type: call_service
+        event_data:
+          domain: calendar
+          service: create_event
+    actions:
+      # Brief pause so a just-created event is committed before we query.
+      - delay:
+          seconds: 2
+      - action: calendar.get_events
+        target:
+          entity_id:
+            # <--- UPDATE THESE ENTITIES to match your calendars (keep in sync
+            # with dashboard.yaml). calendar.weather is left out on purpose:
+            # forecast feeds would fill the alert with noise.
+            - calendar.school
+            - calendar.daniel
+            - calendar.family
+            - calendar.birthdays
+            - calendar.holidays
+        data:
+          start_date_time: "{{ (now() + timedelta(days=1)).replace(hour=0, minute=0, second=0, microsecond=0).isoformat() }}"
+          end_date_time: "{{ (now() + timedelta(days=2)).replace(hour=0, minute=0, second=0, microsecond=0).isoformat() }}"
+        response_variable: agenda
+    sensor:
+      - name: Tomorrow Events
+        unique_id: family_calendar_tomorrow_events
+        icon: mdi:calendar-alert
+        state: "{{ agenda.values() | map(attribute='events') | map('length') | sum }}"
+        attributes:
+          events: >-
+            {% set ns = namespace(items=[]) %}
+            {% for cal, data in agenda.items() %}
+              {% for ev in data.events %}
+                {% set ns.items = ns.items + [{
+                     'summary': ev.summary,
+                     'start': ev.start,
+                     'all_day': 'T' not in ev.start,
+                     'calendar': cal
+                   }] %}
+              {% endfor %}
+            {% endfor %}
+            {{ ns.items | sort(attribute='start') }}
+
+# 3. SCRIPTS (The Logic)
 script:
   # --- Filter Toggle (shared by every calendar button) ---
   # The dashboard buttons call this with the filter helper they control, e.g.:
@@ -242,7 +300,7 @@ script:
               action: none
 
 # ==============================================================================
-# 3. OPTIONAL AUTOMATIONS (uncomment to use)
+# 4. OPTIONAL AUTOMATIONS (uncomment to use)
 # ==============================================================================
 # automation:
 #   # Show the photo screensaver every evening.
