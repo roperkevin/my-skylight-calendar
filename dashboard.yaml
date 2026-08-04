@@ -75,11 +75,16 @@ views:
                 .forecast .templow {
                   color: var(--secondary-text-color) !important;
                 }
-          # --- TOMORROW ALERT BANNER ---
+          # --- TOMORROW ALERT PILLS ---
           # Reads sensor.tomorrow_events (from packages/family_calendar.yaml)
-          # and only appears when something is on tomorrow's agenda. The
-          # banner eases in on load and the bell gives a soft ring every few
-          # seconds; both animations respect prefers-reduced-motion.
+          # and only appears when something is on tomorrow's agenda. Rather
+          # than one card listing the agenda as plain text, every event gets
+          # its own badge pill tinted with its calendar's color (a dot, a
+          # tinted background and a colored border); the wrapper card is
+          # transparent like the rest of the header, so only the bell, label
+          # and pills show. The row eases in on load and the bell gives a
+          # soft ring every few seconds; both animations respect
+          # prefers-reduced-motion.
           - type: conditional
             conditions:
               - condition: numeric_state
@@ -88,30 +93,33 @@ views:
             card:
               type: markdown
               # The folded block (>-) collapses these lines into one, so the
-              # rendered markdown stays a single paragraph. All-day events
-              # show just their title; timed ones are prefixed with HH:MM
-              # (switch timestamp_custom to '%-I:%M %p' for a 12-hour clock).
+              # rendered markdown stays a single paragraph. Each event is an
+              # <abbr> pill: the markdown card strips style/class attributes
+              # from HTML, but abbr keeps its title, which doubles as the CSS
+              # hook the card-mod block below uses to pick the calendar's
+              # color (and as a hover tooltip naming the calendar). All-day
+              # events show just their title; timed ones get a muted HH:MM
+              # prefix (switch timestamp_custom to '%-I:%M %p' for a 12-hour
+              # clock).
               content: >-
                 {%- set events = state_attr('sensor.tomorrow_events', 'events') or [] -%}
                 {%- set shown = events[:5] -%}
                 <ha-icon icon="mdi:bell-ring-outline"></ha-icon>
                 **Coming up tomorrow:**
                 {% for ev in shown -%}
-                {% if not loop.first %} · {% endif -%}
-                {% if not ev.all_day %}{{ as_timestamp(ev.start) | timestamp_custom('%H:%M') }} {% endif -%}
-                {{ ev.summary }}
-                {%- endfor %}
-                {%- if events | length > 5 %} · +{{ events | length - 5 }} more{% endif %}
+                <abbr title="{{ ev.calendar.split('.', 1) | last }}">
+                {%- if not ev.all_day -%}<small>{{ as_timestamp(ev.start) | timestamp_custom('%H:%M') }}</small> {% endif -%}
+                {{ ev.summary }}</abbr>
+                {% endfor -%}
+                {%- if events | length > 5 %}<small>+{{ events | length - 5 }} more</small>{% endif %}
               card_mod:
                 style:
                   .: |
                     ha-card {
-                      background: var(--skylight-cal-card-background, #ffffff) !important;
+                      background: transparent !important;
                       border: none !important;
-                      border-left: 4px solid var(--skylight-today-highlight-color, #0070cb) !important;
-                      border-radius: var(--skylight-radius-card, 10px) !important;
-                      box-shadow: var(--skylight-shadow-card, rgba(104, 104, 104, 0.05) 0 2px 6px 0, rgba(211, 209, 209, 0.15) 0 0 0 1px) !important;
-                      padding: 4px 16px !important;
+                      box-shadow: none !important;
+                      padding: 4px 2px !important;
                       font-family: var(--primary-font-family) !important;
                       animation: skylight-alert-in 0.7s cubic-bezier(0.22, 1, 0.36, 1) both;
                     }
@@ -125,14 +133,16 @@ views:
                   ha-markdown $: |
                     p {
                       margin: 0 !important;
-                      line-height: 1.5;
+                      display: flex;
+                      flex-wrap: wrap;
+                      align-items: center;
+                      gap: 6px 8px;
+                      line-height: 1.4;
                       color: var(--primary-text-color);
                     }
                     ha-icon {
                       color: var(--skylight-today-highlight-color, #0070cb);
                       --mdc-icon-size: 19px;
-                      vertical-align: text-bottom;
-                      margin-right: 2px;
                       transform-origin: 50% 10%;
                       animation: skylight-bell-ring 6s ease-in-out infinite;
                     }
@@ -147,6 +157,64 @@ views:
                     @media (prefers-reduced-motion: reduce) {
                       ha-icon { animation: none !important; }
                     }
+                    /* === EVENT BADGE PILLS === */
+                    /* --pill-color defaults to the accent so calendars with
+                       no theme color still get a coherent pill; the per-
+                       calendar overrides generated at the bottom swap in the
+                       right color. The plain background/border lines are
+                       fallbacks for browsers without color-mix. */
+                    abbr {
+                      --pill-color: var(--skylight-today-highlight-color, #0070cb);
+                      display: inline-flex;
+                      align-items: center;
+                      gap: 6px;
+                      padding: 3px 12px 3px 10px;
+                      border-radius: 999px;
+                      text-decoration: none !important;
+                      cursor: default;
+                      font-weight: 600;
+                      font-size: 0.92em;
+                      color: var(--skylight-event-text-color, var(--primary-text-color));
+                      background: var(--skylight-event-bg, #ffffff);
+                      background: color-mix(in srgb, var(--pill-color) 14%, var(--skylight-event-bg, #ffffff));
+                      border: 1px solid var(--skylight-event-border, #eaeaea);
+                      border-color: color-mix(in srgb, var(--pill-color) 45%, var(--skylight-event-border, #eaeaea));
+                      box-shadow: var(--skylight-event-shadow, 0 1px 2px rgba(52, 52, 60, 0.05));
+                    }
+                    /* Colored dot in the calendar's color */
+                    abbr::before {
+                      content: "";
+                      flex: none;
+                      width: 8px;
+                      height: 8px;
+                      border-radius: 50%;
+                      background: var(--pill-color);
+                    }
+                    /* HH:MM prefix inside a pill */
+                    abbr > small {
+                      font-size: 0.82em;
+                      font-weight: 600;
+                      color: var(--skylight-event-time-color, var(--secondary-text-color, #757575));
+                      font-variant-numeric: tabular-nums;
+                    }
+                    /* Trailing "+N more" counter (outside the pills) */
+                    p > small {
+                      color: var(--secondary-text-color);
+                      font-style: italic;
+                      font-weight: 600;
+                    }
+                    /* Per-calendar colors, generated from whatever calendars
+                       tomorrow's events actually come from. The slug maps to
+                       the theme's naming convention (calendar.school ->
+                       --school-default-primary-color), so a new family
+                       member's pills work as soon as their theme color
+                       exists — no dashboard edit needed. Unknown calendars
+                       fall back to the accent via the var() default. */
+                    {% for cal in (state_attr('sensor.tomorrow_events', 'events') or []) | map(attribute='calendar') | unique | list %}
+                    abbr[title="{{ cal.split('.', 1) | last }}"] {
+                      --pill-color: var(--{{ cal.split('.', 1) | last | replace('_', '-') }}-default-primary-color, var(--skylight-today-highlight-color, #0070cb));
+                    }
+                    {% endfor %}
             grid_options:
               columns: full
         column_span: 10
