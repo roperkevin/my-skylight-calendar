@@ -109,19 +109,19 @@ template:
       - delay:
           seconds: 2
       - variables:
-          # <--- UPDATE THESE ENTITIES to match your calendars (keep in sync
-          # with dashboard.yaml). calendar.weather is left out on purpose:
-          # forecast feeds would fill the alert with noise.
-          wanted_calendars:
-            - calendar.school
-            - calendar.daniel
-            - calendar.family
-            - calendar.birthdays
-            - calendar.holidays
-          # Only query calendars that actually exist in this install:
-          # calendar.get_events rejects the whole call over a single unknown
-          # entity, which would leave the sensor unavailable and the banner
-          # permanently hidden.
+          # Every calendar in the install, minus weather feeds (forecast
+          # entries would fill the alert with noise). Auto-discovery means
+          # renamed or Google-style entity IDs (calendar.you_gmail_com) are
+          # picked up without any configuration. To pin the alert to specific
+          # calendars instead, replace the template with a plain list:
+          #   wanted_calendars:
+          #     - calendar.school
+          #     - calendar.daniel
+          wanted_calendars: "{{ states.calendar | map(attribute='entity_id') | reject('search', 'weather') | list }}"
+          # Only query calendars that actually exist (matters when the line
+          # above is replaced with a hand-written list): calendar.get_events
+          # rejects the whole call over a single unknown entity, which would
+          # leave the sensor unavailable and the banner permanently hidden.
           found_calendars: "{{ wanted_calendars | select('in', states.calendar | map(attribute='entity_id') | list) | list }}"
           # Pre-declared at this scope so the response below survives the
           # nested `if`, and so the sensor reads 0 instead of unavailable
@@ -147,6 +147,9 @@ template:
         icon: mdi:calendar-alert
         state: "{{ agenda.values() | map(attribute='events') | map('length') | sum }}"
         attributes:
+          # Which calendars the last refresh actually asked — check this in
+          # Developer tools -> States when debugging a missing banner.
+          queried_calendars: "{{ found_calendars }}"
           events: >-
             {% set ns = namespace(items=[]) %}
             {% for cal, data in agenda.items() %}
