@@ -1148,17 +1148,29 @@ views:
                        date), so on narrow tiles the temperatures and icon land
                        on top of the date number and the first event — worst on
                        today, whose solid number badge sits in the same corner.
-                       A two-column grid gives the date and the weather their
-                       own cells (weather right-aligned on the same row) and
-                       hands the events the full tile width below, so nothing
-                       can overlap anything. */
+                       A single-column grid stacks date, weather and events,
+                       each clamped to the tile's width (minmax(0, 1fr), so
+                       no track can grow past the tile). The old layout put
+                       the nowrap weather chip in an auto column next to the
+                       date: a wide forecast ("99 °F / 68 °F") forced the
+                       grid tracks wider than the tile, and since the events
+                       row spanned those same tracks, every chip inherited
+                       the overflow and spilled into the neighboring day. On
+                       its own full-width row the forecast fits on one line,
+                       and if it ever doesn't, it trims with an ellipsis
+                       instead of stretching the tile's tracks. */
                     .day:not(.header) {
                       display: grid !important;
-                      grid-template-columns: minmax(0, 1fr) auto !important;
-                      /* Tiles stretch to their row's height; the 1fr events
-                         row soaks up the slack so the date row stays snug. */
-                      grid-template-rows: auto minmax(0, 1fr) !important;
+                      grid-template-columns: minmax(0, 1fr) !important;
+                      /* Tiles stretch to their row's height; the trailing
+                         1fr row soaks up the slack so the date and weather
+                         rows stay snug at the top. */
+                      grid-template-rows: auto auto minmax(0, 1fr) !important;
                       align-items: start !important;
+                      /* Belt and braces: whatever a future card version puts
+                         inside a tile, it clips at the rounded edge instead
+                         of bleeding into the next column. */
+                      overflow: hidden !important;
                     }
 
                     .day:not(.header) > .date {
@@ -1167,12 +1179,16 @@ views:
                     }
 
                     .day:not(.header) > .weather {
-                      grid-column: 2 !important;
+                      grid-column: 1 !important;
                       position: static !important;
                       z-index: auto !important;
                       justify-self: end !important;
+                      min-width: 0 !important;
+                      max-width: 100% !important;
                       white-space: nowrap !important;
-                      margin-top: 4px !important;
+                      overflow: hidden !important;
+                      text-overflow: ellipsis !important;
+                      margin: 2px 0 4px !important;
                     }
 
                     .day:not(.header) > .events {
@@ -1187,9 +1203,11 @@ views:
                       background: var(--skylight-weekend-day-bg, linear-gradient(180deg, #fbf9f6 0%, #f6f2ed 100%)) !important;
                     }
 
-                    /* Today: tinted tile with an accent ring and a soft glow */
+                    /* Today: accent ring + soft glow on the standard tile
+                       surface. No tinted fill — the old translucent wash sat
+                       over the tile's content and muddied the event chips. */
                     .day.today {
-                      background: var(--skylight-today-bg, #e1f5fe) !important;
+                      background: var(--skylight-day-bg, #f6f8fa) !important;
                       border-color: transparent !important;
                       box-shadow: inset 0 0 0 2px var(--skylight-today-highlight-color, #0070cb),
                                   var(--skylight-today-glow, 0 6px 20px rgba(0, 112, 203, 0.22)) !important;

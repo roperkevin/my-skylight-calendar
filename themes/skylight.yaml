@@ -112,7 +112,8 @@ Skylight:
   skylight-day-hover-shadow: "0 6px 16px rgba(52, 52, 60, 0.10)"
   # Weekend tiles: a whisper of warmth so Sat/Sun read differently at a glance
   skylight-weekend-day-bg: "linear-gradient(180deg, #FBF9F6 0%, #F6F2ED 100%)"
-  skylight-today-bg: "linear-gradient(180deg, #E6F4FE 0%, #D8EDFC 100%)"
+  # Today's tile keeps the standard day surface and is marked by the accent
+  # ring/glow below (a tinted fill washed out the tile's event chips)
   skylight-today-highlight-color: "#0070CB"
   # Kept tight so the halo marks the tile without hazing over its neighbors
   skylight-today-glow: "0 4px 12px rgba(0, 112, 203, 0.18)"
@@ -216,7 +217,8 @@ Skylight Dark:
   skylight-day-hover-shadow: "0 6px 16px rgba(0, 0, 0, 0.45)"
   # Weekend tiles: a whisper of warmth so Sat/Sun read differently at a glance
   skylight-weekend-day-bg: "linear-gradient(180deg, #2A282B 0%, #242225 100%)"
-  skylight-today-bg: "linear-gradient(180deg, rgba(14, 72, 122, 0.45) 0%, rgba(9, 50, 86, 0.45) 100%)"
+  # Today's tile keeps the standard day surface and is marked by the accent
+  # ring/glow below (a tinted fill washed out the tile's event chips)
   skylight-today-highlight-color: "#1E88E5"
   # Kept tight so the halo marks the tile without hazing over its neighbors
   skylight-today-glow: "0 4px 14px rgba(30, 136, 229, 0.28)"
