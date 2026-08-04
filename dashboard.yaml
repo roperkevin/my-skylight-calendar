@@ -982,33 +982,85 @@ views:
                       border-radius: 8px;
                     }
 
-                    /* === NAVIGATION ROW (arrows + month title) === */
+                    /* === NAVIGATION ROW (month title + arrow cluster) === */
+                    /* The card renders the controls first — <ul><li>prev</li>
+                       <li>today</li><li>next</li></ul> — then <div class="month">.
+                       row-reverse + space-between flips the visual order so the
+                       month reads first on the left and the controls sit tucked
+                       against the right edge, like a proper calendar toolbar,
+                       without touching the card's markup. */
                     .container .navigation {
-                      padding: 0.1em 0.2em 0.6em !important;
-                      font-weight: 700 !important;
-                      color: var(--primary-text-color) !important;
+                      display: flex !important;
+                      flex-direction: row-reverse !important;
+                      justify-content: space-between !important;
+                      align-items: center !important;
+                      gap: 12px !important;
+                      padding: 0.1em 0.2em 0.7em !important;
+                      user-select: none;
+                      -webkit-tap-highlight-color: transparent;
                     }
 
-                    .container .navigation .title {
+                    .container .navigation .month {
                       font-family: var(--skylight-heading-font-family, var(--primary-font-family)) !important;
-                      font-size: 1.55em !important;
+                      font-size: 1.7em !important;
                       font-weight: 700 !important;
                       letter-spacing: -0.01em !important;
+                      line-height: 1.15 !important;
+                      color: var(--primary-text-color) !important;
+                      min-width: 0;
+                      white-space: nowrap;
+                      overflow: hidden;
+                      text-overflow: ellipsis;
                     }
 
-                    /* Round tap targets for the prev/next arrows */
-                    .container .navigation ha-icon {
-                      cursor: pointer;
-                      padding: 4px !important;
-                      border-radius: 50% !important;
-                      transition: background-color .2s ease, transform .2s ease;
+                    /* Prev / today / next share one quiet segmented capsule,
+                       dressed like the chrome buttons above the card. */
+                    .container .navigation ul {
+                      display: inline-flex !important;
+                      align-items: center !important;
+                      gap: 2px !important;
+                      flex: none !important;
+                      margin: 0 !important;
+                      padding: 3px !important;
+                      list-style: none !important;
+                      background: var(--skylight-btn-off-bg, #ffffff) !important;
+                      border: 1px solid var(--skylight-btn-off-border, #e9ecef) !important;
+                      border-radius: 999px !important;
+                      box-shadow: var(--skylight-btn-shadow, 0 2px 6px rgba(104, 104, 104, 0.14)) !important;
+                    }
+
+                    .container .navigation ul li {
+                      display: flex !important;
+                      align-items: center !important;
+                      justify-content: center !important;
+                      width: 34px !important;
+                      height: 34px !important;
+                      border-radius: 999px !important;
+                      cursor: pointer !important;
+                      color: var(--skylight-btn-off-text, #757575) !important;
+                      transition: background-color .2s ease, color .2s ease, transform .15s ease;
+                    }
+
+                    .container .navigation ul li ha-icon {
+                      --mdc-icon-size: 20px;
+                      color: inherit !important;
+                    }
+
+                    /* The middle control jumps back to today: mark it with the
+                       accent so its purpose reads at a glance. */
+                    .container .navigation ul li:nth-child(2) {
+                      color: var(--skylight-today-highlight-color, #0070cb) !important;
                     }
 
                     @media (hover: hover) {
-                      .container .navigation ha-icon:hover {
+                      .container .navigation ul li:hover {
                         background-color: var(--skylight-nav-hover-bg, rgba(0, 86, 178, 0.08)) !important;
-                        transform: scale(1.08);
+                        color: var(--skylight-today-highlight-color, #0070cb) !important;
                       }
+                    }
+
+                    .container .navigation ul li:active {
+                      transform: scale(0.9);
                     }
 
                     /* === GRID LAYOUT === */
@@ -1037,13 +1089,29 @@ views:
                       box-sizing: border-box !important;
                       background: transparent !important;
                       border: none !important;
+                      min-width: 0 !important;
+                      overflow: hidden !important;
                     }
 
-                    .day.header .date .text {
-                      font-size: 0.78em !important;
+                    /* Full weekday names are wide: at kiosk font sizes the
+                       fixed 0.78em used to let "WEDNESDAY" spill into
+                       "THURSDAY". The clamp scales the labels with the
+                       viewport, and the nowrap/ellipsis guard means a
+                       too-narrow column trims tidily instead of overlapping
+                       its neighbor. Both selectors on purpose: the first
+                       (higher specificity) beats the generic .day .date .text
+                       size below; the second catches header markup without a
+                       .date wrapper. */
+                    .day.header .date .text,
+                    .container > .day.header .text {
+                      display: block !important;
+                      font-size: clamp(0.6em, 1vw, 0.78em) !important;
                       font-weight: 700 !important;
                       text-transform: uppercase !important;
-                      letter-spacing: 0.12em !important;
+                      letter-spacing: 0.1em !important;
+                      white-space: nowrap !important;
+                      overflow: hidden !important;
+                      text-overflow: ellipsis !important;
                     }
 
                     /* === DAY TILES === */
@@ -1328,6 +1396,19 @@ views:
                       .container .header,
                       .container .navigation {
                         padding: 0.25em 0.4em !important;
+                      }
+
+                      .container .navigation .month {
+                        font-size: 1.25em !important;
+                      }
+
+                      .container .navigation ul li {
+                        width: 30px !important;
+                        height: 30px !important;
+                      }
+
+                      .container .navigation ul li ha-icon {
+                        --mdc-icon-size: 18px;
                       }
 
                       .container {
