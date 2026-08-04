@@ -1525,8 +1525,10 @@ views:
                     : hass.states['input_select.calendar_select'].state == 'Weather' ? 'var(--weather-default-primary-color)'
                     : hass.states['input_select.calendar_select'].state == 'Family' ? 'var(--family-default-primary-color)'
                     : 'var(--skylight-cta-bg, #0056b2)'} !important;
+                    transition: background-color .25s ease;
                   }
                   .bubble-icon-container {
+                    border-radius: var(--skylight-radius-chip, 6px) !important;
                     background: rgba(255, 255, 255, 0.22) !important;
                   }
                   .bubble-icon {
@@ -1539,8 +1541,23 @@ views:
                     letter-spacing: 0.01em !important;
                     opacity: 1 !important;
                   }
+                  /* Close button: dress the default dark square like the
+                     dashboard's quiet chrome buttons so the header reads as
+                     one toolbar (pill + matching close control). */
+                  .bubble-close-button {
+                    background: var(--skylight-btn-off-bg, #ffffff) !important;
+                    border: 1px solid var(--skylight-btn-off-border, #e9ecef) !important;
+                    border-radius: var(--skylight-radius-card, 10px) !important;
+                    color: var(--skylight-btn-off-text, #757575) !important;
+                    opacity: 1 !important;
+                  }
               - type: vertical-stack
                 cards:
+                  # No `title:` here on purpose — the pop-up header above
+                  # already says "Add Calendar Event", and a second heading
+                  # inside the form read as a duplicate. The cards in this
+                  # stack are all transparent so the pop-up reads as one
+                  # continuous panel instead of stacked blocks.
                   - type: entities
                     entities:
                       - entity: input_select.calendar_select
@@ -1550,20 +1567,28 @@ views:
                         name: Event Description
                       - entity: input_boolean.calendar_all_day_event
                         name: All Day Event
-                    title: Add Calendar Event
                     state_color: false
                     card_mod:
-                      style: |
-                        ha-card {
-                          background: var(--skylight-surface, var(--card-background-color)) !important;
-                          border-radius: var(--skylight-radius-card, 10px) !important;
-                          border: none !important;
-                          box-shadow: none !important;
-                        }
-                        .card-header {
-                          font-size: 1.2em !important;
-                          font-weight: 700 !important;
-                        }
+                      style:
+                        .: |
+                          ha-card {
+                            background: transparent !important;
+                            border-radius: var(--skylight-radius-card, 10px) !important;
+                            border: none !important;
+                            box-shadow: none !important;
+                          }
+                          .card-content {
+                            padding: 4px 12px 0 !important;
+                          }
+                        # Empty text fields render HA's "(empty value)"
+                        # placeholder, which reads like a bug next to the
+                        # field's own floating label — hide it (the label
+                        # still names the field).
+                        hui-input-text-entity-row $ ha-textfield $: |
+                          input::placeholder {
+                            color: transparent !important;
+                            opacity: 0 !important;
+                          }
                   - type: conditional
                     conditions:
                       - entity: input_boolean.calendar_all_day_event
@@ -1578,10 +1603,12 @@ views:
                       card_mod:
                         style: |
                           ha-card {
-                            background: var(--skylight-surface, var(--card-background-color)) !important;
-                            border-radius: var(--skylight-radius-card, 10px) !important;
+                            background: transparent !important;
                             border: none !important;
                             box-shadow: none !important;
+                          }
+                          .card-content {
+                            padding: 0 12px !important;
                           }
                   - type: conditional
                     conditions:
@@ -1597,10 +1624,12 @@ views:
                       card_mod:
                         style: |
                           ha-card {
-                            background: var(--skylight-surface, var(--card-background-color)) !important;
-                            border-radius: var(--skylight-radius-card, 10px) !important;
+                            background: transparent !important;
                             border: none !important;
                             box-shadow: none !important;
+                          }
+                          .card-content {
+                            padding: 0 12px !important;
                           }
                   - type: custom:bubble-card
                     card_type: button
