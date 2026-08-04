@@ -790,27 +790,31 @@ views:
                     align-items: stretch;
                     gap: 12px;
                   }
+                  /* !important throughout: the stack's own stylesheet gives
+                     every child flex: 1 / width: 100%, which would split the
+                     row 50/50 (or stack the folded rail's buttons one per
+                     line) if it won. */
                   #root > * {
                     margin: 0 !important;
-                    min-width: 0;
+                    min-width: 0 !important;
                   }
                   #root > *:first-child {
-                    flex: 0 0 156px;
-                    width: 156px;
+                    flex: 0 0 156px !important;
+                    width: 156px !important;
                   }
                   #root > *:last-child {
-                    flex: 1 1 0;
-                    width: auto;
+                    flex: 1 1 0 !important;
+                    width: auto !important;
                   }
                   /* Narrow screens: the rail moves above the calendar (its
                      own styles re-flow the buttons into a wrapping row). */
                   @media (max-width: 1000px) {
                     #root {
-                      flex-direction: column;
+                      flex-direction: column !important;
                     }
                     #root > *:first-child {
-                      flex: 0 0 auto;
-                      width: auto;
+                      flex: 0 0 auto !important;
+                      width: auto !important;
                     }
                   }
             card:
@@ -848,17 +852,21 @@ views:
                         #root > * {
                           margin: 0 !important;
                         }
-                        /* When the view collapses to one column (tablet/mobile),
-                           the rail becomes a wrapping row above the calendar. */
+                        /* On narrow screens the rail sits above the calendar,
+                           so re-flow the menu into a wrapping row of compact
+                           buttons. !important is load-bearing: the stack's
+                           own stylesheet gives every child width: 100%,
+                           which put each button on its own line. */
                         @media (max-width: 1000px) {
                           #root {
-                            flex-direction: row;
-                            flex-wrap: wrap;
-                            gap: 6px;
+                            flex-direction: row !important;
+                            flex-wrap: wrap !important;
+                            gap: 6px !important;
                           }
                           #root > * {
-                            flex: 1 1 auto;
-                            min-width: 130px;
+                            flex: 1 1 130px !important;
+                            width: auto !important;
+                            min-width: 130px !important;
                           }
                         }
                   card:
